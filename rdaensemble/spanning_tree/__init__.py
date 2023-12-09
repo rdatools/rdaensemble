@@ -1,3 +1,5 @@
-# rdaensemble/__init__.py
+# rdaensemble/spanning_tree/__init__.py
 
-name: str = "rdaensemble"
+from .rst import *
+
+name = "spanning_tree"
