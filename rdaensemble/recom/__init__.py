@@ -1,5 +1,3 @@
 # rdaensemble/__init__.py
 
-from .random import random_map
-
 name: str = "rdaensemble"
