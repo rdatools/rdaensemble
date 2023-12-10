@@ -10,7 +10,8 @@ $ scripts/generate_random_ensemble.py \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
 --size 1000 \
 --plans output/NC_2020_random_maps_plans.json \
---log output/NC_2020_random_maps_log.txt
+--log output/NC_2020_random_maps_log.txt \
+--no-debug
 
 For documentation, type:
 

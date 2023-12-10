@@ -9,7 +9,8 @@ $ scripts/score_ensemble.py \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
---scores output/NC_2020_random_maps_scores.csv
+--scores output/NC_2020_random_maps_scores.csv \
+--no-debug
 
 For documentation, type:
 
