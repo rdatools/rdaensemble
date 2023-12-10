@@ -5,13 +5,11 @@ For example:
 
 $ scripts/generate_random_ensemble.py \
 --state NC \
---districts 14 \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
 --size 1000 \
 --plans output/NC_2020_random_maps_plans.json \
---scores output/NC_2020_random_maps_scores.csv \
 --log output/NC_2020_random_maps_log.txt
 
 For documentation, type:
@@ -27,24 +25,15 @@ from typing import Any, List, Dict, Tuple
 from rdabase import (
     require_args,
     starting_seed,
-    mkPoints,
     mkAdjacencies,
     populations,
     total_population,
-    index_geoids,
-    index_points,
-    index_assignments,
-    calc_energy,
     calc_population_deviation,
     Graph,
-    Point,
-    IndexedPoint,
     Assignment,
-    IndexedWeightedAssignment,
-    write_csv,
     write_json,
 )
-from rdascore import load_data, load_shapes, load_graph, load_metadata, analyze_plan
+from rdascore import load_data, load_graph, load_metadata
 
 from rdaensemble import (
     random_map,
@@ -55,23 +44,18 @@ def main() -> None:
     args: argparse.Namespace = parse_args()
 
     data: Dict[str, Dict[str, int | str]] = load_data(args.data)
-    shapes: Dict[str, Any] = load_shapes(args.shapes)
     graph: Dict[str, List[str]] = load_graph(args.graph)
     metadata: Dict[str, Any] = load_metadata(args.state, args.data)
 
-    points: List[Point] = mkPoints(data, shapes)
     pairs: List[Tuple[str, str]] = mkAdjacencies(Graph(graph))
-
-    indexed_geoids: Dict[str, int] = index_geoids(points)
-    indexed_points: List[IndexedPoint] = index_points(points)
 
     pop_by_geoid: Dict[str, int] = populations(data)
     total_pop: int = total_population(pop_by_geoid)
 
-    scores: List[dict] = list()
-    candidates: List[Dict[str, str | float | Dict[str, int | str]]] = list()
+    plans: List[Dict[str, str | float | Dict[str, int | str]]] = list()
 
-    start: int = starting_seed(args.state, args.districts)
+    N: int = int(metadata["D"])
+    start: int = starting_seed(args.state, N)
     seed: int = start
     conforming_count: int = 0
 
@@ -87,17 +71,13 @@ def main() -> None:
                 assignments: List[Assignment] = random_map(
                     pairs,
                     pop_by_geoid,
-                    args.districts,
+                    N,
                     seed,
                 )
-                indexed_assignments: List[
-                    IndexedWeightedAssignment
-                ] = index_assignments(assignments, indexed_geoids, pop_by_geoid)
 
-                # Calculate the energy & population deviation of the map.
-                energy: float = calc_energy(indexed_assignments, indexed_points)
+                # Calculate the population deviation of the map.
                 popdev: float = calc_population_deviation(
-                    assignments, pop_by_geoid, total_pop, args.districts
+                    assignments, pop_by_geoid, total_pop, N
                 )
 
                 # If the map does not have 'roughly' equal population, discard it.
@@ -107,21 +87,7 @@ def main() -> None:
                 # Otherwise increment candidate count, save the plan, & score it.
                 conforming_count += 1
                 plan: Dict[str, int | str] = {a.geoid: a.district for a in assignments}
-                candidates.append({"name": plan_name, "plan": plan})  # No weights.
-
-                record: dict[str, Any] = dict()
-                record["map"] = plan_name
-                record["energy"] = energy
-
-                scorecard: dict[str, Any] = analyze_plan(
-                    assignments,
-                    data,
-                    shapes,
-                    graph,
-                    metadata,
-                )
-                record.update(scorecard)
-                scores.append(record)
+                plans.append({"name": plan_name, "plan": plan})  # No weights.
 
                 # If the conforming candidate count equal to the number of iterations, stop.
                 if conforming_count == args.size:
@@ -135,14 +101,11 @@ def main() -> None:
                 seed += 1
 
         print(
-            f"{conforming_count} conforming candidates took {seed - start + 1} random seeds.",
+            f"{conforming_count} conforming plans took {seed - start + 1} random seeds.",
             file=f,
         )
 
-    write_json(args.plans, candidates)
-
-    fields: List[str] = list(scores[0].keys())
-    write_csv(args.scores, scores, fields, precision="{:.6f}")
+    write_json(args.plans, plans)
 
 
 def parse_args():
@@ -154,11 +117,6 @@ def parse_args():
         "--state",
         help="The two-character state code (e.g., NC)",
         type=str,
-    )
-    parser.add_argument(
-        "--districts",
-        type=int,
-        help="Number of districts",
     )
     parser.add_argument(
         "--data",
@@ -176,7 +134,7 @@ def parse_args():
         help="Graph file",
     )
     parser.add_argument(
-        "--size", type=int, default=10, help="Number of maps to generate"  # TODO - 1000
+        "--size", type=int, default=1000, help="Number of maps to generate"
     )
     parser.add_argument(
         "--plans",
@@ -216,12 +174,12 @@ def parse_args():
     # Default values for args in debug mode
     debug_defaults: Dict[str, Any] = {
         "state": "NC",
-        "districts": 14,
         "data": "../rdadata/data/NC/NC_2020_data.csv",
         "shapes": "../rdadata/data/NC/NC_2020_shapes_simplified.json",
         "graph": "../rdadata/data/NC/NC_2020_graph.json",
-        "plans": "output/NC_2020_root_candidates_1.json",
+        "plans": "output/NC_2020_root_plans_1.json",
         "scores": "output/NC_2020_root_scores_1.csv",
+        "size": 10,
     }
     args = require_args(args, args.debug, debug_defaults)
 
