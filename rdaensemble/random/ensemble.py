@@ -40,7 +40,9 @@ def generate_random_ensemble(
 
     while True:
         print(f"... {conforming_count} ...")
-        print(f"Conforming count: {conforming_count}, random seed: {seed}", logfile)
+        print(
+            f"Conforming count: {conforming_count}, random seed: {seed}", file=logfile
+        )
 
         plan_name: str = f"{conforming_count:03d}_{seed}"
 

@@ -1680,3 +1680,4 @@ Conforming count: 997, random seed: 1838
 Conforming count: 998, random seed: 1839
 Conforming count: 999, random seed: 1840
 1000 conforming plans took 1324 random seeds.
+Failure: Too many attempts for seed (518)
