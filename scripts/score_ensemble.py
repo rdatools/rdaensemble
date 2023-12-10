@@ -27,39 +27,10 @@ from typing import Any, List, Dict
 
 from rdabase import (
     require_args,
-    mkPoints,
-    populations,
-    index_geoids,
-    index_points,
-    index_assignments,
-    calc_energy,
-    Point,
-    IndexedPoint,
-    Assignment,
-    IndexedWeightedAssignment,
     write_csv,
 )
 from rdascore import load_data, load_shapes, load_graph, load_metadata, analyze_plan
-
-
-def read_plans(abs_path: str) -> List[Dict[str, str | float | Dict[str, int | str]]]:
-    """Load a list of plans in a JSON file."""
-
-    try:
-        with open(abs_path, "r") as f:
-            return json.load(f)
-
-    except:
-        raise Exception("Exception reading JSON.")
-
-
-def make_plan(assignments: Dict[str, int | str]) -> List[Assignment]:
-    """Convert a dict of geoid: district assignments to a list of Assignments."""
-
-    plan: List[Assignment] = [
-        Assignment(geoid, district) for geoid, district in assignments.items()
-    ]
-    return plan
+from rdaensemble import score_ensemble
 
 
 def main() -> None:
@@ -70,51 +41,22 @@ def main() -> None:
     graph: Dict[str, List[str]] = load_graph(args.graph)
     metadata: Dict[str, Any] = load_metadata(args.state, args.data)
 
-    points: List[Point] = mkPoints(data, shapes)
-
-    indexed_geoids: Dict[str, int] = index_geoids(points)
-    indexed_points: List[IndexedPoint] = index_points(points)
-
-    pop_by_geoid: Dict[str, int] = populations(data)
-
-    scores: List[dict] = list()
     plans: List[Dict[str, str | float | Dict[str, int | str]]] = read_plans(args.plans)
-
-    for i, p in enumerate(plans):
-        print(f"... {i} ...")
-
-        try:
-            # Get a plan
-            plan_name: str = str(p["name"])
-            plan_dict: Dict[str, int | str] = p["plan"]  # type: ignore
-            assignments: List[Assignment] = make_plan(plan_dict)
-            indexed_assignments: List[IndexedWeightedAssignment] = index_assignments(
-                assignments, indexed_geoids, pop_by_geoid
-            )
-
-            # Calculate the energy
-            energy: float = calc_energy(indexed_assignments, indexed_points)
-
-            record: dict[str, Any] = dict()
-            record["map"] = plan_name
-            record["energy"] = energy
-
-            scorecard: dict[str, Any] = analyze_plan(
-                assignments,
-                data,
-                shapes,
-                graph,
-                metadata,
-            )
-            record.update(scorecard)
-            scores.append(record)
-
-        except Exception as e:
-            print(f"Failure: {e}")
-            pass
+    scores: List[Dict] = score_ensemble(plans, data, shapes, graph, metadata)
 
     fields: List[str] = list(scores[0].keys())
     write_csv(args.scores, scores, fields, precision="{:.6f}")
+
+
+def read_plans(abs_path: str) -> List[Dict[str, str | float | Dict[str, int | str]]]:
+    """Load a list of plans serialized in a JSON file."""
+
+    try:
+        with open(abs_path, "r") as f:
+            return json.load(f)
+
+    except:
+        raise Exception("Exception reading JSON.")
 
 
 def parse_args():
