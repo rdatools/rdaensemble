@@ -50,9 +50,6 @@ def main() -> None:
     graph: Dict[str, List[str]] = load_graph(args.graph)
     metadata: Dict[str, Any] = load_metadata(args.state, args.data)
 
-    N: int = int(metadata["D"])
-    start: int = starting_seed(args.state, N)
-
     pairs: List[Tuple[str, str]] = mkAdjacencies(Graph(graph))
 
     pop_by_geoid: Dict[str, int] = populations(data)
@@ -60,10 +57,13 @@ def main() -> None:
 
     plans: List[Dict[str, str | float | Dict[str, int | str]]] = list()
 
+    N: int = int(metadata["D"])
+    start: int = starting_seed(args.state, N)
     seed: int = start
     conforming_count: int = 0
 
     with open(args.log, "a") as f:
+        # TODO - Abstract this into a random_ensemble() function.
         while True:
             print(f"... {conforming_count} ...")
             print(f"Conforming count: {conforming_count}, random seed: {seed}", file=f)
