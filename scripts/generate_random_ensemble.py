@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
 GENERATE A COLLECTION OF RANDOM MAPS
 
