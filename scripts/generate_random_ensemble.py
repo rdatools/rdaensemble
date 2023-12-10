@@ -5,11 +5,11 @@ For example:
 
 $ scripts/generate_random_ensemble.py \
 --state NC \
+--districts 14 \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
 --size 1000 \
---districts 14 \
 --plans output/NC_2020_random_maps_plans.json \
 --scores output/NC_2020_random_maps_scores.csv \
 --log output/NC_2020_random_maps_log.txt
