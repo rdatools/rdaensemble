@@ -33,3 +33,1650 @@ Conforming count: 7, random seed: 526
 Conforming count: 8, random seed: 527
 Conforming count: 9, random seed: 528
 10 conforming candidates took 12 random seeds.
+Conforming count: 0, random seed: 518
+Failure: Too many attempts for seed (518)
+Conforming count: 0, random seed: 519
+Conforming count: 1, random seed: 520
+Conforming count: 2, random seed: 521
+Conforming count: 3, random seed: 522
+Conforming count: 4, random seed: 523
+Conforming count: 5, random seed: 524
+Conforming count: 6, random seed: 525
+Conforming count: 7, random seed: 526
+Conforming count: 8, random seed: 527
+Conforming count: 9, random seed: 528
+Conforming count: 10, random seed: 529
+Failure: Too many attempts for seed (529)
+Conforming count: 10, random seed: 530
+Conforming count: 11, random seed: 531
+Conforming count: 12, random seed: 532
+Conforming count: 13, random seed: 533
+Failure: Too many attempts for seed (533)
+Conforming count: 13, random seed: 534
+Failure: Too many attempts for seed (534)
+Conforming count: 13, random seed: 535
+Conforming count: 14, random seed: 536
+Conforming count: 15, random seed: 537
+Failure: Too many attempts for seed (537)
+Conforming count: 15, random seed: 538
+Conforming count: 16, random seed: 539
+Conforming count: 17, random seed: 540
+Conforming count: 18, random seed: 541
+Conforming count: 19, random seed: 542
+Conforming count: 20, random seed: 543
+Failure: Too many attempts for seed (543)
+Conforming count: 20, random seed: 544
+Conforming count: 21, random seed: 545
+Conforming count: 22, random seed: 546
+Failure: Too many attempts for seed (546)
+Conforming count: 22, random seed: 547
+Conforming count: 23, random seed: 548
+Failure: Too many attempts for seed (548)
+Conforming count: 23, random seed: 549
+Conforming count: 24, random seed: 550
+Conforming count: 25, random seed: 551
+Failure: Too many attempts for seed (551)
+Conforming count: 25, random seed: 552
+Conforming count: 26, random seed: 553
+Conforming count: 27, random seed: 554
+Conforming count: 28, random seed: 555
+Conforming count: 29, random seed: 556
+Conforming count: 30, random seed: 557
+Conforming count: 31, random seed: 558
+Failure: Too many attempts for seed (558)
+Conforming count: 31, random seed: 559
+Failure: Too many attempts for seed (559)
+Conforming count: 31, random seed: 560
+Conforming count: 32, random seed: 561
+Conforming count: 33, random seed: 562
+Failure: Too many attempts for seed (562)
+Conforming count: 33, random seed: 563
+Conforming count: 34, random seed: 564
+Conforming count: 35, random seed: 565
+Failure: Too many attempts for seed (565)
+Conforming count: 35, random seed: 566
+Conforming count: 36, random seed: 567
+Failure: Too many attempts for seed (567)
+Conforming count: 36, random seed: 568
+Conforming count: 37, random seed: 569
+Conforming count: 38, random seed: 570
+Conforming count: 39, random seed: 571
+Conforming count: 40, random seed: 572
+Conforming count: 41, random seed: 573
+Conforming count: 42, random seed: 574
+Conforming count: 43, random seed: 575
+Failure: Too many attempts for seed (575)
+Conforming count: 43, random seed: 576
+Conforming count: 44, random seed: 577
+Conforming count: 45, random seed: 578
+Conforming count: 46, random seed: 579
+Conforming count: 47, random seed: 580
+Conforming count: 48, random seed: 581
+Conforming count: 49, random seed: 582
+Conforming count: 50, random seed: 583
+Conforming count: 51, random seed: 584
+Failure: Too many attempts for seed (584)
+Conforming count: 51, random seed: 585
+Conforming count: 52, random seed: 586
+Conforming count: 53, random seed: 587
+Conforming count: 54, random seed: 588
+Failure: Too many attempts for seed (588)
+Conforming count: 54, random seed: 589
+Conforming count: 55, random seed: 590
+Failure: Too many attempts for seed (590)
+Conforming count: 55, random seed: 591
+Failure: Too many attempts for seed (591)
+Conforming count: 55, random seed: 592
+Conforming count: 56, random seed: 593
+Failure: Too many attempts for seed (593)
+Conforming count: 56, random seed: 594
+Conforming count: 57, random seed: 595
+Failure: Too many attempts for seed (595)
+Conforming count: 57, random seed: 596
+Conforming count: 58, random seed: 597
+Conforming count: 59, random seed: 598
+Conforming count: 60, random seed: 599
+Conforming count: 61, random seed: 600
+Conforming count: 62, random seed: 601
+Conforming count: 63, random seed: 602
+Conforming count: 64, random seed: 603
+Failure: Too many attempts for seed (603)
+Conforming count: 64, random seed: 604
+Conforming count: 65, random seed: 605
+Conforming count: 66, random seed: 606
+Conforming count: 67, random seed: 607
+Conforming count: 68, random seed: 608
+Failure: Too many attempts for seed (608)
+Conforming count: 68, random seed: 609
+Conforming count: 69, random seed: 610
+Conforming count: 70, random seed: 611
+Conforming count: 71, random seed: 612
+Conforming count: 72, random seed: 613
+Failure: Too many attempts for seed (613)
+Conforming count: 72, random seed: 614
+Conforming count: 73, random seed: 615
+Conforming count: 74, random seed: 616
+Conforming count: 75, random seed: 617
+Conforming count: 76, random seed: 618
+Conforming count: 77, random seed: 619
+Conforming count: 78, random seed: 620
+Failure: Too many attempts for seed (620)
+Conforming count: 78, random seed: 621
+Conforming count: 79, random seed: 622
+Conforming count: 80, random seed: 623
+Failure: Too many attempts for seed (623)
+Conforming count: 80, random seed: 624
+Conforming count: 81, random seed: 625
+Failure: Too many attempts for seed (625)
+Conforming count: 81, random seed: 626
+Conforming count: 82, random seed: 627
+Conforming count: 83, random seed: 628
+Conforming count: 84, random seed: 629
+Conforming count: 85, random seed: 630
+Failure: Too many attempts for seed (630)
+Conforming count: 85, random seed: 631
+Failure: Too many attempts for seed (631)
+Conforming count: 85, random seed: 632
+Conforming count: 86, random seed: 633
+Conforming count: 87, random seed: 634
+Conforming count: 88, random seed: 635
+Conforming count: 89, random seed: 636
+Failure: Too many attempts for seed (636)
+Conforming count: 89, random seed: 637
+Conforming count: 90, random seed: 638
+Conforming count: 91, random seed: 639
+Conforming count: 92, random seed: 640
+Conforming count: 93, random seed: 641
+Conforming count: 94, random seed: 642
+Conforming count: 95, random seed: 643
+Failure: Too many attempts for seed (643)
+Conforming count: 95, random seed: 644
+Failure: Too many attempts for seed (644)
+Conforming count: 95, random seed: 645
+Failure: Too many attempts for seed (645)
+Conforming count: 95, random seed: 646
+Conforming count: 96, random seed: 647
+Failure: Too many attempts for seed (647)
+Conforming count: 96, random seed: 648
+Conforming count: 97, random seed: 649
+Failure: Too many attempts for seed (649)
+Conforming count: 97, random seed: 650
+Conforming count: 98, random seed: 651
+Failure: Too many attempts for seed (651)
+Conforming count: 98, random seed: 652
+Conforming count: 99, random seed: 653
+Conforming count: 100, random seed: 654
+Conforming count: 101, random seed: 655
+Conforming count: 102, random seed: 656
+Conforming count: 103, random seed: 657
+Conforming count: 104, random seed: 658
+Conforming count: 105, random seed: 659
+Conforming count: 106, random seed: 660
+Failure: Too many attempts for seed (660)
+Conforming count: 106, random seed: 661
+Conforming count: 107, random seed: 662
+Conforming count: 108, random seed: 663
+Conforming count: 109, random seed: 664
+Conforming count: 110, random seed: 665
+Conforming count: 111, random seed: 666
+Failure: Too many attempts for seed (666)
+Conforming count: 111, random seed: 667
+Conforming count: 112, random seed: 668
+Conforming count: 113, random seed: 669
+Failure: Too many attempts for seed (669)
+Conforming count: 113, random seed: 670
+Failure: Too many attempts for seed (670)
+Conforming count: 113, random seed: 671
+Conforming count: 114, random seed: 672
+Failure: Too many attempts for seed (672)
+Conforming count: 114, random seed: 673
+Conforming count: 115, random seed: 674
+Conforming count: 116, random seed: 675
+Conforming count: 117, random seed: 676
+Conforming count: 118, random seed: 677
+Conforming count: 119, random seed: 678
+Conforming count: 120, random seed: 679
+Conforming count: 121, random seed: 680
+Failure: Too many attempts for seed (680)
+Conforming count: 121, random seed: 681
+Conforming count: 122, random seed: 682
+Conforming count: 123, random seed: 683
+Conforming count: 124, random seed: 684
+Conforming count: 125, random seed: 685
+Conforming count: 126, random seed: 686
+Conforming count: 127, random seed: 687
+Conforming count: 128, random seed: 688
+Conforming count: 129, random seed: 689
+Failure: Too many attempts for seed (689)
+Conforming count: 129, random seed: 690
+Conforming count: 130, random seed: 691
+Conforming count: 131, random seed: 692
+Failure: Too many attempts for seed (692)
+Conforming count: 131, random seed: 693
+Conforming count: 132, random seed: 694
+Conforming count: 133, random seed: 695
+Conforming count: 134, random seed: 696
+Failure: Too many attempts for seed (696)
+Conforming count: 134, random seed: 697
+Conforming count: 135, random seed: 698
+Conforming count: 136, random seed: 699
+Conforming count: 137, random seed: 700
+Failure: Too many attempts for seed (700)
+Conforming count: 137, random seed: 701
+Conforming count: 138, random seed: 702
+Conforming count: 139, random seed: 703
+Failure: Too many attempts for seed (703)
+Conforming count: 139, random seed: 704
+Conforming count: 140, random seed: 705
+Conforming count: 141, random seed: 706
+Conforming count: 142, random seed: 707
+Conforming count: 143, random seed: 708
+Failure: Too many attempts for seed (708)
+Conforming count: 143, random seed: 709
+Failure: Too many attempts for seed (709)
+Conforming count: 143, random seed: 710
+Failure: Too many attempts for seed (710)
+Conforming count: 143, random seed: 711
+Failure: Too many attempts for seed (711)
+Conforming count: 143, random seed: 712
+Failure: Too many attempts for seed (712)
+Conforming count: 143, random seed: 713
+Failure: Too many attempts for seed (713)
+Conforming count: 143, random seed: 714
+Failure: Too many attempts for seed (714)
+Conforming count: 143, random seed: 715
+Conforming count: 144, random seed: 716
+Conforming count: 145, random seed: 717
+Failure: Too many attempts for seed (717)
+Conforming count: 145, random seed: 718
+Conforming count: 146, random seed: 719
+Conforming count: 147, random seed: 720
+Failure: Too many attempts for seed (720)
+Conforming count: 147, random seed: 721
+Conforming count: 148, random seed: 722
+Conforming count: 149, random seed: 723
+Conforming count: 150, random seed: 724
+Failure: Too many attempts for seed (724)
+Conforming count: 150, random seed: 725
+Conforming count: 151, random seed: 726
+Conforming count: 152, random seed: 727
+Failure: Too many attempts for seed (727)
+Conforming count: 152, random seed: 728
+Conforming count: 153, random seed: 729
+Conforming count: 154, random seed: 730
+Conforming count: 155, random seed: 731
+Conforming count: 156, random seed: 732
+Conforming count: 157, random seed: 733
+Conforming count: 158, random seed: 734
+Conforming count: 159, random seed: 735
+Conforming count: 160, random seed: 736
+Conforming count: 161, random seed: 737
+Conforming count: 162, random seed: 738
+Failure: Too many attempts for seed (738)
+Conforming count: 162, random seed: 739
+Conforming count: 163, random seed: 740
+Failure: Too many attempts for seed (740)
+Conforming count: 163, random seed: 741
+Conforming count: 164, random seed: 742
+Conforming count: 165, random seed: 743
+Failure: Too many attempts for seed (743)
+Conforming count: 165, random seed: 744
+Conforming count: 166, random seed: 745
+Conforming count: 167, random seed: 746
+Conforming count: 168, random seed: 747
+Conforming count: 169, random seed: 748
+Failure: Too many attempts for seed (748)
+Conforming count: 169, random seed: 749
+Conforming count: 170, random seed: 750
+Conforming count: 171, random seed: 751
+Conforming count: 172, random seed: 752
+Conforming count: 173, random seed: 753
+Conforming count: 174, random seed: 754
+Conforming count: 175, random seed: 755
+Conforming count: 176, random seed: 756
+Conforming count: 177, random seed: 757
+Conforming count: 178, random seed: 758
+Conforming count: 179, random seed: 759
+Failure: Too many attempts for seed (759)
+Conforming count: 179, random seed: 760
+Failure: Too many attempts for seed (760)
+Conforming count: 179, random seed: 761
+Failure: Too many attempts for seed (761)
+Conforming count: 179, random seed: 762
+Conforming count: 180, random seed: 763
+Conforming count: 181, random seed: 764
+Failure: Too many attempts for seed (764)
+Conforming count: 181, random seed: 765
+Conforming count: 182, random seed: 766
+Failure: Too many attempts for seed (766)
+Conforming count: 182, random seed: 767
+Failure: Too many attempts for seed (767)
+Conforming count: 182, random seed: 768
+Failure: Too many attempts for seed (768)
+Conforming count: 182, random seed: 769
+Conforming count: 183, random seed: 770
+Failure: Too many attempts for seed (770)
+Conforming count: 183, random seed: 771
+Conforming count: 184, random seed: 772
+Conforming count: 185, random seed: 773
+Conforming count: 186, random seed: 774
+Conforming count: 187, random seed: 775
+Conforming count: 188, random seed: 776
+Conforming count: 189, random seed: 777
+Failure: Too many attempts for seed (777)
+Conforming count: 189, random seed: 778
+Conforming count: 190, random seed: 779
+Conforming count: 191, random seed: 780
+Conforming count: 192, random seed: 781
+Conforming count: 193, random seed: 782
+Failure: Too many attempts for seed (782)
+Conforming count: 193, random seed: 783
+Failure: Too many attempts for seed (783)
+Conforming count: 193, random seed: 784
+Failure: Too many attempts for seed (784)
+Conforming count: 193, random seed: 785
+Failure: Too many attempts for seed (785)
+Conforming count: 193, random seed: 786
+Conforming count: 194, random seed: 787
+Failure: Too many attempts for seed (787)
+Conforming count: 194, random seed: 788
+Failure: Too many attempts for seed (788)
+Conforming count: 194, random seed: 789
+Failure: Too many attempts for seed (789)
+Conforming count: 194, random seed: 790
+Failure: Too many attempts for seed (790)
+Conforming count: 194, random seed: 791
+Conforming count: 195, random seed: 792
+Conforming count: 196, random seed: 793
+Conforming count: 197, random seed: 794
+Conforming count: 198, random seed: 795
+Failure: Too many attempts for seed (795)
+Conforming count: 198, random seed: 796
+Conforming count: 199, random seed: 797
+Conforming count: 200, random seed: 798
+Conforming count: 201, random seed: 799
+Conforming count: 202, random seed: 800
+Failure: Too many attempts for seed (800)
+Conforming count: 202, random seed: 801
+Conforming count: 203, random seed: 802
+Conforming count: 204, random seed: 803
+Conforming count: 205, random seed: 804
+Conforming count: 206, random seed: 805
+Failure: Too many attempts for seed (805)
+Conforming count: 206, random seed: 806
+Conforming count: 207, random seed: 807
+Conforming count: 208, random seed: 808
+Failure: Too many attempts for seed (808)
+Conforming count: 208, random seed: 809
+Conforming count: 209, random seed: 810
+Conforming count: 210, random seed: 811
+Conforming count: 211, random seed: 812
+Conforming count: 212, random seed: 813
+Conforming count: 213, random seed: 814
+Conforming count: 214, random seed: 815
+Failure: Too many attempts for seed (815)
+Conforming count: 214, random seed: 816
+Conforming count: 215, random seed: 817
+Conforming count: 216, random seed: 818
+Conforming count: 217, random seed: 819
+Conforming count: 218, random seed: 820
+Conforming count: 219, random seed: 821
+Failure: Too many attempts for seed (821)
+Conforming count: 219, random seed: 822
+Conforming count: 220, random seed: 823
+Conforming count: 221, random seed: 824
+Conforming count: 222, random seed: 825
+Failure: Too many attempts for seed (825)
+Conforming count: 222, random seed: 826
+Conforming count: 223, random seed: 827
+Conforming count: 224, random seed: 828
+Conforming count: 225, random seed: 829
+Conforming count: 226, random seed: 830
+Conforming count: 227, random seed: 831
+Conforming count: 228, random seed: 832
+Conforming count: 229, random seed: 833
+Conforming count: 230, random seed: 834
+Failure: Too many attempts for seed (834)
+Conforming count: 230, random seed: 835
+Failure: Too many attempts for seed (835)
+Conforming count: 230, random seed: 836
+Failure: Too many attempts for seed (836)
+Conforming count: 230, random seed: 837
+Conforming count: 231, random seed: 838
+Conforming count: 232, random seed: 839
+Conforming count: 233, random seed: 840
+Conforming count: 234, random seed: 841
+Failure: Too many attempts for seed (841)
+Conforming count: 234, random seed: 842
+Conforming count: 235, random seed: 843
+Conforming count: 236, random seed: 844
+Conforming count: 237, random seed: 845
+Conforming count: 238, random seed: 846
+Conforming count: 239, random seed: 847
+Failure: Too many attempts for seed (847)
+Conforming count: 239, random seed: 848
+Failure: Too many attempts for seed (848)
+Conforming count: 239, random seed: 849
+Failure: Too many attempts for seed (849)
+Conforming count: 239, random seed: 850
+Conforming count: 240, random seed: 851
+Conforming count: 241, random seed: 852
+Conforming count: 242, random seed: 853
+Conforming count: 243, random seed: 854
+Conforming count: 244, random seed: 855
+Conforming count: 245, random seed: 856
+Conforming count: 246, random seed: 857
+Failure: Too many attempts for seed (857)
+Conforming count: 246, random seed: 858
+Conforming count: 247, random seed: 859
+Conforming count: 248, random seed: 860
+Conforming count: 249, random seed: 861
+Conforming count: 250, random seed: 862
+Conforming count: 251, random seed: 863
+Conforming count: 252, random seed: 864
+Conforming count: 253, random seed: 865
+Conforming count: 254, random seed: 866
+Conforming count: 255, random seed: 867
+Conforming count: 256, random seed: 868
+Conforming count: 257, random seed: 869
+Failure: Too many attempts for seed (869)
+Conforming count: 257, random seed: 870
+Conforming count: 258, random seed: 871
+Conforming count: 259, random seed: 872
+Conforming count: 260, random seed: 873
+Conforming count: 261, random seed: 874
+Failure: Too many attempts for seed (874)
+Conforming count: 261, random seed: 875
+Conforming count: 262, random seed: 876
+Conforming count: 263, random seed: 877
+Conforming count: 264, random seed: 878
+Conforming count: 265, random seed: 879
+Conforming count: 266, random seed: 880
+Conforming count: 267, random seed: 881
+Conforming count: 268, random seed: 882
+Conforming count: 269, random seed: 883
+Conforming count: 270, random seed: 884
+Failure: Too many attempts for seed (884)
+Conforming count: 270, random seed: 885
+Conforming count: 271, random seed: 886
+Conforming count: 272, random seed: 887
+Conforming count: 273, random seed: 888
+Failure: Too many attempts for seed (888)
+Conforming count: 273, random seed: 889
+Conforming count: 274, random seed: 890
+Conforming count: 275, random seed: 891
+Conforming count: 276, random seed: 892
+Conforming count: 277, random seed: 893
+Conforming count: 278, random seed: 894
+Failure: Too many attempts for seed (894)
+Conforming count: 278, random seed: 895
+Conforming count: 279, random seed: 896
+Conforming count: 280, random seed: 897
+Conforming count: 281, random seed: 898
+Conforming count: 282, random seed: 899
+Conforming count: 283, random seed: 900
+Conforming count: 284, random seed: 901
+Failure: Too many attempts for seed (901)
+Conforming count: 284, random seed: 902
+Conforming count: 285, random seed: 903
+Conforming count: 286, random seed: 904
+Conforming count: 287, random seed: 905
+Conforming count: 288, random seed: 906
+Conforming count: 289, random seed: 907
+Conforming count: 290, random seed: 908
+Conforming count: 291, random seed: 909
+Conforming count: 292, random seed: 910
+Failure: Too many attempts for seed (910)
+Conforming count: 292, random seed: 911
+Conforming count: 293, random seed: 912
+Conforming count: 294, random seed: 913
+Failure: Too many attempts for seed (913)
+Conforming count: 294, random seed: 914
+Conforming count: 295, random seed: 915
+Conforming count: 296, random seed: 916
+Conforming count: 297, random seed: 917
+Conforming count: 298, random seed: 918
+Conforming count: 299, random seed: 919
+Conforming count: 300, random seed: 920
+Failure: Too many attempts for seed (920)
+Conforming count: 300, random seed: 921
+Conforming count: 301, random seed: 922
+Failure: Too many attempts for seed (922)
+Conforming count: 301, random seed: 923
+Conforming count: 302, random seed: 924
+Conforming count: 303, random seed: 925
+Conforming count: 304, random seed: 926
+Conforming count: 305, random seed: 927
+Conforming count: 306, random seed: 928
+Conforming count: 307, random seed: 929
+Conforming count: 308, random seed: 930
+Conforming count: 309, random seed: 931
+Failure: Too many attempts for seed (931)
+Conforming count: 309, random seed: 932
+Conforming count: 310, random seed: 933
+Conforming count: 311, random seed: 934
+Failure: Too many attempts for seed (934)
+Conforming count: 311, random seed: 935
+Conforming count: 312, random seed: 936
+Conforming count: 313, random seed: 937
+Conforming count: 314, random seed: 938
+Failure: Too many attempts for seed (938)
+Conforming count: 314, random seed: 939
+Conforming count: 315, random seed: 940
+Conforming count: 316, random seed: 941
+Failure: Too many attempts for seed (941)
+Conforming count: 316, random seed: 942
+Failure: Too many attempts for seed (942)
+Conforming count: 316, random seed: 943
+Failure: Too many attempts for seed (943)
+Conforming count: 316, random seed: 944
+Conforming count: 317, random seed: 945
+Conforming count: 318, random seed: 946
+Failure: Too many attempts for seed (946)
+Conforming count: 318, random seed: 947
+Conforming count: 319, random seed: 948
+Conforming count: 320, random seed: 949
+Conforming count: 321, random seed: 950
+Conforming count: 322, random seed: 951
+Failure: Too many attempts for seed (951)
+Conforming count: 322, random seed: 952
+Failure: Too many attempts for seed (952)
+Conforming count: 322, random seed: 953
+Failure: Too many attempts for seed (953)
+Conforming count: 322, random seed: 954
+Conforming count: 323, random seed: 955
+Failure: Too many attempts for seed (955)
+Conforming count: 323, random seed: 956
+Conforming count: 324, random seed: 957
+Conforming count: 325, random seed: 958
+Conforming count: 326, random seed: 959
+Conforming count: 327, random seed: 960
+Conforming count: 328, random seed: 961
+Failure: Too many attempts for seed (961)
+Conforming count: 328, random seed: 962
+Conforming count: 329, random seed: 963
+Conforming count: 330, random seed: 964
+Conforming count: 331, random seed: 965
+Conforming count: 332, random seed: 966
+Conforming count: 333, random seed: 967
+Failure: Too many attempts for seed (967)
+Conforming count: 333, random seed: 968
+Conforming count: 334, random seed: 969
+Failure: Too many attempts for seed (969)
+Conforming count: 334, random seed: 970
+Failure: Too many attempts for seed (970)
+Conforming count: 334, random seed: 971
+Failure: Too many attempts for seed (971)
+Conforming count: 334, random seed: 972
+Failure: Too many attempts for seed (972)
+Conforming count: 334, random seed: 973
+Conforming count: 335, random seed: 974
+Conforming count: 336, random seed: 975
+Conforming count: 337, random seed: 976
+Failure: Too many attempts for seed (976)
+Conforming count: 337, random seed: 977
+Failure: Too many attempts for seed (977)
+Conforming count: 337, random seed: 978
+Failure: Too many attempts for seed (978)
+Conforming count: 337, random seed: 979
+Conforming count: 338, random seed: 980
+Conforming count: 339, random seed: 981
+Conforming count: 340, random seed: 982
+Conforming count: 341, random seed: 983
+Conforming count: 342, random seed: 984
+Conforming count: 343, random seed: 985
+Failure: Too many attempts for seed (985)
+Conforming count: 343, random seed: 986
+Conforming count: 344, random seed: 987
+Conforming count: 345, random seed: 988
+Conforming count: 346, random seed: 989
+Conforming count: 347, random seed: 990
+Conforming count: 348, random seed: 991
+Failure: Too many attempts for seed (991)
+Conforming count: 348, random seed: 992
+Conforming count: 349, random seed: 993
+Conforming count: 350, random seed: 994
+Conforming count: 351, random seed: 995
+Conforming count: 352, random seed: 996
+Conforming count: 353, random seed: 997
+Conforming count: 354, random seed: 998
+Failure: Too many attempts for seed (998)
+Conforming count: 354, random seed: 999
+Conforming count: 355, random seed: 1000
+Conforming count: 356, random seed: 1001
+Conforming count: 357, random seed: 1002
+Conforming count: 358, random seed: 1003
+Conforming count: 359, random seed: 1004
+Failure: Too many attempts for seed (1004)
+Conforming count: 359, random seed: 1005
+Conforming count: 360, random seed: 1006
+Conforming count: 361, random seed: 1007
+Conforming count: 362, random seed: 1008
+Conforming count: 363, random seed: 1009
+Failure: Too many attempts for seed (1009)
+Conforming count: 363, random seed: 1010
+Failure: Too many attempts for seed (1010)
+Conforming count: 363, random seed: 1011
+Conforming count: 364, random seed: 1012
+Conforming count: 365, random seed: 1013
+Conforming count: 366, random seed: 1014
+Conforming count: 367, random seed: 1015
+Conforming count: 368, random seed: 1016
+Conforming count: 369, random seed: 1017
+Conforming count: 370, random seed: 1018
+Conforming count: 371, random seed: 1019
+Conforming count: 372, random seed: 1020
+Failure: Too many attempts for seed (1020)
+Conforming count: 372, random seed: 1021
+Conforming count: 373, random seed: 1022
+Conforming count: 374, random seed: 1023
+Failure: Too many attempts for seed (1023)
+Conforming count: 374, random seed: 1024
+Failure: Too many attempts for seed (1024)
+Conforming count: 374, random seed: 1025
+Conforming count: 375, random seed: 1026
+Conforming count: 376, random seed: 1027
+Conforming count: 377, random seed: 1028
+Failure: Too many attempts for seed (1028)
+Conforming count: 377, random seed: 1029
+Failure: Too many attempts for seed (1029)
+Conforming count: 377, random seed: 1030
+Conforming count: 378, random seed: 1031
+Conforming count: 379, random seed: 1032
+Conforming count: 380, random seed: 1033
+Conforming count: 381, random seed: 1034
+Conforming count: 382, random seed: 1035
+Failure: Too many attempts for seed (1035)
+Conforming count: 382, random seed: 1036
+Conforming count: 383, random seed: 1037
+Failure: Too many attempts for seed (1037)
+Conforming count: 383, random seed: 1038
+Conforming count: 384, random seed: 1039
+Conforming count: 385, random seed: 1040
+Failure: Too many attempts for seed (1040)
+Conforming count: 385, random seed: 1041
+Conforming count: 386, random seed: 1042
+Failure: Too many attempts for seed (1042)
+Conforming count: 386, random seed: 1043
+Conforming count: 387, random seed: 1044
+Failure: Too many attempts for seed (1044)
+Conforming count: 387, random seed: 1045
+Failure: Too many attempts for seed (1045)
+Conforming count: 387, random seed: 1046
+Conforming count: 388, random seed: 1047
+Failure: Too many attempts for seed (1047)
+Conforming count: 388, random seed: 1048
+Failure: Too many attempts for seed (1048)
+Conforming count: 388, random seed: 1049
+Conforming count: 389, random seed: 1050
+Conforming count: 390, random seed: 1051
+Failure: Too many attempts for seed (1051)
+Conforming count: 390, random seed: 1052
+Conforming count: 391, random seed: 1053
+Conforming count: 392, random seed: 1054
+Conforming count: 393, random seed: 1055
+Conforming count: 394, random seed: 1056
+Conforming count: 395, random seed: 1057
+Conforming count: 396, random seed: 1058
+Failure: Too many attempts for seed (1058)
+Conforming count: 396, random seed: 1059
+Conforming count: 397, random seed: 1060
+Conforming count: 398, random seed: 1061
+Failure: Too many attempts for seed (1061)
+Conforming count: 398, random seed: 1062
+Failure: Too many attempts for seed (1062)
+Conforming count: 398, random seed: 1063
+Conforming count: 399, random seed: 1064
+Conforming count: 400, random seed: 1065
+Failure: Too many attempts for seed (1065)
+Conforming count: 400, random seed: 1066
+Conforming count: 401, random seed: 1067
+Failure: Too many attempts for seed (1067)
+Conforming count: 401, random seed: 1068
+Conforming count: 402, random seed: 1069
+Conforming count: 403, random seed: 1070
+Conforming count: 404, random seed: 1071
+Conforming count: 405, random seed: 1072
+Conforming count: 406, random seed: 1073
+Conforming count: 407, random seed: 1074
+Failure: Too many attempts for seed (1074)
+Conforming count: 407, random seed: 1075
+Conforming count: 408, random seed: 1076
+Conforming count: 409, random seed: 1077
+Conforming count: 410, random seed: 1078
+Failure: Too many attempts for seed (1078)
+Conforming count: 410, random seed: 1079
+Conforming count: 411, random seed: 1080
+Conforming count: 412, random seed: 1081
+Failure: Too many attempts for seed (1081)
+Conforming count: 412, random seed: 1082
+Failure: Too many attempts for seed (1082)
+Conforming count: 412, random seed: 1083
+Conforming count: 413, random seed: 1084
+Conforming count: 414, random seed: 1085
+Conforming count: 415, random seed: 1086
+Conforming count: 416, random seed: 1087
+Conforming count: 417, random seed: 1088
+Conforming count: 418, random seed: 1089
+Conforming count: 419, random seed: 1090
+Conforming count: 420, random seed: 1091
+Failure: Too many attempts for seed (1091)
+Conforming count: 420, random seed: 1092
+Conforming count: 421, random seed: 1093
+Conforming count: 422, random seed: 1094
+Failure: Too many attempts for seed (1094)
+Conforming count: 422, random seed: 1095
+Conforming count: 423, random seed: 1096
+Failure: Too many attempts for seed (1096)
+Conforming count: 423, random seed: 1097
+Conforming count: 424, random seed: 1098
+Conforming count: 425, random seed: 1099
+Conforming count: 426, random seed: 1100
+Conforming count: 427, random seed: 1101
+Conforming count: 428, random seed: 1102
+Conforming count: 429, random seed: 1103
+Conforming count: 430, random seed: 1104
+Conforming count: 431, random seed: 1105
+Failure: Too many attempts for seed (1105)
+Conforming count: 431, random seed: 1106
+Conforming count: 432, random seed: 1107
+Conforming count: 433, random seed: 1108
+Failure: Too many attempts for seed (1108)
+Conforming count: 433, random seed: 1109
+Conforming count: 434, random seed: 1110
+Conforming count: 435, random seed: 1111
+Conforming count: 436, random seed: 1112
+Failure: Too many attempts for seed (1112)
+Conforming count: 436, random seed: 1113
+Conforming count: 437, random seed: 1114
+Conforming count: 438, random seed: 1115
+Conforming count: 439, random seed: 1116
+Conforming count: 440, random seed: 1117
+Conforming count: 441, random seed: 1118
+Conforming count: 442, random seed: 1119
+Conforming count: 443, random seed: 1120
+Conforming count: 444, random seed: 1121
+Failure: Too many attempts for seed (1121)
+Conforming count: 444, random seed: 1122
+Conforming count: 445, random seed: 1123
+Conforming count: 446, random seed: 1124
+Failure: Too many attempts for seed (1124)
+Conforming count: 446, random seed: 1125
+Conforming count: 447, random seed: 1126
+Conforming count: 448, random seed: 1127
+Conforming count: 449, random seed: 1128
+Failure: Too many attempts for seed (1128)
+Conforming count: 449, random seed: 1129
+Conforming count: 450, random seed: 1130
+Failure: Too many attempts for seed (1130)
+Conforming count: 450, random seed: 1131
+Conforming count: 451, random seed: 1132
+Conforming count: 452, random seed: 1133
+Conforming count: 453, random seed: 1134
+Conforming count: 454, random seed: 1135
+Conforming count: 455, random seed: 1136
+Conforming count: 456, random seed: 1137
+Conforming count: 457, random seed: 1138
+Failure: Too many attempts for seed (1138)
+Conforming count: 457, random seed: 1139
+Conforming count: 458, random seed: 1140
+Conforming count: 459, random seed: 1141
+Conforming count: 460, random seed: 1142
+Conforming count: 461, random seed: 1143
+Conforming count: 462, random seed: 1144
+Conforming count: 463, random seed: 1145
+Conforming count: 464, random seed: 1146
+Conforming count: 465, random seed: 1147
+Conforming count: 466, random seed: 1148
+Failure: Too many attempts for seed (1148)
+Conforming count: 466, random seed: 1149
+Conforming count: 467, random seed: 1150
+Failure: Too many attempts for seed (1150)
+Conforming count: 467, random seed: 1151
+Conforming count: 468, random seed: 1152
+Conforming count: 469, random seed: 1153
+Failure: Too many attempts for seed (1153)
+Conforming count: 469, random seed: 1154
+Failure: Too many attempts for seed (1154)
+Conforming count: 469, random seed: 1155
+Conforming count: 470, random seed: 1156
+Failure: Too many attempts for seed (1156)
+Conforming count: 470, random seed: 1157
+Conforming count: 471, random seed: 1158
+Failure: Too many attempts for seed (1158)
+Conforming count: 471, random seed: 1159
+Failure: Too many attempts for seed (1159)
+Conforming count: 471, random seed: 1160
+Conforming count: 472, random seed: 1161
+Conforming count: 473, random seed: 1162
+Conforming count: 474, random seed: 1163
+Conforming count: 475, random seed: 1164
+Conforming count: 476, random seed: 1165
+Conforming count: 477, random seed: 1166
+Conforming count: 478, random seed: 1167
+Failure: Too many attempts for seed (1167)
+Conforming count: 478, random seed: 1168
+Conforming count: 479, random seed: 1169
+Conforming count: 480, random seed: 1170
+Conforming count: 481, random seed: 1171
+Conforming count: 482, random seed: 1172
+Failure: Too many attempts for seed (1172)
+Conforming count: 482, random seed: 1173
+Conforming count: 483, random seed: 1174
+Conforming count: 484, random seed: 1175
+Conforming count: 485, random seed: 1176
+Conforming count: 486, random seed: 1177
+Conforming count: 487, random seed: 1178
+Conforming count: 488, random seed: 1179
+Conforming count: 489, random seed: 1180
+Failure: Too many attempts for seed (1180)
+Conforming count: 489, random seed: 1181
+Conforming count: 490, random seed: 1182
+Conforming count: 491, random seed: 1183
+Failure: Too many attempts for seed (1183)
+Conforming count: 491, random seed: 1184
+Conforming count: 492, random seed: 1185
+Conforming count: 493, random seed: 1186
+Failure: Too many attempts for seed (1186)
+Conforming count: 493, random seed: 1187
+Failure: Too many attempts for seed (1187)
+Conforming count: 493, random seed: 1188
+Conforming count: 494, random seed: 1189
+Conforming count: 495, random seed: 1190
+Conforming count: 496, random seed: 1191
+Conforming count: 497, random seed: 1192
+Conforming count: 498, random seed: 1193
+Failure: Too many attempts for seed (1193)
+Conforming count: 498, random seed: 1194
+Failure: Too many attempts for seed (1194)
+Conforming count: 498, random seed: 1195
+Conforming count: 499, random seed: 1196
+Failure: Too many attempts for seed (1196)
+Conforming count: 499, random seed: 1197
+Conforming count: 500, random seed: 1198
+Conforming count: 501, random seed: 1199
+Conforming count: 502, random seed: 1200
+Conforming count: 503, random seed: 1201
+Failure: Too many attempts for seed (1201)
+Conforming count: 503, random seed: 1202
+Conforming count: 504, random seed: 1203
+Conforming count: 505, random seed: 1204
+Failure: Too many attempts for seed (1204)
+Conforming count: 505, random seed: 1205
+Failure: Too many attempts for seed (1205)
+Conforming count: 505, random seed: 1206
+Failure: Too many attempts for seed (1206)
+Conforming count: 505, random seed: 1207
+Conforming count: 506, random seed: 1208
+Conforming count: 507, random seed: 1209
+Conforming count: 508, random seed: 1210
+Conforming count: 509, random seed: 1211
+Conforming count: 510, random seed: 1212
+Failure: Too many attempts for seed (1212)
+Conforming count: 510, random seed: 1213
+Conforming count: 511, random seed: 1214
+Failure: Too many attempts for seed (1214)
+Conforming count: 511, random seed: 1215
+Conforming count: 512, random seed: 1216
+Conforming count: 513, random seed: 1217
+Conforming count: 514, random seed: 1218
+Conforming count: 515, random seed: 1219
+Conforming count: 516, random seed: 1220
+Conforming count: 517, random seed: 1221
+Conforming count: 518, random seed: 1222
+Conforming count: 519, random seed: 1223
+Conforming count: 520, random seed: 1224
+Conforming count: 521, random seed: 1225
+Conforming count: 522, random seed: 1226
+Failure: Too many attempts for seed (1226)
+Conforming count: 522, random seed: 1227
+Failure: Too many attempts for seed (1227)
+Conforming count: 522, random seed: 1228
+Conforming count: 523, random seed: 1229
+Conforming count: 524, random seed: 1230
+Conforming count: 525, random seed: 1231
+Conforming count: 526, random seed: 1232
+Conforming count: 527, random seed: 1233
+Conforming count: 528, random seed: 1234
+Failure: Too many attempts for seed (1234)
+Conforming count: 528, random seed: 1235
+Failure: Too many attempts for seed (1235)
+Conforming count: 528, random seed: 1236
+Conforming count: 529, random seed: 1237
+Failure: Too many attempts for seed (1237)
+Conforming count: 529, random seed: 1238
+Conforming count: 530, random seed: 1239
+Conforming count: 531, random seed: 1240
+Conforming count: 532, random seed: 1241
+Conforming count: 533, random seed: 1242
+Conforming count: 534, random seed: 1243
+Conforming count: 535, random seed: 1244
+Conforming count: 536, random seed: 1245
+Conforming count: 537, random seed: 1246
+Conforming count: 538, random seed: 1247
+Conforming count: 539, random seed: 1248
+Conforming count: 540, random seed: 1249
+Conforming count: 541, random seed: 1250
+Failure: Too many attempts for seed (1250)
+Conforming count: 541, random seed: 1251
+Conforming count: 542, random seed: 1252
+Conforming count: 543, random seed: 1253
+Conforming count: 544, random seed: 1254
+Conforming count: 545, random seed: 1255
+Conforming count: 546, random seed: 1256
+Conforming count: 547, random seed: 1257
+Conforming count: 548, random seed: 1258
+Conforming count: 549, random seed: 1259
+Conforming count: 550, random seed: 1260
+Failure: Too many attempts for seed (1260)
+Conforming count: 550, random seed: 1261
+Conforming count: 551, random seed: 1262
+Conforming count: 552, random seed: 1263
+Failure: Too many attempts for seed (1263)
+Conforming count: 552, random seed: 1264
+Conforming count: 553, random seed: 1265
+Conforming count: 554, random seed: 1266
+Conforming count: 555, random seed: 1267
+Conforming count: 556, random seed: 1268
+Conforming count: 557, random seed: 1269
+Conforming count: 558, random seed: 1270
+Conforming count: 559, random seed: 1271
+Conforming count: 560, random seed: 1272
+Conforming count: 561, random seed: 1273
+Failure: Too many attempts for seed (1273)
+Conforming count: 561, random seed: 1274
+Conforming count: 562, random seed: 1275
+Failure: Too many attempts for seed (1275)
+Conforming count: 562, random seed: 1276
+Conforming count: 563, random seed: 1277
+Conforming count: 564, random seed: 1278
+Conforming count: 565, random seed: 1279
+Failure: Too many attempts for seed (1279)
+Conforming count: 565, random seed: 1280
+Failure: Too many attempts for seed (1280)
+Conforming count: 565, random seed: 1281
+Conforming count: 566, random seed: 1282
+Failure: Too many attempts for seed (1282)
+Conforming count: 566, random seed: 1283
+Conforming count: 567, random seed: 1284
+Conforming count: 568, random seed: 1285
+Conforming count: 569, random seed: 1286
+Conforming count: 570, random seed: 1287
+Failure: Too many attempts for seed (1287)
+Conforming count: 570, random seed: 1288
+Conforming count: 571, random seed: 1289
+Failure: Too many attempts for seed (1289)
+Conforming count: 571, random seed: 1290
+Failure: Too many attempts for seed (1290)
+Conforming count: 571, random seed: 1291
+Conforming count: 572, random seed: 1292
+Conforming count: 573, random seed: 1293
+Conforming count: 574, random seed: 1294
+Failure: Too many attempts for seed (1294)
+Conforming count: 574, random seed: 1295
+Conforming count: 575, random seed: 1296
+Conforming count: 576, random seed: 1297
+Conforming count: 577, random seed: 1298
+Conforming count: 578, random seed: 1299
+Conforming count: 579, random seed: 1300
+Failure: Too many attempts for seed (1300)
+Conforming count: 579, random seed: 1301
+Failure: Too many attempts for seed (1301)
+Conforming count: 579, random seed: 1302
+Conforming count: 580, random seed: 1303
+Failure: Too many attempts for seed (1303)
+Conforming count: 580, random seed: 1304
+Failure: Too many attempts for seed (1304)
+Conforming count: 580, random seed: 1305
+Conforming count: 581, random seed: 1306
+Conforming count: 582, random seed: 1307
+Conforming count: 583, random seed: 1308
+Failure: Too many attempts for seed (1308)
+Conforming count: 583, random seed: 1309
+Conforming count: 584, random seed: 1310
+Failure: Too many attempts for seed (1310)
+Conforming count: 584, random seed: 1311
+Failure: Too many attempts for seed (1311)
+Conforming count: 584, random seed: 1312
+Conforming count: 585, random seed: 1313
+Conforming count: 586, random seed: 1314
+Conforming count: 587, random seed: 1315
+Conforming count: 588, random seed: 1316
+Conforming count: 589, random seed: 1317
+Conforming count: 590, random seed: 1318
+Failure: Too many attempts for seed (1318)
+Conforming count: 590, random seed: 1319
+Conforming count: 591, random seed: 1320
+Conforming count: 592, random seed: 1321
+Conforming count: 593, random seed: 1322
+Conforming count: 594, random seed: 1323
+Conforming count: 595, random seed: 1324
+Failure: Too many attempts for seed (1324)
+Conforming count: 595, random seed: 1325
+Conforming count: 596, random seed: 1326
+Failure: Too many attempts for seed (1326)
+Conforming count: 596, random seed: 1327
+Conforming count: 597, random seed: 1328
+Conforming count: 598, random seed: 1329
+Failure: Too many attempts for seed (1329)
+Conforming count: 598, random seed: 1330
+Conforming count: 599, random seed: 1331
+Conforming count: 600, random seed: 1332
+Conforming count: 601, random seed: 1333
+Conforming count: 602, random seed: 1334
+Conforming count: 603, random seed: 1335
+Conforming count: 604, random seed: 1336
+Conforming count: 605, random seed: 1337
+Conforming count: 606, random seed: 1338
+Conforming count: 607, random seed: 1339
+Conforming count: 608, random seed: 1340
+Conforming count: 609, random seed: 1341
+Conforming count: 610, random seed: 1342
+Failure: Too many attempts for seed (1342)
+Conforming count: 610, random seed: 1343
+Conforming count: 611, random seed: 1344
+Conforming count: 612, random seed: 1345
+Conforming count: 613, random seed: 1346
+Conforming count: 614, random seed: 1347
+Failure: Too many attempts for seed (1347)
+Conforming count: 614, random seed: 1348
+Conforming count: 615, random seed: 1349
+Failure: Too many attempts for seed (1349)
+Conforming count: 615, random seed: 1350
+Conforming count: 616, random seed: 1351
+Conforming count: 617, random seed: 1352
+Conforming count: 618, random seed: 1353
+Failure: Too many attempts for seed (1353)
+Conforming count: 618, random seed: 1354
+Conforming count: 619, random seed: 1355
+Failure: Too many attempts for seed (1355)
+Conforming count: 619, random seed: 1356
+Conforming count: 620, random seed: 1357
+Conforming count: 621, random seed: 1358
+Conforming count: 622, random seed: 1359
+Conforming count: 623, random seed: 1360
+Conforming count: 624, random seed: 1361
+Conforming count: 625, random seed: 1362
+Failure: Too many attempts for seed (1362)
+Conforming count: 625, random seed: 1363
+Conforming count: 626, random seed: 1364
+Conforming count: 627, random seed: 1365
+Conforming count: 628, random seed: 1366
+Conforming count: 629, random seed: 1367
+Conforming count: 630, random seed: 1368
+Conforming count: 631, random seed: 1369
+Conforming count: 632, random seed: 1370
+Conforming count: 633, random seed: 1371
+Failure: Too many attempts for seed (1371)
+Conforming count: 633, random seed: 1372
+Failure: Too many attempts for seed (1372)
+Conforming count: 633, random seed: 1373
+Conforming count: 634, random seed: 1374
+Conforming count: 635, random seed: 1375
+Conforming count: 636, random seed: 1376
+Conforming count: 637, random seed: 1377
+Conforming count: 638, random seed: 1378
+Failure: Too many attempts for seed (1378)
+Conforming count: 638, random seed: 1379
+Conforming count: 639, random seed: 1380
+Conforming count: 640, random seed: 1381
+Conforming count: 641, random seed: 1382
+Conforming count: 642, random seed: 1383
+Conforming count: 643, random seed: 1384
+Conforming count: 644, random seed: 1385
+Conforming count: 645, random seed: 1386
+Failure: Too many attempts for seed (1386)
+Conforming count: 645, random seed: 1387
+Failure: Too many attempts for seed (1387)
+Conforming count: 645, random seed: 1388
+Conforming count: 646, random seed: 1389
+Conforming count: 647, random seed: 1390
+Conforming count: 648, random seed: 1391
+Conforming count: 649, random seed: 1392
+Conforming count: 650, random seed: 1393
+Conforming count: 651, random seed: 1394
+Conforming count: 652, random seed: 1395
+Failure: Too many attempts for seed (1395)
+Conforming count: 652, random seed: 1396
+Conforming count: 653, random seed: 1397
+Conforming count: 654, random seed: 1398
+Conforming count: 655, random seed: 1399
+Conforming count: 656, random seed: 1400
+Failure: Too many attempts for seed (1400)
+Conforming count: 656, random seed: 1401
+Conforming count: 657, random seed: 1402
+Conforming count: 658, random seed: 1403
+Conforming count: 659, random seed: 1404
+Failure: Too many attempts for seed (1404)
+Conforming count: 659, random seed: 1405
+Conforming count: 660, random seed: 1406
+Failure: Too many attempts for seed (1406)
+Conforming count: 660, random seed: 1407
+Conforming count: 661, random seed: 1408
+Conforming count: 662, random seed: 1409
+Conforming count: 663, random seed: 1410
+Conforming count: 664, random seed: 1411
+Failure: Too many attempts for seed (1411)
+Conforming count: 664, random seed: 1412
+Conforming count: 665, random seed: 1413
+Conforming count: 666, random seed: 1414
+Failure: Too many attempts for seed (1414)
+Conforming count: 666, random seed: 1415
+Failure: Too many attempts for seed (1415)
+Conforming count: 666, random seed: 1416
+Conforming count: 667, random seed: 1417
+Conforming count: 668, random seed: 1418
+Failure: Too many attempts for seed (1418)
+Conforming count: 668, random seed: 1419
+Conforming count: 669, random seed: 1420
+Failure: Too many attempts for seed (1420)
+Conforming count: 669, random seed: 1421
+Conforming count: 670, random seed: 1422
+Conforming count: 671, random seed: 1423
+Failure: Too many attempts for seed (1423)
+Conforming count: 671, random seed: 1424
+Failure: Too many attempts for seed (1424)
+Conforming count: 671, random seed: 1425
+Conforming count: 672, random seed: 1426
+Conforming count: 673, random seed: 1427
+Conforming count: 674, random seed: 1428
+Conforming count: 675, random seed: 1429
+Conforming count: 676, random seed: 1430
+Failure: Too many attempts for seed (1430)
+Conforming count: 676, random seed: 1431
+Conforming count: 677, random seed: 1432
+Failure: Too many attempts for seed (1432)
+Conforming count: 677, random seed: 1433
+Conforming count: 678, random seed: 1434
+Failure: Too many attempts for seed (1434)
+Conforming count: 678, random seed: 1435
+Conforming count: 679, random seed: 1436
+Conforming count: 680, random seed: 1437
+Conforming count: 681, random seed: 1438
+Conforming count: 682, random seed: 1439
+Conforming count: 683, random seed: 1440
+Conforming count: 684, random seed: 1441
+Conforming count: 685, random seed: 1442
+Conforming count: 686, random seed: 1443
+Conforming count: 687, random seed: 1444
+Conforming count: 688, random seed: 1445
+Conforming count: 689, random seed: 1446
+Failure: Too many attempts for seed (1446)
+Conforming count: 689, random seed: 1447
+Failure: Too many attempts for seed (1447)
+Conforming count: 689, random seed: 1448
+Conforming count: 690, random seed: 1449
+Conforming count: 691, random seed: 1450
+Conforming count: 692, random seed: 1451
+Conforming count: 693, random seed: 1452
+Conforming count: 694, random seed: 1453
+Conforming count: 695, random seed: 1454
+Conforming count: 696, random seed: 1455
+Conforming count: 697, random seed: 1456
+Conforming count: 698, random seed: 1457
+Conforming count: 699, random seed: 1458
+Conforming count: 700, random seed: 1459
+Failure: Too many attempts for seed (1459)
+Conforming count: 700, random seed: 1460
+Failure: Too many attempts for seed (1460)
+Conforming count: 700, random seed: 1461
+Failure: Too many attempts for seed (1461)
+Conforming count: 700, random seed: 1462
+Conforming count: 701, random seed: 1463
+Conforming count: 702, random seed: 1464
+Failure: Too many attempts for seed (1464)
+Conforming count: 702, random seed: 1465
+Conforming count: 703, random seed: 1466
+Conforming count: 704, random seed: 1467
+Conforming count: 705, random seed: 1468
+Conforming count: 706, random seed: 1469
+Failure: Too many attempts for seed (1469)
+Conforming count: 706, random seed: 1470
+Conforming count: 707, random seed: 1471
+Conforming count: 708, random seed: 1472
+Conforming count: 709, random seed: 1473
+Conforming count: 710, random seed: 1474
+Conforming count: 711, random seed: 1475
+Conforming count: 712, random seed: 1476
+Conforming count: 713, random seed: 1477
+Failure: Too many attempts for seed (1477)
+Conforming count: 713, random seed: 1478
+Failure: Too many attempts for seed (1478)
+Conforming count: 713, random seed: 1479
+Failure: Too many attempts for seed (1479)
+Conforming count: 713, random seed: 1480
+Failure: Too many attempts for seed (1480)
+Conforming count: 713, random seed: 1481
+Conforming count: 714, random seed: 1482
+Conforming count: 715, random seed: 1483
+Conforming count: 716, random seed: 1484
+Failure: Too many attempts for seed (1484)
+Conforming count: 716, random seed: 1485
+Failure: Too many attempts for seed (1485)
+Conforming count: 716, random seed: 1486
+Conforming count: 717, random seed: 1487
+Failure: Too many attempts for seed (1487)
+Conforming count: 717, random seed: 1488
+Conforming count: 718, random seed: 1489
+Conforming count: 719, random seed: 1490
+Conforming count: 720, random seed: 1491
+Failure: Too many attempts for seed (1491)
+Conforming count: 720, random seed: 1492
+Conforming count: 721, random seed: 1493
+Conforming count: 722, random seed: 1494
+Conforming count: 723, random seed: 1495
+Conforming count: 724, random seed: 1496
+Conforming count: 725, random seed: 1497
+Conforming count: 726, random seed: 1498
+Conforming count: 727, random seed: 1499
+Conforming count: 728, random seed: 1500
+Failure: Too many attempts for seed (1500)
+Conforming count: 728, random seed: 1501
+Conforming count: 729, random seed: 1502
+Conforming count: 730, random seed: 1503
+Conforming count: 731, random seed: 1504
+Conforming count: 732, random seed: 1505
+Conforming count: 733, random seed: 1506
+Conforming count: 734, random seed: 1507
+Conforming count: 735, random seed: 1508
+Conforming count: 736, random seed: 1509
+Failure: Too many attempts for seed (1509)
+Conforming count: 736, random seed: 1510
+Conforming count: 737, random seed: 1511
+Conforming count: 738, random seed: 1512
+Conforming count: 739, random seed: 1513
+Conforming count: 740, random seed: 1514
+Failure: Too many attempts for seed (1514)
+Conforming count: 740, random seed: 1515
+Conforming count: 741, random seed: 1516
+Failure: Too many attempts for seed (1516)
+Conforming count: 741, random seed: 1517
+Conforming count: 742, random seed: 1518
+Failure: Too many attempts for seed (1518)
+Conforming count: 742, random seed: 1519
+Conforming count: 743, random seed: 1520
+Conforming count: 744, random seed: 1521
+Conforming count: 745, random seed: 1522
+Conforming count: 746, random seed: 1523
+Conforming count: 747, random seed: 1524
+Conforming count: 748, random seed: 1525
+Conforming count: 749, random seed: 1526
+Conforming count: 750, random seed: 1527
+Conforming count: 751, random seed: 1528
+Conforming count: 752, random seed: 1529
+Conforming count: 753, random seed: 1530
+Conforming count: 754, random seed: 1531
+Failure: Too many attempts for seed (1531)
+Conforming count: 754, random seed: 1532
+Conforming count: 755, random seed: 1533
+Failure: Too many attempts for seed (1533)
+Conforming count: 755, random seed: 1534
+Conforming count: 756, random seed: 1535
+Conforming count: 757, random seed: 1536
+Conforming count: 758, random seed: 1537
+Conforming count: 759, random seed: 1538
+Conforming count: 760, random seed: 1539
+Conforming count: 761, random seed: 1540
+Conforming count: 762, random seed: 1541
+Conforming count: 763, random seed: 1542
+Conforming count: 764, random seed: 1543
+Conforming count: 765, random seed: 1544
+Conforming count: 766, random seed: 1545
+Conforming count: 767, random seed: 1546
+Conforming count: 768, random seed: 1547
+Conforming count: 769, random seed: 1548
+Failure: Too many attempts for seed (1548)
+Conforming count: 769, random seed: 1549
+Conforming count: 770, random seed: 1550
+Conforming count: 771, random seed: 1551
+Conforming count: 772, random seed: 1552
+Conforming count: 773, random seed: 1553
+Conforming count: 774, random seed: 1554
+Conforming count: 775, random seed: 1555
+Conforming count: 776, random seed: 1556
+Conforming count: 777, random seed: 1557
+Failure: Too many attempts for seed (1557)
+Conforming count: 777, random seed: 1558
+Conforming count: 778, random seed: 1559
+Failure: Too many attempts for seed (1559)
+Conforming count: 778, random seed: 1560
+Conforming count: 779, random seed: 1561
+Failure: Too many attempts for seed (1561)
+Conforming count: 779, random seed: 1562
+Failure: Too many attempts for seed (1562)
+Conforming count: 779, random seed: 1563
+Conforming count: 780, random seed: 1564
+Conforming count: 781, random seed: 1565
+Conforming count: 782, random seed: 1566
+Conforming count: 783, random seed: 1567
+Conforming count: 784, random seed: 1568
+Conforming count: 785, random seed: 1569
+Conforming count: 786, random seed: 1570
+Conforming count: 787, random seed: 1571
+Failure: Too many attempts for seed (1571)
+Conforming count: 787, random seed: 1572
+Conforming count: 788, random seed: 1573
+Conforming count: 789, random seed: 1574
+Conforming count: 790, random seed: 1575
+Conforming count: 791, random seed: 1576
+Conforming count: 792, random seed: 1577
+Conforming count: 793, random seed: 1578
+Conforming count: 794, random seed: 1579
+Failure: Too many attempts for seed (1579)
+Conforming count: 794, random seed: 1580
+Conforming count: 795, random seed: 1581
+Conforming count: 796, random seed: 1582
+Conforming count: 797, random seed: 1583
+Conforming count: 798, random seed: 1584
+Conforming count: 799, random seed: 1585
+Conforming count: 800, random seed: 1586
+Conforming count: 801, random seed: 1587
+Conforming count: 802, random seed: 1588
+Conforming count: 803, random seed: 1589
+Conforming count: 804, random seed: 1590
+Conforming count: 805, random seed: 1591
+Conforming count: 806, random seed: 1592
+Conforming count: 807, random seed: 1593
+Failure: Too many attempts for seed (1593)
+Conforming count: 807, random seed: 1594
+Conforming count: 808, random seed: 1595
+Conforming count: 809, random seed: 1596
+Conforming count: 810, random seed: 1597
+Failure: Too many attempts for seed (1597)
+Conforming count: 810, random seed: 1598
+Conforming count: 811, random seed: 1599
+Conforming count: 812, random seed: 1600
+Conforming count: 813, random seed: 1601
+Conforming count: 814, random seed: 1602
+Conforming count: 815, random seed: 1603
+Conforming count: 816, random seed: 1604
+Conforming count: 817, random seed: 1605
+Conforming count: 818, random seed: 1606
+Failure: Too many attempts for seed (1606)
+Conforming count: 818, random seed: 1607
+Conforming count: 819, random seed: 1608
+Conforming count: 820, random seed: 1609
+Failure: Too many attempts for seed (1609)
+Conforming count: 820, random seed: 1610
+Conforming count: 821, random seed: 1611
+Conforming count: 822, random seed: 1612
+Failure: Too many attempts for seed (1612)
+Conforming count: 822, random seed: 1613
+Conforming count: 823, random seed: 1614
+Failure: Too many attempts for seed (1614)
+Conforming count: 823, random seed: 1615
+Conforming count: 824, random seed: 1616
+Failure: Too many attempts for seed (1616)
+Conforming count: 824, random seed: 1617
+Failure: Too many attempts for seed (1617)
+Conforming count: 824, random seed: 1618
+Conforming count: 825, random seed: 1619
+Conforming count: 826, random seed: 1620
+Conforming count: 827, random seed: 1621
+Conforming count: 828, random seed: 1622
+Conforming count: 829, random seed: 1623
+Conforming count: 830, random seed: 1624
+Conforming count: 831, random seed: 1625
+Conforming count: 832, random seed: 1626
+Failure: Too many attempts for seed (1626)
+Conforming count: 832, random seed: 1627
+Failure: Too many attempts for seed (1627)
+Conforming count: 832, random seed: 1628
+Conforming count: 833, random seed: 1629
+Failure: Too many attempts for seed (1629)
+Conforming count: 833, random seed: 1630
+Conforming count: 834, random seed: 1631
+Failure: Too many attempts for seed (1631)
+Conforming count: 834, random seed: 1632
+Conforming count: 835, random seed: 1633
+Failure: Too many attempts for seed (1633)
+Conforming count: 835, random seed: 1634
+Conforming count: 836, random seed: 1635
+Conforming count: 837, random seed: 1636
+Conforming count: 838, random seed: 1637
+Failure: Too many attempts for seed (1637)
+Conforming count: 838, random seed: 1638
+Conforming count: 839, random seed: 1639
+Conforming count: 840, random seed: 1640
+Conforming count: 841, random seed: 1641
+Failure: Too many attempts for seed (1641)
+Conforming count: 841, random seed: 1642
+Conforming count: 842, random seed: 1643
+Conforming count: 843, random seed: 1644
+Conforming count: 844, random seed: 1645
+Conforming count: 845, random seed: 1646
+Conforming count: 846, random seed: 1647
+Conforming count: 847, random seed: 1648
+Conforming count: 848, random seed: 1649
+Failure: Too many attempts for seed (1649)
+Conforming count: 848, random seed: 1650
+Conforming count: 849, random seed: 1651
+Conforming count: 850, random seed: 1652
+Failure: Too many attempts for seed (1652)
+Conforming count: 850, random seed: 1653
+Conforming count: 851, random seed: 1654
+Conforming count: 852, random seed: 1655
+Conforming count: 853, random seed: 1656
+Conforming count: 854, random seed: 1657
+Conforming count: 855, random seed: 1658
+Conforming count: 856, random seed: 1659
+Conforming count: 857, random seed: 1660
+Conforming count: 858, random seed: 1661
+Conforming count: 859, random seed: 1662
+Conforming count: 860, random seed: 1663
+Conforming count: 861, random seed: 1664
+Failure: Too many attempts for seed (1664)
+Conforming count: 861, random seed: 1665
+Conforming count: 862, random seed: 1666
+Conforming count: 863, random seed: 1667
+Conforming count: 864, random seed: 1668
+Conforming count: 865, random seed: 1669
+Conforming count: 866, random seed: 1670
+Conforming count: 867, random seed: 1671
+Failure: Too many attempts for seed (1671)
+Conforming count: 867, random seed: 1672
+Conforming count: 868, random seed: 1673
+Conforming count: 869, random seed: 1674
+Failure: Too many attempts for seed (1674)
+Conforming count: 869, random seed: 1675
+Conforming count: 870, random seed: 1676
+Conforming count: 871, random seed: 1677
+Failure: Too many attempts for seed (1677)
+Conforming count: 871, random seed: 1678
+Conforming count: 872, random seed: 1679
+Conforming count: 873, random seed: 1680
+Conforming count: 874, random seed: 1681
+Conforming count: 875, random seed: 1682
+Conforming count: 876, random seed: 1683
+Conforming count: 877, random seed: 1684
+Conforming count: 878, random seed: 1685
+Conforming count: 879, random seed: 1686
+Conforming count: 880, random seed: 1687
+Conforming count: 881, random seed: 1688
+Conforming count: 882, random seed: 1689
+Failure: Too many attempts for seed (1689)
+Conforming count: 882, random seed: 1690
+Conforming count: 883, random seed: 1691
+Failure: Too many attempts for seed (1691)
+Conforming count: 883, random seed: 1692
+Failure: Too many attempts for seed (1692)
+Conforming count: 883, random seed: 1693
+Failure: Too many attempts for seed (1693)
+Conforming count: 883, random seed: 1694
+Conforming count: 884, random seed: 1695
+Failure: Too many attempts for seed (1695)
+Conforming count: 884, random seed: 1696
+Conforming count: 885, random seed: 1697
+Conforming count: 886, random seed: 1698
+Conforming count: 887, random seed: 1699
+Conforming count: 888, random seed: 1700
+Conforming count: 889, random seed: 1701
+Failure: Too many attempts for seed (1701)
+Conforming count: 889, random seed: 1702
+Conforming count: 890, random seed: 1703
+Conforming count: 891, random seed: 1704
+Conforming count: 892, random seed: 1705
+Conforming count: 893, random seed: 1706
+Conforming count: 894, random seed: 1707
+Conforming count: 895, random seed: 1708
+Failure: Too many attempts for seed (1708)
+Conforming count: 895, random seed: 1709
+Conforming count: 896, random seed: 1710
+Conforming count: 897, random seed: 1711
+Conforming count: 898, random seed: 1712
+Conforming count: 899, random seed: 1713
+Failure: Too many attempts for seed (1713)
+Conforming count: 899, random seed: 1714
+Conforming count: 900, random seed: 1715
+Conforming count: 901, random seed: 1716
+Conforming count: 902, random seed: 1717
+Conforming count: 903, random seed: 1718
+Failure: Too many attempts for seed (1718)
+Conforming count: 903, random seed: 1719
+Conforming count: 904, random seed: 1720
+Conforming count: 905, random seed: 1721
+Failure: Too many attempts for seed (1721)
+Conforming count: 905, random seed: 1722
+Failure: Too many attempts for seed (1722)
+Conforming count: 905, random seed: 1723
+Conforming count: 906, random seed: 1724
+Conforming count: 907, random seed: 1725
+Failure: Too many attempts for seed (1725)
+Conforming count: 907, random seed: 1726
+Conforming count: 908, random seed: 1727
+Conforming count: 909, random seed: 1728
+Conforming count: 910, random seed: 1729
+Failure: Too many attempts for seed (1729)
+Conforming count: 910, random seed: 1730
+Conforming count: 911, random seed: 1731
+Conforming count: 912, random seed: 1732
+Conforming count: 913, random seed: 1733
+Conforming count: 914, random seed: 1734
+Conforming count: 915, random seed: 1735
+Conforming count: 916, random seed: 1736
+Conforming count: 917, random seed: 1737
+Conforming count: 918, random seed: 1738
+Conforming count: 919, random seed: 1739
+Conforming count: 920, random seed: 1740
+Conforming count: 921, random seed: 1741
+Conforming count: 922, random seed: 1742
+Conforming count: 923, random seed: 1743
+Failure: Too many attempts for seed (1743)
+Conforming count: 923, random seed: 1744
+Conforming count: 924, random seed: 1745
+Conforming count: 925, random seed: 1746
+Conforming count: 926, random seed: 1747
+Failure: Too many attempts for seed (1747)
+Conforming count: 926, random seed: 1748
+Conforming count: 927, random seed: 1749
+Conforming count: 928, random seed: 1750
+Conforming count: 929, random seed: 1751
+Conforming count: 930, random seed: 1752
+Conforming count: 931, random seed: 1753
+Failure: Too many attempts for seed (1753)
+Conforming count: 931, random seed: 1754
+Conforming count: 932, random seed: 1755
+Conforming count: 933, random seed: 1756
+Conforming count: 934, random seed: 1757
+Conforming count: 935, random seed: 1758
+Conforming count: 936, random seed: 1759
+Conforming count: 937, random seed: 1760
+Conforming count: 938, random seed: 1761
+Conforming count: 939, random seed: 1762
+Conforming count: 940, random seed: 1763
+Conforming count: 941, random seed: 1764
+Conforming count: 942, random seed: 1765
+Conforming count: 943, random seed: 1766
+Failure: Too many attempts for seed (1766)
+Conforming count: 943, random seed: 1767
+Conforming count: 944, random seed: 1768
+Failure: Too many attempts for seed (1768)
+Conforming count: 944, random seed: 1769
+Conforming count: 945, random seed: 1770
+Conforming count: 946, random seed: 1771
+Conforming count: 947, random seed: 1772
+Conforming count: 948, random seed: 1773
+Failure: Too many attempts for seed (1773)
+Conforming count: 948, random seed: 1774
+Conforming count: 949, random seed: 1775
+Conforming count: 950, random seed: 1776
+Conforming count: 951, random seed: 1777
+Failure: Too many attempts for seed (1777)
+Conforming count: 951, random seed: 1778
+Failure: Too many attempts for seed (1778)
+Conforming count: 951, random seed: 1779
+Conforming count: 952, random seed: 1780
+Conforming count: 953, random seed: 1781
+Conforming count: 954, random seed: 1782
+Conforming count: 955, random seed: 1783
+Conforming count: 956, random seed: 1784
+Conforming count: 957, random seed: 1785
+Failure: Too many attempts for seed (1785)
+Conforming count: 957, random seed: 1786
+Conforming count: 958, random seed: 1787
+Conforming count: 959, random seed: 1788
+Conforming count: 960, random seed: 1789
+Conforming count: 961, random seed: 1790
+Conforming count: 962, random seed: 1791
+Failure: Too many attempts for seed (1791)
+Conforming count: 962, random seed: 1792
+Conforming count: 963, random seed: 1793
+Failure: Too many attempts for seed (1793)
+Conforming count: 963, random seed: 1794
+Conforming count: 964, random seed: 1795
+Conforming count: 965, random seed: 1796
+Failure: Too many attempts for seed (1796)
+Conforming count: 965, random seed: 1797
+Failure: Too many attempts for seed (1797)
+Conforming count: 965, random seed: 1798
+Failure: Too many attempts for seed (1798)
+Conforming count: 965, random seed: 1799
+Conforming count: 966, random seed: 1800
+Failure: Too many attempts for seed (1800)
+Conforming count: 966, random seed: 1801
+Conforming count: 967, random seed: 1802
+Conforming count: 968, random seed: 1803
+Failure: Too many attempts for seed (1803)
+Conforming count: 968, random seed: 1804
+Conforming count: 969, random seed: 1805
+Conforming count: 970, random seed: 1806
+Conforming count: 971, random seed: 1807
+Conforming count: 972, random seed: 1808
+Conforming count: 973, random seed: 1809
+Failure: Too many attempts for seed (1809)
+Conforming count: 973, random seed: 1810
+Failure: Too many attempts for seed (1810)
+Conforming count: 973, random seed: 1811
+Conforming count: 974, random seed: 1812
+Conforming count: 975, random seed: 1813
+Conforming count: 976, random seed: 1814
+Failure: Too many attempts for seed (1814)
+Conforming count: 976, random seed: 1815
+Conforming count: 977, random seed: 1816
+Failure: Too many attempts for seed (1816)
+Conforming count: 977, random seed: 1817
+Conforming count: 978, random seed: 1818
+Conforming count: 979, random seed: 1819
+Conforming count: 980, random seed: 1820
+Conforming count: 981, random seed: 1821
+Conforming count: 982, random seed: 1822
+Conforming count: 983, random seed: 1823
+Conforming count: 984, random seed: 1824
+Conforming count: 985, random seed: 1825
+Conforming count: 986, random seed: 1826
+Failure: Too many attempts for seed (1826)
+Conforming count: 986, random seed: 1827
+Conforming count: 987, random seed: 1828
+Conforming count: 988, random seed: 1829
+Conforming count: 989, random seed: 1830
+Conforming count: 990, random seed: 1831
+Conforming count: 991, random seed: 1832
+Conforming count: 992, random seed: 1833
+Conforming count: 993, random seed: 1834
+Conforming count: 994, random seed: 1835
+Conforming count: 995, random seed: 1836
+Conforming count: 996, random seed: 1837
+Conforming count: 997, random seed: 1838
+Conforming count: 998, random seed: 1839
+Conforming count: 999, random seed: 1840
+1000 conforming plans took 1324 random seeds.

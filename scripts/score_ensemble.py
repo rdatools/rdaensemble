@@ -80,7 +80,9 @@ def main() -> None:
     scores: List[dict] = list()
     plans: List[Dict[str, str | float | Dict[str, int | str]]] = read_plans(args.plans)
 
-    for p in plans:
+    for i, p in enumerate(plans):
+        print(f"... {i} ...")
+
         try:
             # Get a plan
             plan_name: str = str(p["name"])
