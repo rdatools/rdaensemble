@@ -17,11 +17,11 @@ from .random_map import random_map
 
 
 def generate_random_ensemble(
-    size: int,
-    seed: int,
+    size: int,  # Number of random maps to generate
+    seed: int,  # Starting random seed
     data: Dict[str, Dict[str, int | str]],
     graph: Dict[str, List[str]],
-    N: int,
+    N: int,  # Number of districts
     logfile,
     *,
     roughly_equal: float = 0.01,
@@ -72,7 +72,7 @@ def generate_random_ensemble(
                 break
 
         except Exception as e:
-            print(f"Failure: {e}", logfile)
+            print(f"Failure: {e}", file=logfile)
             pass
 
         finally:
@@ -80,7 +80,7 @@ def generate_random_ensemble(
 
     print(
         f"{conforming_count} conforming plans took {seed - start + 1} random seeds.",
-        logfile,
+        file=logfile,
     )
 
     return plans
