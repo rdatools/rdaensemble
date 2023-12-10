@@ -68,13 +68,11 @@ def main() -> None:
     metadata: Dict[str, Any] = load_metadata(args.state, args.data)
 
     points: List[Point] = mkPoints(data, shapes)
-    # pairs: List[Tuple[str, str]] = mkAdjacencies(Graph(graph))
 
     indexed_geoids: Dict[str, int] = index_geoids(points)
     indexed_points: List[IndexedPoint] = index_points(points)
 
     pop_by_geoid: Dict[str, int] = populations(data)
-    # total_pop: int = total_population(pop_by_geoid)
 
     scores: List[dict] = list()
     plans: List[Dict[str, str | float | Dict[str, int | str]]] = read_plans(args.plans)
@@ -127,7 +125,7 @@ def parse_args():
     parser.add_argument(
         "--plans",
         type=str,
-        help="Ensemble of plans in a JSON file",
+        help="Ensemble of plans to score in a JSON file",
     )
     parser.add_argument(
         "--data",
