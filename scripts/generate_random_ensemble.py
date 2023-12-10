@@ -47,7 +47,7 @@ def main() -> None:
     N: int = int(metadata["D"])
     seed: int = starting_seed(args.state, N)
 
-    with open(args.log, "a") as f:
+    with open(args.log, "w") as f:
         plans: List[
             Dict[str, str | float | Dict[str, int | str]]
         ] = generate_random_ensemble(

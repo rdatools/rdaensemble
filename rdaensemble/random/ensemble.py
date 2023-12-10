@@ -24,7 +24,7 @@ def generate_random_ensemble(
     N: int,  # Number of districts
     logfile,
     *,
-    roughly_equal: float = 0.01,
+    roughly_equal: float = 0.02,
 ) -> List[Dict[str, str | float | Dict[str, int | str]]]:
     """Generate an ensemble of random maps."""
 
