@@ -23,23 +23,17 @@ $ scripts/generate_random_ensemble.py -h
 
 import argparse
 from argparse import ArgumentParser, Namespace
-from typing import Any, List, Dict, Tuple
+from typing import Any, List, Dict
 
 from rdabase import (
     require_args,
     starting_seed,
-    mkAdjacencies,
-    populations,
-    total_population,
-    calc_population_deviation,
-    Graph,
-    Assignment,
     write_json,
 )
 from rdascore import load_data, load_graph, load_metadata
 
 from rdaensemble import (
-    random_map,
+    generate_random_ensemble,
 )
 
 
@@ -51,62 +45,13 @@ def main() -> None:
     metadata: Dict[str, Any] = load_metadata(args.state, args.data)
 
     N: int = int(metadata["D"])
-    start: int = starting_seed(args.state, N)
-
-    pairs: List[Tuple[str, str]] = mkAdjacencies(Graph(graph))
-
-    pop_by_geoid: Dict[str, int] = populations(data)
-    total_pop: int = total_population(pop_by_geoid)
-
-    plans: List[Dict[str, str | float | Dict[str, int | str]]] = list()
-
-    seed: int = start
-    conforming_count: int = 0
+    seed: int = starting_seed(args.state, N)
 
     with open(args.log, "a") as f:
-        while True:
-            print(f"... {conforming_count} ...")
-            print(f"Conforming count: {conforming_count}, random seed: {seed}", file=f)
-
-            plan_name: str = f"{conforming_count:03d}_{seed}"
-
-            try:
-                # Generate a random contiguous & 'roughly' equal population partitioning of the state.
-                assignments: List[Assignment] = random_map(
-                    pairs,
-                    pop_by_geoid,
-                    N,
-                    seed,
-                )
-
-                # Calculate the population deviation of the map.
-                popdev: float = calc_population_deviation(
-                    assignments, pop_by_geoid, total_pop, N
-                )
-
-                # If the map does not have 'roughly' equal population, discard it.
-                if popdev > args.roughlyequal:
-                    continue
-
-                # Otherwise increment candidate count, save the plan, & score it.
-                conforming_count += 1
-                plan: Dict[str, int | str] = {a.geoid: a.district for a in assignments}
-                plans.append({"name": plan_name, "plan": plan})  # No weights.
-
-                # If the conforming candidate count equal to the number of iterations, stop.
-                if conforming_count == args.size:
-                    break
-
-            except Exception as e:
-                print(f"Failure: {e}", file=f)
-                pass
-
-            finally:
-                seed += 1
-
-        print(
-            f"{conforming_count} conforming plans took {seed - start + 1} random seeds.",
-            file=f,
+        plans: List[
+            Dict[str, str | float | Dict[str, int | str]]
+        ] = generate_random_ensemble(
+            args.size, seed, data, graph, N, f, roughly_equal=args.roughlyequal
         )
 
     write_json(args.plans, plans)
