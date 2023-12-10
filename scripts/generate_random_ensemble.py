@@ -177,8 +177,7 @@ def parse_args():
         "data": "../rdadata/data/NC/NC_2020_data.csv",
         "shapes": "../rdadata/data/NC/NC_2020_shapes_simplified.json",
         "graph": "../rdadata/data/NC/NC_2020_graph.json",
-        "plans": "output/NC_2020_root_plans_1.json",
-        "scores": "output/NC_2020_root_scores_1.csv",
+        "plans": "output/NC_2020_random_maps_plans.json",
         "size": 10,
     }
     args = require_args(args, args.debug, debug_defaults)
