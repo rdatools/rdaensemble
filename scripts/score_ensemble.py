@@ -22,11 +22,11 @@ $ scripts/score_ensemble.py -h
 
 import argparse
 from argparse import ArgumentParser, Namespace
-import json
 from typing import Any, List, Dict
 
 from rdabase import (
     require_args,
+    read_json,
     write_csv,
 )
 from rdascore import load_data, load_shapes, load_graph, load_metadata, analyze_plan
@@ -41,22 +41,12 @@ def main() -> None:
     graph: Dict[str, List[str]] = load_graph(args.graph)
     metadata: Dict[str, Any] = load_metadata(args.state, args.data)
 
-    plans: List[Dict[str, str | float | Dict[str, int | str]]] = read_plans(args.plans)
+    ensemble: Dict[str, Any] = read_json(args.plans)
+    plans: List[Dict[str, str | float | Dict[str, int | str]]] = ensemble["plans"]
     scores: List[Dict] = score_ensemble(plans, data, shapes, graph, metadata)
 
     fields: List[str] = list(scores[0].keys())
     write_csv(args.scores, scores, fields, precision="{:.6f}")
-
-
-def read_plans(abs_path: str) -> List[Dict[str, str | float | Dict[str, int | str]]]:
-    """Load a list of plans serialized in a JSON file."""
-
-    try:
-        with open(abs_path, "r") as f:
-            return json.load(f)
-
-    except:
-        raise Exception("Exception reading JSON.")
 
 
 def parse_args():
