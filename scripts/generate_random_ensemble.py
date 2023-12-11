@@ -25,20 +25,14 @@ import argparse
 from argparse import ArgumentParser, Namespace
 from typing import Any, List, Dict
 
-import os, pwd, datetime
-
 from rdabase import (
-    cycle,
-    plan_type,
     require_args,
     starting_seed,
     write_json,
 )
 from rdascore import load_data, load_graph, load_metadata
 
-from rdaensemble import (
-    generate_random_ensemble,
-)
+from rdaensemble import generate_random_ensemble, ensemble_metadata
 
 
 def main() -> None:
@@ -51,24 +45,12 @@ def main() -> None:
     N: int = int(metadata["D"])
     seed: int = starting_seed(args.state, N)
 
-    ensemble: Dict[str, Any] = dict()
-
-    ensemble["username"] = pwd.getpwuid(os.getuid()).pw_name
-
-    timestamp = datetime.datetime.now()
-    ensemble["date_created"] = timestamp.strftime("%x")
-    ensemble["time_created"] = timestamp.strftime("%X")
-
-    ensemble["repo"] = "rdatools/rdaensemble"
-
-    ensemble["state"] = args.state
-    ensemble["cycle"] = cycle
-    ensemble["plan_type"] = plan_type
-    ensemble["units"] = "VTD"
-    ensemble["ndistricts"] = N
-
-    ensemble["technique"] = "random"
-    ensemble["size"] = args.size
+    ensemble: Dict[str, Any] = ensemble_metadata(
+        xx=args.state,
+        ndistricts=N,
+        size=args.size,
+        technique="Random spanning trees",
+    )
 
     with open(args.log, "w") as f:
         plans: List[
