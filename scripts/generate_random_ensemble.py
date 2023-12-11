@@ -25,7 +25,11 @@ import argparse
 from argparse import ArgumentParser, Namespace
 from typing import Any, List, Dict
 
+import datetime
+
 from rdabase import (
+    cycle,
+    plan_type,
     require_args,
     starting_seed,
     write_json,
@@ -47,6 +51,22 @@ def main() -> None:
     N: int = int(metadata["D"])
     seed: int = starting_seed(args.state, N)
 
+    ensemble: Dict[str, Any] = dict()
+
+    timestamp = datetime.datetime.now()
+    ensemble["date_created"] = timestamp.strftime("%x")
+    ensemble["time_created"] = timestamp.strftime("%X")
+
+    ensemble["repo"] = "rdatools/rdaensemble"
+
+    ensemble["state"] = args.state
+    ensemble["cycle"] = cycle
+    ensemble["plan_type"] = plan_type
+    ensemble["ndistricts"] = N
+
+    ensemble["technique"] = "random"
+    ensemble["size"] = args.size
+
     with open(args.log, "w") as f:
         plans: List[
             Dict[str, str | float | Dict[str, int | str]]
@@ -54,7 +74,9 @@ def main() -> None:
             args.size, seed, data, graph, N, f, roughly_equal=args.roughlyequal
         )
 
-    write_json(args.plans, plans)
+    ensemble["plans"] = plans
+
+    write_json(args.plans, ensemble)
 
 
 def parse_args():
