@@ -25,7 +25,7 @@ import argparse
 from argparse import ArgumentParser, Namespace
 from typing import Any, List, Dict
 
-import datetime
+import os, pwd, datetime
 
 from rdabase import (
     cycle,
@@ -53,6 +53,8 @@ def main() -> None:
 
     ensemble: Dict[str, Any] = dict()
 
+    ensemble["username"] = pwd.getpwuid(os.getuid()).pw_name
+
     timestamp = datetime.datetime.now()
     ensemble["date_created"] = timestamp.strftime("%x")
     ensemble["time_created"] = timestamp.strftime("%X")
@@ -62,6 +64,7 @@ def main() -> None:
     ensemble["state"] = args.state
     ensemble["cycle"] = cycle
     ensemble["plan_type"] = plan_type
+    ensemble["units"] = "VTD"
     ensemble["ndistricts"] = N
 
     ensemble["technique"] = "random"
