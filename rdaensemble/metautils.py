@@ -61,7 +61,8 @@ def scores_metadata(
 
     scores: Dict[str, Any] = shared_metadata(xx=xx)
 
-    scores["plans"] = plans
+    head, tail = os.path.split(plans)
+    scores["plans"] = tail
     scores["rdascore"] = version("rdascore")
 
     return scores
