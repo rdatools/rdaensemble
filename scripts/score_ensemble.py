@@ -7,11 +7,11 @@ For example:
 
 $ scripts/score_ensemble.py \
 --state NC \
---plans output/NC_2020_random_maps_plans.json \
+--plans output/NC20C_RMfRST_1000_plans.json \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
---scores output/NC_2020_random_maps_scores.csv \
+--scores output/NC20C_RMfRST_1000_scores.csv \
 --no-debug
 
 For documentation, type:
@@ -30,7 +30,7 @@ from rdabase import (
     write_csv,
 )
 from rdascore import load_data, load_shapes, load_graph, load_metadata, analyze_plan
-from rdaensemble import score_ensemble
+from rdaensemble import score_ensemble, scores_metadata
 
 
 def main() -> None:
@@ -44,6 +44,8 @@ def main() -> None:
     ensemble: Dict[str, Any] = read_json(args.plans)
     plans: List[Dict[str, str | float | Dict[str, int | str]]] = ensemble["plans"]
     scores: List[Dict] = score_ensemble(plans, data, shapes, graph, metadata)
+
+    metadata: Dict[str, Any] = scores_metadata(xx=args.state, plans=args.plans)
 
     fields: List[str] = list(scores[0].keys())
     write_csv(args.scores, scores, fields, precision="{:.6f}")
@@ -100,11 +102,11 @@ def parse_args():
     # Default values for args in debug mode
     debug_defaults: Dict[str, Any] = {
         "state": "NC",
-        "plans": "output/NC_2020_random_maps_plans.json",
+        "plans": "output/NC20C_RMfRST_1000_plans.json",
         "data": "../rdadata/data/NC/NC_2020_data.csv",
         "shapes": "../rdadata/data/NC/NC_2020_shapes_simplified.json",
         "graph": "../rdadata/data/NC/NC_2020_graph.json",
-        "scores": "output/NC_2020_random_maps_scores.csv",
+        "scores": "output/NC20C_RMfRST_1000_scores.csv",
     }
     args = require_args(args, args.debug, debug_defaults)
 

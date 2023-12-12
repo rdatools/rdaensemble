@@ -1,10 +1,11 @@
 """
-UTILTIES
+ENSEMBLE & SCORES METADATA
 """
 
+from typing import Any, Dict
 
 import os, pwd, datetime
-from typing import Any, Dict
+from importlib.metadata import version
 
 from rdabase import cycle, plan_type
 
@@ -13,7 +14,7 @@ def shared_metadata(
     *,
     xx: str,
 ) -> Dict[str, Any]:
-    """Create the metadata for an ensemble."""
+    """Create the shared metadata for ensembles and scores."""
 
     shared: Dict[str, Any] = dict()
 
@@ -49,6 +50,21 @@ def ensemble_metadata(
     ensemble["size"] = size
 
     return ensemble
+
+
+def scores_metadata(
+    *,
+    xx: str,
+    plans: str,
+) -> Dict[str, Any]:
+    """Create the metadata for ensemble scores."""
+
+    scores: Dict[str, Any] = shared_metadata(xx=xx)
+
+    scores["plans"] = plans
+    scores["rdascore"] = version("rdascore")
+
+    return scores
 
 
 ### END ###
