@@ -32,7 +32,7 @@ from rdabase import (
     write_csv,
     write_json,
 )
-from rdascore import load_data, load_shapes, load_graph, load_metadata, analyze_plan
+from rdascore import load_data, load_shapes, load_graph, load_metadata
 from rdaensemble import score_ensemble, scores_metadata
 
 

@@ -1,5 +1,5 @@
 """
-GENERATE AN ENSEMBLE OF RANDOM MAPS
+GENERATE AN ENSEMBLE OF RANDOM MAPS from RANDOM SPANNING TREES (RMfRST)
 """
 
 from typing import List, Dict, Tuple
@@ -16,7 +16,7 @@ from rdabase import (
 from .random_map import random_map
 
 
-def generate_random_ensemble(
+def gen_rmfrst_ensemble(
     size: int,  # Number of random maps to generate
     seed: int,  # Starting random seed
     data: Dict[str, Dict[str, int | str]],
@@ -26,7 +26,7 @@ def generate_random_ensemble(
     *,
     roughly_equal: float = 0.02,
 ) -> List[Dict[str, str | float | Dict[str, int | str]]]:
-    """Generate an ensemble of random maps."""
+    """Generate an ensemble of random maps from random spanning trees."""
 
     start: int = seed
     plans: List[Dict[str, str | float | Dict[str, int | str]]] = list()
