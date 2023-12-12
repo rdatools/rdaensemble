@@ -1,4 +1,4 @@
-# 100 plan ensembles
+# Generate & score 100-plan ensembles
 
 scripts/rmfrst_ensemble.py \
 --state NC \
@@ -20,7 +20,19 @@ scripts/score_ensemble.py \
 --no-debug
 
 
-# 1,000 plan ensembles
+# Score root map candidates
+
+scripts/score_ensemble.py \
+--state NC \
+--plans ../rdaroot/output/NC20C_RMfRST_100_rootcandidates.json \
+--data ../rdabase/data/NC/NC_2020_data.csv \
+--shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
+--graph ../rdabase/data/NC/NC_2020_graph.json \
+--scores ../rdaroot/output/NC20C_RMfRST_100_rootscores.csv \
+--no-debug
+
+
+# Generate & score 1,000-plan ensembles
 
 scripts/rmfrst_ensemble.py \
 --state NC \
