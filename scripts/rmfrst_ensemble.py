@@ -1,23 +1,23 @@
 #!/usr/bin/env python3
 
 """
-GENERATE A COLLECTION OF RANDOM MAPS
+GENERATE A COLLECTION OF RANDOM MAPS from RANDOM SPANNING TREES (RMfRST)
 
 For example:
 
-$ scripts/generate_random_ensemble.py \
+$ scripts/rmfrst_ensemble.py \
 --state NC \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
 --size 1000 \
---plans output/NC_2020_random_maps_plans.json \
---log output/NC_2020_random_maps_log.txt \
+--plans output/NC20C_RMfRST_1000_plans.json \
+--log output/NC20C_RMfRST_1000_log.txt \
 --no-debug
 
 For documentation, type:
 
-$ scripts/generate_random_ensemble.py -h
+$ scripts/rmfrst_ensemble.py -h
 
 """
 
@@ -105,7 +105,6 @@ def parse_args():
     parser.add_argument(
         "--log",
         type=str,
-        default="output/log.txt",
         help="Log TXT file",
     )
     parser.add_argument(
@@ -133,7 +132,8 @@ def parse_args():
         "data": "../rdadata/data/NC/NC_2020_data.csv",
         "shapes": "../rdadata/data/NC/NC_2020_shapes_simplified.json",
         "graph": "../rdadata/data/NC/NC_2020_graph.json",
-        "plans": "output/NC_2020_random_maps_plans.json",
+        "plans": "output/NC20C_RMfRST_1000_plans.json",
+        "log": "output/NC20C_RMfRST_1000_log.json",
         "size": 10,
     }
     args = require_args(args, args.debug, debug_defaults)
