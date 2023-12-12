@@ -24,10 +24,13 @@ import argparse
 from argparse import ArgumentParser, Namespace
 from typing import Any, List, Dict
 
+import os
+
 from rdabase import (
     require_args,
     read_json,
     write_csv,
+    write_json,
 )
 from rdascore import load_data, load_shapes, load_graph, load_metadata, analyze_plan
 from rdaensemble import score_ensemble, scores_metadata
@@ -46,9 +49,12 @@ def main() -> None:
     scores: List[Dict] = score_ensemble(plans, data, shapes, graph, metadata)
 
     metadata: Dict[str, Any] = scores_metadata(xx=args.state, plans=args.plans)
+    metadata_path: str = args.scores.replace(".csv", "_metadata.json")
 
     fields: List[str] = list(scores[0].keys())
     write_csv(args.scores, scores, fields, precision="{:.6f}")
+
+    write_json(metadata_path, metadata)
 
 
 def parse_args():
