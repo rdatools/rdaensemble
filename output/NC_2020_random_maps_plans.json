@@ -1,14 +1,14 @@
 {
     "username": "alecramsay",
     "date_created": "12/11/23",
-    "time_created": "14:01:22",
+    "time_created": "16:24:51",
     "repository": "rdatools/rdaensemble",
     "state": "NC",
     "cycle": "2020",
     "plan_type": "Congress",
     "units": "VTD",
     "ndistricts": 14,
-    "technique": "Random spanning trees",
+    "method": "Random maps from random spanning trees (RMfRST)",
     "size": 10,
     "plans": [
         {

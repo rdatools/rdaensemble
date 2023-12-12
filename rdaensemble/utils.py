@@ -14,7 +14,7 @@ def ensemble_metadata(
     xx: str,
     ndistricts: int,
     size: int,
-    technique: str,
+    method: str,
 ) -> Dict[str, Any]:
     """Create the metadata for an ensemble."""
 
@@ -34,7 +34,7 @@ def ensemble_metadata(
     ensemble["units"] = "VTD"
     ensemble["ndistricts"] = ndistricts
 
-    ensemble["technique"] = technique
+    ensemble["method"] = method
     ensemble["size"] = size
 
     return ensemble

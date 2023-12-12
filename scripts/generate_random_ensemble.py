@@ -49,7 +49,7 @@ def main() -> None:
         xx=args.state,
         ndistricts=N,
         size=args.size,
-        technique="Random spanning trees",
+        method="Random maps from random spanning trees (RMfRST)",
     )
 
     with open(args.log, "w") as f:
