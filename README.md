@@ -54,7 +54,7 @@ The metrics are the same as those produced by
 except they also include the energy of the plan.
 The metric names are descriptive.
 
-In addition the the CSV file, there is a companion JSON file with metadata about the scores.
+There is also a companion JSON file with metadata about the scores.
 
 ## Naming Conventions
 
