@@ -36,29 +36,31 @@ it's best to use the input files in `rdabase`.
 ## Output Files
 
 Ensembles are saved as JSON files.
-The file contains metadata about the ensemble, including the method used to generate it,
+A file contains metadata about the ensemble, including the method used to generate it,
 and then a `plans` key with a list of plans:
 
 ```python
 plans: List[Dict[str, str | float | Dict[str, int | str]]]
 ```
 
-Each plan item has a `name` (`str`), optionally a `weight` (`float`), and a
-`plan` (`Dict[str, int | str]]`) which represent the assignments as 
-geoid/district id key/value pairs.
+Each plan item has a `name` (`str`), an optional `weight` (`float`), and a
+`plan` (`Dict[str, int | str]]`) which represents the assignments as 
+geoid: district_id key: value pairs.
 
 Scores for the plans in an ensemble are saved as a CSV file,
 with one row per plan and one column per metric.
-The metric names are descriptive and the same as those produced by 
+The metrics are the same as those produced by 
 [rdatools/rdascore](https://github.com/rdatools/rdascore),
 except they also include the energy of the plan.
+The metric names are descriptive.
 
 In addition the the CSV file, there is a companion JSON file with metadata about the scores.
 
 ## Naming Conventions
 
-You can name ensemble and score files anything you want, 
-but we recommend the following the convention:
+You can name ensemble and score files anything you want.
+To facilitate understanding the contents of these files without having to open them, 
+we recommend the following the convention:
 
 - Ensemble example: `NC20C_RMfRST_1000_plans.json`
 - Scores example: `NC20C_RMfRST_1000_scores.csv`
@@ -69,5 +71,5 @@ where "NC" is the state code, "20" stands for the 2020 census cycle,
 "plans" and "scores" distinguish between the two types of files.
 
 Note: The scores metadata file will be named the same as the scores file,
-except it will end `_metadata.json` instead of `.csv`. 
-For example, `NC20C_RMfRST_1000_scores_metadata.json`.
+except it will end `_metadata.json` instead of `.csv`, 
+for example, `NC20C_RMfRST_1000_scores_metadata.json`.
