@@ -1,23 +1,23 @@
 #!/usr/bin/env python3
 
 """
-GENERATE A COLLECTION OF RANDOM MAPS from RANDOM SPANNING TREES (RMfRST)
+GENERATE A COLLECTION OF RANDOM MAPS from RANDOM STARTING POINTS (RMfRSP)
 
 For example:
 
-$ scripts/rmfrst_ensemble.py \
+$ scripts/rmfrsp_ensemble.py \
 --state NC \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
 --size 1000 \
---plans output/NC20C_RMfRST_1000_plans.json \
---log output/NC20C_RMfRST_1000_log.txt \
+--plans output/NC20C_RMfRSP_1000_plans.json \
+--log output/NC20C_RMfRSP_1000_log.txt \
 --no-debug
 
 For documentation, type:
 
-$ scripts/rmfrst_ensemble.py -h
+$ scripts/rmfrsp_ensemble.py -h
 
 """
 
@@ -30,15 +30,16 @@ from rdabase import (
     starting_seed,
     write_json,
 )
-from rdascore import load_data, load_graph, load_metadata
+from rdascore import load_data, load_shapes, load_graph, load_metadata
 
-from rdaensemble import gen_rmfrst_ensemble, ensemble_metadata
+from rdaensemble import gen_rmfrsp_ensemble, ensemble_metadata
 
 
 def main() -> None:
     args: argparse.Namespace = parse_args()
 
     data: Dict[str, Dict[str, int | str]] = load_data(args.data)
+    shapes: Dict[str, Any] = load_shapes(args.shapes)
     graph: Dict[str, List[str]] = load_graph(args.graph)
     metadata: Dict[str, Any] = load_metadata(args.state, args.data)
 
@@ -49,14 +50,22 @@ def main() -> None:
         xx=args.state,
         ndistricts=N,
         size=args.size,
-        method="Random maps from random spanning trees (RMfRST)",
+        method="Random maps from random spanning trees (RMfRSP)",
     )
 
     with open(args.log, "w") as f:
         plans: List[
             Dict[str, str | float | Dict[str, int | str]]
-        ] = gen_rmfrst_ensemble(
-            args.size, seed, data, graph, N, f, roughly_equal=args.roughlyequal
+        ] = gen_rmfrsp_ensemble(
+            args.size,
+            seed,
+            data,
+            shapes,
+            graph,
+            N,
+            f,
+            roughly_equal=args.roughlyequal,
+            verbose=args.verbose,
         )
 
     ensemble["plans"] = plans
@@ -132,8 +141,8 @@ def parse_args():
         "data": "../rdadata/data/NC/NC_2020_data.csv",
         "shapes": "../rdadata/data/NC/NC_2020_shapes_simplified.json",
         "graph": "../rdadata/data/NC/NC_2020_graph.json",
-        "plans": "output/NC20C_RMfRST_1000_plans.json",
-        "log": "output/NC20C_RMfRST_1000_log.txt",
+        "plans": "output/NC20C_RMfRSP_1000_plans.json",
+        "log": "output/NC20C_RMfRSP_1000_log.txt",
         "size": 10,
     }
     args = require_args(args, args.debug, debug_defaults)
