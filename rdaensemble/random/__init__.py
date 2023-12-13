@@ -1,6 +1,6 @@
 # rdaensemble/random/__init__.py
 
-from .random_map import *
-from .ensemble import *
+from .random_map import random_map
+from .ensemble import gen_rmfrst_ensemble
 
 name = "random"
