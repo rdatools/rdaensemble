@@ -47,29 +47,24 @@ def gen_rmfrst_ensemble(
         plan_name: str = f"{conforming_count:03d}_{seed}"
 
         try:
-            # Generate a random contiguous & 'roughly' equal population partitioning of the state.
             assignments: List[Assignment] = random_map(
                 pairs,
                 pop_by_geoid,
                 N,
                 seed,
-            )
+            )  # Generate a random contiguous & 'roughly' equal population partitioning of the state.
 
-            # Calculate the population deviation of the map.
             popdev: float = calc_population_deviation(
                 assignments, pop_by_geoid, total_pop, N
             )
 
-            # If the map does not have 'roughly' equal population, discard it.
             if popdev > roughly_equal:
                 continue
 
-            # Otherwise increment candidate count, save the plan, & score it.
             conforming_count += 1
             plan: Dict[str, int | str] = {a.geoid: a.district for a in assignments}
             plans.append({"name": plan_name, "plan": plan})  # No weights.
 
-            # If the conforming candidate count equal to the number of iterations, stop.
             if conforming_count == size:
                 break
 
