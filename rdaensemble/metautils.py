@@ -24,7 +24,7 @@ def shared_metadata(
     shared["date_created"] = timestamp.strftime("%x")
     shared["time_created"] = timestamp.strftime("%X")
 
-    shared["repository"] = "rdatools/rdaensemble"
+    shared["repository"] = "rdatools/rdaensemble"  # TODO - derive this
 
     shared["state"] = xx
     shared["cycle"] = cycle
