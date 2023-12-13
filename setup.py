@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="rdaensemble",
-    version="1.0.4",
+    version="1.0.5",
     description="Redistricting ensembles",
     url="https://github.com/rdatools/rdaensemble",
     author="alecramsay",
@@ -10,8 +10,11 @@ setup(
     license="MIT",
     packages=[
         "rdaensemble",
+        "rdaensemble.recom",
+        "rdaensemble.rmfrsp",
         "rdaensemble.rmfrst",
-        # TODO - Add other subpackages
+        "rdaensemble.smc",
+        "rdaensemble.spanning_tree",
     ],
     install_requires=["rdabase", "rdascore"],
     zip_safe=False,

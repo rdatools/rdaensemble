@@ -1,3 +1,4 @@
-# rdaensemble/__init__.py
+# rdaensemble/smc/__init__.py
 
-name: str = "rdaensemble"
+
+name = "smc"

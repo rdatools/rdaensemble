@@ -1,3 +1,4 @@
-# rdaensemble/__init__.py
+# rdaensemble/recom/__init__.py
 
-name: str = "rdaensemble"
+
+name = "recom"
