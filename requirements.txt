@@ -1,4 +1,5 @@
 pytest
 rdabase
 rdascore
+rdadccvt
 setuptools
