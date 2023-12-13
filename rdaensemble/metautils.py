@@ -11,8 +11,8 @@ from rdabase import cycle, plan_type
 
 
 def shared_metadata(
-    *,
     xx: str,
+    repo: str,
 ) -> Dict[str, Any]:
     """Create the shared metadata for ensembles and scores."""
 
@@ -24,7 +24,7 @@ def shared_metadata(
     shared["date_created"] = timestamp.strftime("%x")
     shared["time_created"] = timestamp.strftime("%X")
 
-    shared["repository"] = "rdatools/rdaensemble"  # TODO - derive this
+    shared["repository"] = repo
 
     shared["state"] = xx
     shared["cycle"] = cycle
@@ -40,10 +40,11 @@ def ensemble_metadata(
     ndistricts: int,
     size: int,
     method: str,
+    repo: str = "rdatools/rdaensemble",
 ) -> Dict[str, Any]:
     """Create the metadata for an ensemble."""
 
-    ensemble: Dict[str, Any] = shared_metadata(xx=xx)
+    ensemble: Dict[str, Any] = shared_metadata(xx, repo)
 
     ensemble["ndistricts"] = ndistricts
     ensemble["method"] = method
@@ -56,10 +57,11 @@ def scores_metadata(
     *,
     xx: str,
     plans: str,
+    repo: str = "rdatools/rdaensemble",
 ) -> Dict[str, Any]:
     """Create the metadata for ensemble scores."""
 
-    scores: Dict[str, Any] = shared_metadata(xx=xx)
+    scores: Dict[str, Any] = shared_metadata(xx, repo)
 
     head, tail = os.path.split(plans)
     scores["plans"] = tail
