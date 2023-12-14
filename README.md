@@ -78,7 +78,7 @@ for example, `NC20C_RMfRST_1000_scores_metadata.json`.
 
 To generate an ensemble of 1,000 plans using the random maps from random spanning trees method (RMfRST), run:
 
-```python
+```bash
 scripts/rmfrst_ensemble.py \
 --state NC \
 --data ../rdabase/data/NC/NC_2020_data.csv \
@@ -92,7 +92,7 @@ scripts/rmfrst_ensemble.py \
 
 To score the resulting ensemble, run:
 
-```python
+```bash
 scripts/score_ensemble.py \
 --state NC \
 --plans output/NC20C_RMfRST_1000_plans.json \
