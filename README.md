@@ -25,7 +25,7 @@ metadata: Dict[str, Any] = load_metadata(state_code, data_path)
 ```
 
 The precinct data, shapes, and graphs are all available in the companion repository
-[rdabase](https://github.com/rdatools/rdabase)
+[rdatools/rdabase](https://github.com/rdatools/rdabase)
 in the `data` directory by state.
 They are named `NC_2020_data.csv`, `NC_2020_shapes_simplified.json`, and `NC_2020_graph.json`,
 for example.
@@ -76,7 +76,7 @@ for example, `NC20C_RMfRST_1000_scores_metadata.json`.
 
 ## Usage
 
-To generate an ensemble of 1,000 plans using the random maps from random spanning trees (RMfRST) method, run:
+To generate an ensemble of 1,000 plans using the random maps from random spanning trees method (RMfRST), run:
 
 ```python
 scripts/rmfrst_ensemble.py \
@@ -103,4 +103,4 @@ scripts/score_ensemble.py \
 --no-debug
 ```
 
-To generate random maps from random starting points (RMfRSP), use the `rmfrst_ensemble.py` script instead.
+To generate random maps from random starting points (RMfRSP) instead, use the `rmfrst_ensemble.py` script.
