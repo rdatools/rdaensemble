@@ -4,7 +4,7 @@ Redistricting ensembles
 
 ## Methods
 
-This project supports several methods for generating ensembles of redistricting plans:
+The code in this repository supports several methods for generating ensembles of redistricting plans (maps):
 
 - Random maps from random spanning trees (RMfRST)
 - Random maps from random starting points (RMfRSP)
@@ -54,7 +54,7 @@ The metrics are the same as those produced by
 except they also include the energy of the plan.
 The metric names are descriptive.
 
-There is also a companion JSON file with metadata about the scores.
+When a scores CSV file is produced, a companion JSON file with metadata about the scoring is also generated.
 
 ## Naming Conventions
 
@@ -73,3 +73,34 @@ where "NC" is the state code, "20" stands for the 2020 census cycle,
 Note: The scores metadata file will be named the same as the scores file,
 except it will end `_metadata.json` instead of `.csv`, 
 for example, `NC20C_RMfRST_1000_scores_metadata.json`.
+
+## Usage
+
+To generate an ensemble of 1,000 plans using the random maps from random spanning trees (RMfRST) method, run:
+
+```python
+scripts/rmfrst_ensemble.py \
+--state NC \
+--data ../rdabase/data/NC/NC_2020_data.csv \
+--shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
+--graph ../rdabase/data/NC/NC_2020_graph.json \
+--size 1000 \
+--plans output/NC20C_RMfRST_1000_plans.json \
+--log output/NC20C_RMfRST_1000_log.txt \
+--no-debug
+```
+
+To score the resulting ensemble, run:
+
+```python
+scripts/score_ensemble.py \
+--state NC \
+--plans output/NC20C_RMfRST_1000_plans.json \
+--data ../rdabase/data/NC/NC_2020_data.csv \
+--shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
+--graph ../rdabase/data/NC/NC_2020_graph.json \
+--scores output/NC20C_RMfRST_1000_scores.csv \
+--no-debug
+```
+
+To generate random maps from random starting points (RMfRSP), use the `rmfrst_ensemble.py` script instead.
