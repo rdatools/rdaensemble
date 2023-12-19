@@ -17,6 +17,7 @@ from rdabase import (
     calc_energy,
 )
 from rdascore import analyze_plan
+from .compactness import cuts_and_boundaries
 
 
 def score_ensemble(
@@ -53,6 +54,10 @@ def score_ensemble(
             record: Dict[str, Any] = dict()
             record["map"] = plan_name
             record["energy"] = energy
+
+            cut_pct, boundary_pct = cuts_and_boundaries(plan_dict, graph)
+            record["cut_edges"] = cut_pct
+            record["boundary_nodes"] = boundary_pct
 
             scorecard: Dict[str, Any] = analyze_plan(
                 assignments,

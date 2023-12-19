@@ -24,8 +24,6 @@ import argparse
 from argparse import ArgumentParser, Namespace
 from typing import Any, List, Dict
 
-import os
-
 from rdabase import (
     require_args,
     read_json,
@@ -52,7 +50,7 @@ def main() -> None:
     metadata_path: str = args.scores.replace(".csv", "_metadata.json")
 
     fields: List[str] = list(scores[0].keys())
-    write_csv(args.scores, scores, fields, precision="{:.6f}")
+    write_csv(args.scores, scores, fields, precision="{:.4f}")
 
     write_json(metadata_path, metadata)
 
@@ -109,9 +107,9 @@ def parse_args():
     debug_defaults: Dict[str, Any] = {
         "state": "NC",
         "plans": "output/NC20C_RMfRST_1000_plans.json",
-        "data": "../rdadata/data/NC/NC_2020_data.csv",
-        "shapes": "../rdadata/data/NC/NC_2020_shapes_simplified.json",
-        "graph": "../rdadata/data/NC/NC_2020_graph.json",
+        "data": "../rdabase/data/NC/NC_2020_data.csv",
+        "shapes": "../rdabase/data/NC/NC_2020_shapes_simplified.json",
+        "graph": "../rdabase/data/NC/NC_2020_graph.json",
         "scores": "output/NC20C_RMfRST_1000_scores.csv",
     }
     args = require_args(args, args.debug, debug_defaults)
