@@ -92,7 +92,7 @@ def qualifying_map(ratings: List[int]) -> bool:
         ratings[proportionality] >= 20
         and ratings[competitiveness] >= 10
         and ratings[compactness] >= 20
-        # and ratings[splitting] >= 20
+        # and ratings[splitting] >= 20 # TODO - Need maps that split fewer counties!
     ):
         return True
     else:
