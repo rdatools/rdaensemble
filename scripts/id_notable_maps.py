@@ -78,7 +78,7 @@ def main() -> None:
     output["size"] = total
     output["filters"] = filters
     output["qualifying"] = qualifying
-    output["plans"] = notable_maps
+    output["notable_maps"] = notable_maps
 
     write_json(args.notables, output)
 
