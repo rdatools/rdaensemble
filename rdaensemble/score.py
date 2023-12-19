@@ -41,7 +41,6 @@ def score_ensemble(
         print(f"... {i} ...")
 
         try:
-            # Get a plan
             plan_name: str = str(p["name"])
             plan_dict: Dict[str, int | str] = p["plan"]  # type: ignore
             assignments: List[Assignment] = make_plan(plan_dict)
@@ -49,7 +48,6 @@ def score_ensemble(
                 assignments, indexed_geoids, pop_by_geoid
             )
 
-            # Calculate the energy
             energy: float = calc_energy(indexed_assignments, indexed_points)
 
             record: Dict[str, Any] = dict()
