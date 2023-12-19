@@ -29,47 +29,60 @@ from rdabase import (
     write_json,
 )
 
-# Ratings indices
-proportionality: int = 0
-competitiveness: int = 1
-minority: int = 2
-compactness: int = 3
-splitting: int = 4
+
+metrics: List[str] = [
+    "proportionality",
+    "competitiveness",
+    "minority",
+    "compactness",
+    "splitting",
+]
+dimensions: List[int] = list(range(5))
 
 
 def main() -> None:
+    """Find the notable maps in a scored ensemble of maps."""
+
     args: argparse.Namespace = parse_args()
 
     scores: List[Dict[str, Any]] = read_scores(args.scores)
     metadata: Dict[str, Any] = read_json(args.metadata)
 
-    output: Dict[str, Any] = {k: v for k, v in metadata.items() if k != "plans"}
-    plans: List[Dict[str, Any]] = []
-    notable_maps: List[Dict[str, Any]] = [{"map": "", "ratings": []} for _ in range(5)]
+    filters: List[int] = [
+        args.proportional,
+        args.competitive,
+        args.minority,
+        args.compact,
+        args.splitting,
+    ]
+
+    output: Dict[str, Any] = metadata
+    notable_maps: List[Dict[str, Any]] = [
+        {"map": "None", "ratings": []} for _ in range(5)
+    ]
 
     total: int = 0
     qualifying: int = 0
 
-    for plan in scores:
+    for s in scores:
         total += 1
-        ratings: List[int] = [int(x) for x in list(plan.values())[-5:]]
-        if not qualifying_map(ratings):
+        ratings: List[int] = [int(s[m]) for m in metrics]
+        if not qualifying_map(ratings, filters):
             continue
 
-        for dimension in range(5):
-            if better_map(ratings, notable_maps[dimension], dimension):
-                notable_maps[dimension]["map"] = plan["map"]
-                notable_maps[dimension]["ratings"] = ratings
+        for d in dimensions:
+            if better_map(ratings, notable_maps[d], d):
+                notable_maps[d]["map"] = s["map"]
+                notable_maps[d]["ratings"] = ratings
 
         qualifying += 1
 
     output["size"] = total
+    output["filters"] = filters
     output["qualifying"] = qualifying
-    output["notable_maps"] = notable_maps
+    output["plans"] = notable_maps
 
     write_json(args.notables, output)
-
-    pass
 
 
 def read_scores(input: str) -> List[Dict[str, Any]]:
@@ -87,22 +100,14 @@ def read_scores(input: str) -> List[Dict[str, Any]]:
         return scores
 
 
-def qualifying_map(ratings: List[int]) -> bool:
-    if (
-        ratings[proportionality] >= 20
-        and ratings[competitiveness] >= 10
-        and ratings[compactness] >= 20
-        # and ratings[splitting] >= 20 # TODO - Need maps that split fewer counties!
-    ):
-        return True
-    else:
-        return False
+def qualifying_map(ratings: List[int], filters: List[int]) -> bool:
+    return all([ratings[i] >= filters[i] for i in dimensions])
 
 
 def better_map(
     ratings: List[int], current_best: Dict[str, Any], dimension: int
 ) -> bool:
-    if current_best["map"] == "":
+    if current_best["map"] == "None":
         return True
     if (ratings[dimension] > current_best["ratings"][dimension]) or (
         ratings[dimension] == current_best["ratings"][dimension]
@@ -115,7 +120,7 @@ def better_map(
 
 def parse_args():
     parser: ArgumentParser = argparse.ArgumentParser(
-        description="Generate a collection of random maps."
+        description="Find the notable maps in a scored ensemble of maps."
     )
 
     parser.add_argument(
@@ -132,6 +137,36 @@ def parse_args():
         "--notables",
         type=str,
         help="Notable maps JSON file",
+    )
+    parser.add_argument(
+        "--proportional",
+        type=int,
+        default=20,
+        help="Proportionality filter",
+    )
+    parser.add_argument(
+        "--competitive",
+        type=int,
+        default=10,
+        help="Competitiveness filter",
+    )
+    parser.add_argument(
+        "--minority",
+        type=int,
+        default=0,
+        help="Minority opportunity filter",
+    )
+    parser.add_argument(
+        "--compact",
+        type=int,
+        default=20,
+        help="Compactness filter",
+    )
+    parser.add_argument(
+        "--splitting",
+        type=int,
+        default=20,
+        help="County-district splitting filter",
     )
 
     parser.add_argument(
@@ -151,6 +186,7 @@ def parse_args():
         "scores": "output/NC20C_RMfRST_100_scores.csv",
         "metadata": "output/NC20C_RMfRST_100_scores_metadata.json",
         "notables": "output/NC20C_RMfRST_100_notable_maps.json",
+        "splitting": 0,
     }
     args = require_args(args, args.debug, debug_defaults)
 

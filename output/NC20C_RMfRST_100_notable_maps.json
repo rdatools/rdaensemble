@@ -7,10 +7,7 @@
     "cycle": "2020",
     "plan_type": "Congress",
     "units": "VTD",
-    "rdascore": "2.0.5",
-    "size": 100,
-    "qualifying": 98,
-    "notable_maps": [
+    "plans": [
         {
             "map": "002_521",
             "ratings": [
@@ -61,5 +58,15 @@
                 4
             ]
         }
-    ]
+    ],
+    "rdascore": "2.0.5",
+    "size": 100,
+    "filters": [
+        20,
+        10,
+        0,
+        20,
+        0
+    ],
+    "qualifying": 98
 }
