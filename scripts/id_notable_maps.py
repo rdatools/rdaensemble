@@ -57,9 +57,7 @@ def main() -> None:
     ]
 
     output: Dict[str, Any] = metadata
-    notable_maps: List[Dict[str, Any]] = [
-        {"map": "None", "ratings": []} for _ in range(5)
-    ]
+    notable_maps: List[Dict[str, Any]] = [{m: "None", "ratings": []} for m in metrics]
 
     total: int = 0
     qualifying: int = 0
@@ -72,7 +70,7 @@ def main() -> None:
 
         for d in dimensions:
             if better_map(ratings, notable_maps[d], d):
-                notable_maps[d]["map"] = s["map"]
+                notable_maps[d][metrics[d]] = s["map"]
                 notable_maps[d]["ratings"] = ratings
 
         qualifying += 1
@@ -107,7 +105,7 @@ def qualifying_map(ratings: List[int], filters: List[int]) -> bool:
 def better_map(
     ratings: List[int], current_best: Dict[str, Any], dimension: int
 ) -> bool:
-    if current_best["map"] == "None":
+    if current_best[metrics[dimension]] == "None":
         return True
     if (ratings[dimension] > current_best["ratings"][dimension]) or (
         ratings[dimension] == current_best["ratings"][dimension]
