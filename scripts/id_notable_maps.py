@@ -15,8 +15,6 @@ For documentation, type:
 
 $ scripts/id_notable_maps.py -h
 
-NOTE - This is a work in progress not ready for use. 
-       So far, maps split too many counties & aren't compact enough to be notable.
 """
 
 import argparse
@@ -31,6 +29,13 @@ from rdabase import (
     write_json,
 )
 
+# Ratings indices
+proportionality: int = 0
+competitiveness: int = 1
+minority: int = 2
+compactness: int = 3
+splitting: int = 4
+
 
 def main() -> None:
     args: argparse.Namespace = parse_args()
@@ -40,29 +45,29 @@ def main() -> None:
 
     output: Dict[str, Any] = {k: v for k, v in metadata.items() if k != "plans"}
     plans: List[Dict[str, Any]] = []
-    proportionality = {"map": "", "ratings": []}
-    competitiveness = {"map": "", "ratings": []}
-    minority = {"map": "", "ratings": []}
-    compactness = {"map": "", "ratings": []}
-    splitting: Dict[str, Any] = {"map": "", "ratings": []}
+    notable_maps: List[Dict[str, Any]] = [{"map": "", "ratings": []} for _ in range(5)]
 
-    count = 0
+    total: int = 0
+    qualifying: int = 0
 
     for plan in scores:
-        if not (
-            int(plan["proportionality"]) >= 20
-            and int(plan["competitiveness"]) >= 10
-            and int(plan["compactness"]) >= 20
-            # and int(plan["splitting"]) >= 20 # NOTE: The maps split too many counties.
-        ):
+        total += 1
+        ratings: List[int] = [int(x) for x in list(plan.values())[-5:]]
+        if not qualifying_map(ratings):
             continue
 
-        count += 1
+        for dimension, current_best in enumerate(notable_maps):
+            if better_map(ratings, current_best["ratings"], dimension):
+                current_best["map"] = plan["map"]
+                current_best["ratings"] = ratings
 
-    print(f"Found {count} qualifying maps.")
+        qualifying += 1
 
-    # Write notable maps (args.notables)
-    # write_json(metadata_path, metadata)
+    output["size"] = total
+    output["qualifying"] = qualifying
+    output["notable_maps"] = notable_maps
+
+    write_json(args.notables, output)
 
     pass
 
@@ -80,6 +85,28 @@ def read_scores(input: str) -> List[Dict[str, Any]]:
             scores.append(row)
 
         return scores
+
+
+def qualifying_map(ratings: List[int]) -> bool:
+    if (
+        ratings[proportionality] >= 20
+        and ratings[competitiveness] >= 10
+        and ratings[compactness] >= 20
+        and ratings[splitting] >= 20
+    ):
+        return True
+    else:
+        return False
+
+
+def better_map(ratings: List[int], current_best: List[int], dimension: int) -> bool:
+    if (ratings[dimension] > current_best[dimension]) or (
+        ratings[dimension] == current_best[dimension]
+        and sum(ratings) > sum(current_best)
+    ):
+        return True
+    else:
+        return False
 
 
 def parse_args():
@@ -117,9 +144,9 @@ def parse_args():
 
     # Default values for args in debug mode
     debug_defaults: Dict[str, Any] = {
-        "scores": "output/NC20C_RMfRST_1000_scores.csv",
-        "metadata": "output/NC20C_RMfRST_1000_scores_metadata.json",
-        "notables": "output/NC20C_RMfRST_1000_notable_maps.json",
+        "scores": "output/NC20C_RMfRST_100_scores.csv",
+        "metadata": "output/NC20C_RMfRST_100_scores_metadata.json",
+        "notables": "output/NC20C_RMfRST_100_notable_maps.json",
     }
     args = require_args(args, args.debug, debug_defaults)
 
