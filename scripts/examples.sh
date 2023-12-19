@@ -61,3 +61,10 @@ scripts/score_ensemble.py \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
 --scores output/NC20C_RMfRST_1000_scores.csv \
 --no-debug
+
+scripts/id_notable_maps.py \
+--scores output/NC20C_RMfRST_1000_scores.csv \
+--metadata output/NC20C_RMfRST_1000_scores_metadata.json \
+--notables output/NC20C_RMfRST_1000_notables_maps.json \
+--splitting 0 \
+--no-debug
