@@ -24,8 +24,6 @@ import argparse
 from argparse import ArgumentParser, Namespace
 from typing import Any, List, Dict
 
-import os
-
 from rdabase import (
     require_args,
     read_json,
