@@ -9,27 +9,57 @@
     "units": "VTD",
     "rdascore": "2.0.5",
     "size": 100,
-    "qualifying": 0,
+    "qualifying": 98,
     "notable_maps": [
         {
-            "map": "",
-            "ratings": []
+            "map": "002_521",
+            "ratings": [
+                100,
+                49,
+                50,
+                24,
+                3
+            ]
         },
         {
-            "map": "",
-            "ratings": []
+            "map": "098_652",
+            "ratings": [
+                58,
+                71,
+                50,
+                22,
+                0
+            ]
         },
         {
-            "map": "",
-            "ratings": []
+            "map": "089_637",
+            "ratings": [
+                85,
+                42,
+                68,
+                20,
+                3
+            ]
         },
         {
-            "map": "",
-            "ratings": []
+            "map": "087_634",
+            "ratings": [
+                81,
+                44,
+                50,
+                46,
+                0
+            ]
         },
         {
-            "map": "",
-            "ratings": []
+            "map": "093_641",
+            "ratings": [
+                99,
+                42,
+                50,
+                30,
+                4
+            ]
         }
     ]
 }

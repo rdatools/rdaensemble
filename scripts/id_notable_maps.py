@@ -56,10 +56,10 @@ def main() -> None:
         if not qualifying_map(ratings):
             continue
 
-        for dimension, current_best in enumerate(notable_maps):
-            if better_map(ratings, current_best["ratings"], dimension):
-                current_best["map"] = plan["map"]
-                current_best["ratings"] = ratings
+        for dimension in range(5):
+            if better_map(ratings, notable_maps[dimension], dimension):
+                notable_maps[dimension]["map"] = plan["map"]
+                notable_maps[dimension]["ratings"] = ratings
 
         qualifying += 1
 
@@ -92,17 +92,21 @@ def qualifying_map(ratings: List[int]) -> bool:
         ratings[proportionality] >= 20
         and ratings[competitiveness] >= 10
         and ratings[compactness] >= 20
-        and ratings[splitting] >= 20
+        # and ratings[splitting] >= 20
     ):
         return True
     else:
         return False
 
 
-def better_map(ratings: List[int], current_best: List[int], dimension: int) -> bool:
-    if (ratings[dimension] > current_best[dimension]) or (
-        ratings[dimension] == current_best[dimension]
-        and sum(ratings) > sum(current_best)
+def better_map(
+    ratings: List[int], current_best: Dict[str, Any], dimension: int
+) -> bool:
+    if current_best["map"] == "":
+        return True
+    if (ratings[dimension] > current_best["ratings"][dimension]) or (
+        ratings[dimension] == current_best["ratings"][dimension]
+        and sum(ratings) > sum(current_best["ratings"])
     ):
         return True
     else:
