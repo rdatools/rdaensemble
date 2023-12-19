@@ -129,9 +129,9 @@ def parse_args():
     # Default values for args in debug mode
     debug_defaults: Dict[str, Any] = {
         "state": "NC",
-        "data": "../rdadata/data/NC/NC_2020_data.csv",
-        "shapes": "../rdadata/data/NC/NC_2020_shapes_simplified.json",
-        "graph": "../rdadata/data/NC/NC_2020_graph.json",
+        "data": "../rdabase/data/NC/NC_2020_data.csv",
+        "shapes": "../rdabase/data/NC/NC_2020_shapes_simplified.json",
+        "graph": "../rdabase/data/NC/NC_2020_graph.json",
         "plans": "output/NC20C_RMfRST_1000_plans.json",
         "log": "output/NC20C_RMfRST_1000_log.txt",
         "size": 10,
