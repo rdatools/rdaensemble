@@ -4,7 +4,9 @@
 EXAMPLE OF USING GERRYCHAIN FOR RECOM
 """
 
-import matplotlib.pyplot as plt
+from typing import List, Dict
+
+# import matplotlib.pyplot as plt
 from gerrychain import (
     GeographicPartition,
     Partition,
@@ -26,6 +28,8 @@ from gerrychain.partition.assignment import Assignment
 
 
 def main() -> None:
+    ## Setting up the initial districting plan
+
     graph = Graph.from_json("temp/PA_VTDs.json")
 
     elections = [
@@ -52,6 +56,12 @@ def main() -> None:
     initial_partition = GeographicPartition(
         graph, assignment="CD_2011", updaters=my_updaters
     )
+
+    ## NOTE - Added
+
+    back_map: Dict[int, str] = {
+        i: graph._node[i]["GEOID10"] for i, n in enumerate(graph.nodes)
+    }
 
     ## Proposal
 
@@ -94,13 +104,17 @@ def main() -> None:
 
     ## Running the chain
 
-    for partition in chain:
+    plans: List[Dict[str, str | float | Dict[str, int | str]]] = []
+
+    for step, partition in enumerate(chain):
         assert partition is not None
         assignments: Assignment = partition.assignment
 
-        for node, part in assignments.items():
-            # TODO - Convert node index to a geoid
-            print(f"{node}, {part}")
+        plan_name: str = f"{step:04d}"
+        plan: Dict[str, int | str] = {
+            back_map[node]: part for node, part in assignments.items()
+        }
+        plans.append({"name": plan_name, "plan": plan})  # No weights.
 
         continue
 
