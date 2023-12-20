@@ -1,5 +1,4 @@
-pytest
 rdabase
-rdascore
 rdadccvt
+rdascore
 setuptools
