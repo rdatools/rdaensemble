@@ -2,9 +2,14 @@
 
 """
 EXAMPLE OF USING GERRYCHAIN FOR RECOM
+
+To run:
+
+$ scripts/GerryChain_example.py
+
 """
 
-from typing import List, Dict
+from typing import Any, List, Dict
 
 # import matplotlib.pyplot as plt
 from gerrychain import (
@@ -25,6 +30,9 @@ from functools import partial
 from gerrychain.partition.assignment import Assignment
 
 # import pandas
+
+from rdabase import write_json
+from rdaensemble import ensemble_metadata
 
 
 def main() -> None:
@@ -104,6 +112,12 @@ def main() -> None:
 
     ## Running the chain
 
+    ensemble: Dict[str, Any] = ensemble_metadata(
+        xx="PA",
+        ndistricts=18,
+        size=1000,
+        method="ReCom",
+    )
     plans: List[Dict[str, str | float | Dict[str, int | str]]] = []
 
     for step, partition in enumerate(chain):
@@ -116,7 +130,9 @@ def main() -> None:
         }
         plans.append({"name": plan_name, "plan": plan})  # No weights.
 
-        continue
+        ensemble["plans"] = plans
+
+        write_json("output/PAyyC_ReCom_1000_plans.json", ensemble)
 
     pass
 
