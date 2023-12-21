@@ -124,12 +124,13 @@ def main() -> None:
         recom,
         pop_col="TOTAL_POP",
         pop_target=ideal_population,
-        epsilon=args.roughlyequal / 2,
+        epsilon=args.roughlyequal / 2,  # 1/2 of what you want to end up with
         node_repeats=2,  # TODO: What is this?
     )
 
     compactness_bound = constraints.UpperBound(
-        lambda p: len(p["cut_edges"]), 2 * len(initial_partition["cut_edges"])
+        lambda p: len(p["cut_edges"]),
+        args.elasticity * len(initial_partition["cut_edges"]),
     )
 
     pop_constraint = constraints.within_percent_of_ideal_population(
@@ -219,6 +220,12 @@ def parse_args():
         type=float,
         default=0.02,
         help="'Roughly equal' population threshold",
+    )
+    parser.add_argument(
+        "--elasticity",
+        type=float,
+        default=2.0,
+        help="Allowable district boundary stretch factor",
     )
 
     parser.add_argument(
