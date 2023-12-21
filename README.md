@@ -104,3 +104,6 @@ scripts/score_ensemble.py \
 ```
 
 To generate random maps from random starting points (RMfRSP) instead, use the `rmfrst_ensemble.py` script.
+
+Note: Ensemble JSON files can be quite large, bigger than GitHub's 100 MB file size limit,
+so we recommend that you write them to the `ensembles` directory, which is ignored by Git.
