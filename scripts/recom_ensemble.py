@@ -125,7 +125,7 @@ def main() -> None:
         pop_col="TOTAL_POP",
         pop_target=ideal_population,
         epsilon=args.roughlyequal / 2,  # 1/2 of what you want to end up with
-        node_repeats=2,  # TODO: What is this?
+        node_repeats=args.noderepeats,
     )
 
     compactness_bound = constraints.UpperBound(
@@ -226,6 +226,12 @@ def parse_args():
         type=float,
         default=2.0,
         help="Allowable district boundary stretch factor",
+    )
+    parser.add_argument(
+        "--noderepeats",
+        type=int,
+        default=1,
+        help="How many different choices of root to use before drawing a new spanning tree.",
     )
 
     parser.add_argument(
