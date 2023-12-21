@@ -121,6 +121,7 @@ def main() -> None:
     plans: List[Dict[str, str | float | Dict[str, int | str]]] = []
 
     for step, partition in enumerate(chain):
+        print(f"... {step} ...")
         assert partition is not None
         assignments: Assignment = partition.assignment
 
