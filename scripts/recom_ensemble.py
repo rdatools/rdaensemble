@@ -66,6 +66,9 @@ def main() -> None:
     N: int = int(metadata["D"])
 
     root_plan: List[Dict[str, str | int]] = read_csv(args.root, [str, int])
+
+    #
+
     initial_assignments: Dict[str, int | str] = {
         str(a["GEOID"]): a["DISTRICT"] for a in root_plan
     }
@@ -145,7 +148,7 @@ def main() -> None:
         total_steps=args.size,
     )
 
-    ## Running the chain
+    #
 
     ensemble: Dict[str, Any] = ensemble_metadata(
         xx="NC",
@@ -155,21 +158,21 @@ def main() -> None:
     )
     plans: List[Dict[str, str | float | Dict[str, int | str]]] = list()
 
-    # TODO - Add logging
-    for step, partition in enumerate(chain):
-        print(f"... {step} ...")
-        assert partition is not None
-        assignments: Assignment = partition.assignment
+    with open(args.log, "w") as f:
+        for step, partition in enumerate(chain):
+            print(f"... {step} ...")
+            assert partition is not None
+            assignments: Assignment = partition.assignment
 
-        plan_name: str = f"{step:04d}"
-        plan: Dict[str, int | str] = {
-            back_map[node]: part for node, part in assignments.items()
-        }
-        plans.append({"name": plan_name, "plan": plan})  # No weights.
+            plan_name: str = f"{step:04d}"
+            plan: Dict[str, int | str] = {
+                back_map[node]: part for node, part in assignments.items()
+            }
+            plans.append({"name": plan_name, "plan": plan})  # No weights.
 
-        ensemble["plans"] = plans
+    ensemble["plans"] = plans
 
-        write_json(args.plans, ensemble)
+    write_json(args.plans, ensemble)
 
 
 def parse_args():
