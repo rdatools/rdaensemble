@@ -85,8 +85,8 @@ scripts/rmfrst_ensemble.py \
 --shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
 --size 1000 \
---plans output/NC20C_RMfRST_1000_plans.json \
---log output/NC20C_RMfRST_1000_log.txt \
+--plans ensembles/NC20C_RMfRST_1000_plans.json \
+--log ensembles/NC20C_RMfRST_1000_log.txt \
 --no-debug
 ```
 
@@ -95,11 +95,11 @@ To score the resulting ensemble, run:
 ```bash
 scripts/score_ensemble.py \
 --state NC \
---plans output/NC20C_RMfRST_1000_plans.json \
+--plans ensembles/NC20C_RMfRST_1000_plans.json \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
---scores output/NC20C_RMfRST_1000_scores.csv \
+--scores ensembles/NC20C_RMfRST_1000_scores.csv \
 --no-debug
 ```
 

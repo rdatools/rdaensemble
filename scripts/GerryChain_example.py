@@ -133,7 +133,7 @@ def main() -> None:
 
         ensemble["plans"] = plans
 
-        write_json("output/PAyyC_ReCom_1000_plans.json", ensemble)
+        write_json("ensembles/PAyyC_ReCom_1000_plans.json", ensemble)
 
     pass
 
