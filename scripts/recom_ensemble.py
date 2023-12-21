@@ -124,7 +124,7 @@ def main() -> None:
         recom,
         pop_col="TOTAL_POP",
         pop_target=ideal_population,
-        epsilon=0.02,  # TODO: What is this?
+        epsilon=args.roughlyequal / 2,
         node_repeats=2,  # TODO: What is this?
     )
 
@@ -133,7 +133,7 @@ def main() -> None:
     )
 
     pop_constraint = constraints.within_percent_of_ideal_population(
-        initial_partition, 0.02
+        initial_partition, args.roughlyequal
     )
 
     chain = MarkovChain(
@@ -213,6 +213,12 @@ def parse_args():
         "--log",
         type=str,
         help="Log TXT file",
+    )
+    parser.add_argument(
+        "--roughlyequal",
+        type=float,
+        default=0.02,
+        help="'Roughly equal' population threshold",
     )
 
     parser.add_argument(
