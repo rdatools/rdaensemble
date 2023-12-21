@@ -1,18 +1,33 @@
 #!/usr/bin/env python3
 
 """
-GENERATE A ReCom ENSEMBLE 
+GENERATE AN ENSEMBLE OF MAPS using RECOM
 
-To run:
+For example:
 
-$ scripts/recom_ensemble.py
+$ scripts/recom_ensemble.py \
+--state NC \
+--data ../rdabase/data/NC/NC_2020_data.csv \
+--graph ../rdabase/data/NC/NC_2020_graph.json \
+--root ../rdaroot/output/NC20C_RMfRST_100_rootmap.csv \
+--size 1000 \
+--plans ensembles/NC20C_ReCom_1000_plans.json \
+--log ensembles/NC20C_ReCom_1000_log.txt \
+--no-debug
 
-TODO
+For documentation, type:
+
+$ scripts/recom_ensemble.py -h
 
 """
 
-from typing import Any, List, Dict
+import argparse
+from argparse import ArgumentParser, Namespace
+from typing import Any, List, Dict, Tuple
 
+from functools import partial
+
+# import networkx as nx
 from gerrychain import (
     GeographicPartition,
     Partition,
@@ -26,74 +41,92 @@ from gerrychain import (
 )
 from gerrychain.updaters import Tally, cut_edges
 from gerrychain.proposals import recom
-from functools import partial
-
 from gerrychain.partition.assignment import Assignment
 
-# import pandas
-
-from rdabase import write_json
-from rdaensemble import ensemble_metadata
+from rdabase import (
+    require_args,
+    Graph as RDAGraph,
+    mkAdjacencies,
+    read_csv,
+    read_json,
+    write_csv,
+    write_json,
+)
+from rdascore import load_data, load_shapes, load_graph, load_metadata
+from rdaensemble import *
 
 
 def main() -> None:
-    ## Setting up the initial districting plan
+    args: argparse.Namespace = parse_args()
 
-    graph = Graph.from_json("temp/PA_VTDs.json")
+    data: Dict[str, Dict[str, int | str]] = load_data(args.data)
+    # shapes: Dict[str, Any] = load_shapes(args.shapes)
+    graph: Dict[str, List[str]] = load_graph(args.graph)
+    metadata: Dict[str, Any] = load_metadata(args.state, args.data)
+    N: int = int(metadata["D"])
 
-    pass  # TODO
-
-    elections = [
-        Election("SEN10", {"Democratic": "SEN10D", "Republican": "SEN10R"}),
-        Election("SEN12", {"Democratic": "USS12D", "Republican": "USS12R"}),
-        Election("SEN16", {"Democratic": "T16SEND", "Republican": "T16SENR"}),
-        Election("PRES12", {"Democratic": "PRES12D", "Republican": "PRES12R"}),
-        Election("PRES16", {"Democratic": "T16PRESD", "Republican": "T16PRESR"}),
-    ]
-
-    # Population updater, for computing how close to equality the district
-    # populations are. "TOTPOP" is the population column from our shapefile.
-    my_updaters: dict[str, Tally] = {
-        "population": updaters.Tally("TOTPOP", alias="population")
+    root_plan: List[Dict[str, str | int]] = read_csv(args.root, [str, int])
+    initial_assignments: Dict[str, int | str] = {
+        str(a["GEOID"]): a["DISTRICT"] for a in root_plan
     }
 
-    # Election updaters, for computing election results using the vote totals
-    # from our shapefile.
+    # Pour the data & graph into a NetworkX graph for GerryChain
+
+    nodes: List[Tuple] = [
+        (
+            i,
+            {
+                "GEOID": str(data[geoid]["GEOID"]),
+                "TOTAL_POP": data[geoid]["TOTAL_POP"],
+                "REP_VOTES": data[geoid]["REP_VOTES"],
+                "DEM_VOTES": data[geoid]["DEM_VOTES"],
+                "INITIAL": initial_assignments[geoid],
+            },
+        )
+        for i, geoid in enumerate(data)
+    ]
+    node_index: Dict[str, int] = {geoid: i for i, geoid in enumerate(data)}
+    back_map: Dict[int, str] = {v: k for k, v in node_index.items()}
+
+    pairs: List[Tuple[str, str]] = mkAdjacencies(RDAGraph(graph))
+    edges: List[Tuple[int, int]] = [
+        (node_index[geoid1], node_index[geoid2]) for geoid1, geoid2 in pairs
+    ]
+
+    recom_graph = Graph()
+    # recom_graph = nx.Graph()
+    recom_graph.add_nodes_from(nodes)
+    recom_graph.add_edges_from(edges)
+
+    elections = [
+        Election("composite", {"Democratic": "DEM_VOTES", "Republican": "REP_VOTES"}),
+    ]
+
+    #
+
+    my_updaters: dict[str, Tally] = {
+        "population": updaters.Tally("TOTAL_POP", alias="population")
+    }
     election_updaters: dict[str, Election] = {
         election.name: election for election in elections
     }
     my_updaters.update(election_updaters)  # type: ignore
 
     initial_partition = GeographicPartition(
-        graph, assignment="CD_2011", updaters=my_updaters
+        recom_graph, assignment="INITIAL", updaters=my_updaters
     )
-
-    ## NOTE - Added
-
-    back_map: Dict[int, str] = {
-        i: graph._node[i]["GEOID10"] for i, n in enumerate(graph.nodes)
-    }
-
-    ## Proposal
-
-    # The ReCom proposal needs to know the ideal population for the districts so that
-    # we can improve speed by bailing early on unbalanced partitions.
 
     ideal_population = sum(initial_partition["population"].values()) / len(
         initial_partition
     )
 
-    # We use functools.partial to bind the extra parameters (pop_col, pop_target, epsilon, node_repeats)
-    # of the recom proposal.
     proposal = partial(
         recom,
-        pop_col="TOTPOP",
+        pop_col="TOTAL_POP",
         pop_target=ideal_population,
-        epsilon=0.02,
-        node_repeats=2,
+        epsilon=0.02,  # TODO: What is this?
+        node_repeats=2,  # TODO: What is this?
     )
-
-    ## Constraints
 
     compactness_bound = constraints.UpperBound(
         lambda p: len(p["cut_edges"]), 2 * len(initial_partition["cut_edges"])
@@ -103,26 +136,25 @@ def main() -> None:
         initial_partition, 0.02
     )
 
-    ## Configuring the Markov chain
-
     chain = MarkovChain(
         proposal=proposal,
         constraints=[pop_constraint, compactness_bound],
         accept=accept.always_accept,
         initial_state=initial_partition,
-        total_steps=1000,
+        total_steps=args.size,
     )
 
     ## Running the chain
 
     ensemble: Dict[str, Any] = ensemble_metadata(
-        xx="PA",
-        ndistricts=18,
-        size=1000,
+        xx="NC",
+        ndistricts=N,
+        size=args.size,
         method="ReCom",
     )
-    plans: List[Dict[str, str | float | Dict[str, int | str]]] = []
+    plans: List[Dict[str, str | float | Dict[str, int | str]]] = list()
 
+    # TODO - Add logging
     for step, partition in enumerate(chain):
         print(f"... {step} ...")
         assert partition is not None
@@ -136,12 +168,85 @@ def main() -> None:
 
         ensemble["plans"] = plans
 
-        write_json("ensembles/PAyyC_ReCom_1000_plans.json", ensemble)
+        write_json(args.plans, ensemble)
 
-    pass
+
+def parse_args():
+    parser: ArgumentParser = argparse.ArgumentParser(
+        description="Generate a collection of random maps."
+    )
+
+    parser.add_argument(
+        "--state",
+        help="The two-character state code (e.g., NC)",
+        type=str,
+    )
+    parser.add_argument(
+        "--data",
+        type=str,
+        help="Data file",
+    )
+    # parser.add_argument(
+    #     "--shapes",
+    #     type=str,
+    #     help="Shapes abstract file",
+    # )
+    parser.add_argument(
+        "--graph",
+        type=str,
+        help="Graph file",
+    )
+    parser.add_argument(
+        "--root",
+        type=str,
+        help="Root plan",
+    )
+    parser.add_argument(
+        "--size", type=int, default=1000, help="Number of maps to generate"
+    )
+    parser.add_argument(
+        "--plans",
+        type=str,
+        help="Ensemble plans JSON file",
+    )
+    parser.add_argument(
+        "--log",
+        type=str,
+        help="Log TXT file",
+    )
+
+    parser.add_argument(
+        "-v", "--verbose", dest="verbose", action="store_true", help="Verbose mode"
+    )
+
+    # Enable debug/explicit mode
+    parser.add_argument("--debug", default=True, action="store_true", help="Debug mode")
+    parser.add_argument(
+        "--no-debug", dest="debug", action="store_false", help="Explicit mode"
+    )
+
+    args: Namespace = parser.parse_args()
+
+    # Default values for args in debug mode
+    debug_defaults: Dict[str, Any] = {
+        "state": "NC",
+        "data": "../rdabase/data/NC/NC_2020_data.csv",
+        # "shapes": "../rdabase/data/NC/NC_2020_shapes_simplified.json",
+        "graph": "../rdabase/data/NC/NC_2020_graph.json",
+        "root": "../rdaroot/output/NC20C_RMfRST_100_rootmap.csv",
+        "plans": "ensembles/NC20C_ReCom_1000_plans.json",
+        "log": "ensembles/NC20C_ReCom_1000_log.txt",
+        "size": 10,
+    }
+    args = require_args(args, args.debug, debug_defaults)
+
+    return args
 
 
 if __name__ == "__main__":
     main()
+
+### END ###
+
 
 ### END ###
