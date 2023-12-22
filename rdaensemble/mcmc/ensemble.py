@@ -52,19 +52,9 @@ def gen_recom_ensemble(
         node_repeats,
     )
 
-    plans: List[Dict[str, str | float | Dict[str, int | str]]] = list()
-
-    for step, partition in enumerate(chain):
-        print(f"... {step} ...")
-        print(f"... {step} ...", file=logfile)
-        assert partition is not None
-        assignments: Assignment = partition.assignment
-
-        plan_name: str = f"{step:04d}"
-        plan: Dict[str, int | str] = {
-            back_map[node]: part for node, part in assignments.items()
-        }
-        plans.append({"name": plan_name, "plan": plan})  # No weights.
+    plans: List[Dict[str, str | float | Dict[str, int | str]]] = run_chain(
+        chain, back_map, logfile
+    )
 
     return plans
 
@@ -165,6 +155,28 @@ def setup_Markov_Chain(
     )
 
     return chain
+
+
+def run_chain(
+    chain, back_map: Dict[int, str], logfile
+) -> List[Dict[str, str | float | Dict[str, int | str]]]:
+    """Run a Markov chain."""
+
+    plans: List[Dict[str, str | float | Dict[str, int | str]]] = list()
+
+    for step, partition in enumerate(chain):
+        print(f"... {step} ...")
+        print(f"... {step} ...", file=logfile)
+        assert partition is not None
+        assignments: Assignment = partition.assignment
+
+        plan_name: str = f"{step:04d}"
+        plan: Dict[str, int | str] = {
+            back_map[node]: part for node, part in assignments.items()
+        }
+        plans.append({"name": plan_name, "plan": plan})  # No weights.
+
+    return plans
 
 
 ### END ###
