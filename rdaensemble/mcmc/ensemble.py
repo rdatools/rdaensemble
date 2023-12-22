@@ -130,26 +130,37 @@ def setup_markov_chain(
         initial_partition
     )
 
-    proposal = partial(
-        method,  # type: ignore
-        pop_col="TOTAL_POP",
-        pop_target=ideal_population,
-        epsilon=roughly_equal / 2,  # 1/2 of what you want to end up with
-        node_repeats=node_repeats,
-    )
+    my_proposal: Callable
+    my_constraints: List
 
-    compactness_bound = constraints.UpperBound(
-        lambda p: len(p["cut_edges"]),
-        elasticity * len(initial_partition["cut_edges"]),
-    )
+    match method:
+        case "recom":
+            my_proposal = partial(
+                method,  # type: ignore
+                pop_col="TOTAL_POP",
+                pop_target=ideal_population,
+                epsilon=roughly_equal / 2,  # 1/2 of what you want to end up with
+                node_repeats=node_repeats,
+            )
 
-    pop_constraint = constraints.within_percent_of_ideal_population(
-        initial_partition, roughly_equal
-    )
+            compactness_bound = constraints.UpperBound(
+                lambda p: len(p["cut_edges"]),
+                elasticity * len(initial_partition["cut_edges"]),
+            )
+
+            pop_constraint = constraints.within_percent_of_ideal_population(
+                initial_partition, roughly_equal
+            )
+            my_constraints = [compactness_bound, pop_constraint]
+        case _:
+            raise NotImplementedError(f"Unknown method: {method}")
+
+    assert my_proposal is not None
+    assert my_constraints is not None
 
     chain = MarkovChain(
-        proposal=proposal,
-        constraints=[pop_constraint, compactness_bound],
+        proposal=my_proposal,
+        constraints=my_constraints,
         accept=accept.always_accept,
         initial_state=initial_partition,
         total_steps=size,
