@@ -2,7 +2,7 @@
 GENERATE AN ENSEMBLE OF MAPS using RECOM
 """
 
-from typing import List, Dict, Tuple
+from typing import Any, List, Dict, Tuple, Callable
 
 from functools import partial
 
@@ -41,7 +41,40 @@ def gen_recom_ensemble(
 
     random.seed(seed)
 
-    # Prep the data
+    recom_graph, elections, back_map = prep_data(initialplan, data, graph)
+    chain = setup_Markov_Chain(
+        recom,
+        size,
+        recom_graph,
+        elections,
+        roughly_equal,
+        elasticity,
+        node_repeats,
+    )
+
+    plans: List[Dict[str, str | float | Dict[str, int | str]]] = list()
+
+    for step, partition in enumerate(chain):
+        print(f"... {step} ...")
+        print(f"... {step} ...", file=logfile)
+        assert partition is not None
+        assignments: Assignment = partition.assignment
+
+        plan_name: str = f"{step:04d}"
+        plan: Dict[str, int | str] = {
+            back_map[node]: part for node, part in assignments.items()
+        }
+        plans.append({"name": plan_name, "plan": plan})  # No weights.
+
+    return plans
+
+
+def prep_data(
+    initialplan: List[Dict[str, str | int]],
+    data: Dict[str, Dict[str, int | str]],
+    graph: Dict[str, List[str]],
+) -> Tuple[Graph, List[Election], Dict[int, str]]:
+    """Prepare the data for ReCom."""
 
     initial_assignments: Dict[str, int | str] = {
         str(a["GEOID"]): a["DISTRICT"] for a in initialplan
@@ -72,11 +105,23 @@ def gen_recom_ensemble(
     recom_graph.add_nodes_from(nodes)
     recom_graph.add_edges_from(edges)
 
-    elections = [
+    elections: List[Election] = [
         Election("composite", {"Democratic": "DEM_VOTES", "Republican": "REP_VOTES"}),
     ]
 
-    # Set up the Markov chain
+    return recom_graph, elections, back_map
+
+
+def setup_Markov_Chain(
+    method: Callable,
+    size: int,
+    recom_graph: Graph,
+    elections: List[Election],
+    roughly_equal: float,
+    elasticity: float,
+    node_repeats: int,
+) -> Any:
+    """Set up the Markov chain."""
 
     my_updaters: dict[str, Tally] = {
         "population": updaters.Tally("TOTAL_POP", alias="population")
@@ -95,7 +140,7 @@ def gen_recom_ensemble(
     )
 
     proposal = partial(
-        recom,
+        method,  # type: ignore
         pop_col="TOTAL_POP",
         pop_target=ideal_population,
         epsilon=roughly_equal / 2,  # 1/2 of what you want to end up with
@@ -119,23 +164,7 @@ def gen_recom_ensemble(
         total_steps=size,
     )
 
-    # Run ReCom
-
-    plans: List[Dict[str, str | float | Dict[str, int | str]]] = list()
-
-    for step, partition in enumerate(chain):
-        print(f"... {step} ...")
-        print(f"... {step} ...", file=logfile)
-        assert partition is not None
-        assignments: Assignment = partition.assignment
-
-        plan_name: str = f"{step:04d}"
-        plan: Dict[str, int | str] = {
-            back_map[node]: part for node, part in assignments.items()
-        }
-        plans.append({"name": plan_name, "plan": plan})  # No weights.
-
-    return plans
+    return chain
 
 
 ### END ###
