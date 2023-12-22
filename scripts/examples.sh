@@ -2,10 +2,10 @@
 
 scripts/rmfrst_ensemble.py \
 --state NC \
+--size 100 \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
---size 100 \
 --plans ensembles/NC20C_RMfRST_100_plans.json \
 --log ensembles/NC20C_RMfRST_100_log.txt \
 --no-debug
@@ -23,10 +23,10 @@ scripts/score_ensemble.py \
 
 scripts/rmfrsp_ensemble.py \
 --state NC \
+--size 100 \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
---size 100 \
 --plans ensembles/NC20C_RMfRSP_100_plans.json \
 --log ensembles/NC20C_RMfRSP_100_log.txt \
 --no-debug
@@ -47,10 +47,10 @@ scripts/score_ensemble.py \
 
 scripts/rmfrst_ensemble.py \
 --state NC \
+--size 1000 \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
---size 1000 \
 --plans ensembles/NC20C_RMfRST_1000_plans.json \
 --log ensembles/NC20C_RMfRST_1000_log.txt \
 --no-debug
@@ -75,10 +75,10 @@ scripts/id_notable_maps.py \
 
 scripts/recom_ensemble.py \
 --state NC \
---data ../rdabase/data/NC/NC_2020_data.csv \
---shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
---graph ../rdabase/data/NC/NC_2020_graph.json \
 --size 1000 \
+--data ../rdabase/data/NC/NC_2020_data.csv \
+--graph ../rdabase/data/NC/NC_2020_graph.json \
+--root ../rdaroot/output/NC20C_RMfRST_100_rootmap.csv \
 --plans ensembles/NC20C_ReCom_1000_plans.json \
 --log ensembles/NC20C_ReCom_1000_log.txt \
 --no-debug

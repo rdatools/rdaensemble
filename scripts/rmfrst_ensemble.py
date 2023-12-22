@@ -7,10 +7,10 @@ For example:
 
 $ scripts/rmfrst_ensemble.py \
 --state NC \
+--size 1000 \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
---size 1000 \
 --plans ensembles/NC20C_RMfRST_1000_plans.json \
 --log ensembles/NC20C_RMfRST_1000_log.txt \
 --no-debug
