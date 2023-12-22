@@ -174,13 +174,10 @@ def run_chain(
         assert partition is not None
         assignments: Assignment = partition.assignment
 
-        # parts: set[int] = set(assignments.values())
-        # print(f"Parts: {parts}")
-
         plan_name: str = f"{step:04d}"
         plan: Dict[str, int | str] = {
             back_map[node]: part - 1
-            for node, part in assignments.items()  # TODO: Why -1?
+            for node, part in assignments.items()  # Why are these 2-based?
         }
         plans.append({"name": plan_name, "plan": plan})  # No weights.
 
