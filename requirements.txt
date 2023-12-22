@@ -1,3 +1,4 @@
+gerrychain
 rdabase
 rdadccvt
 rdascore
