@@ -18,6 +18,7 @@ from gerrychain import (
 from gerrychain.updaters import Tally
 from gerrychain.proposals import recom
 from gerrychain.partition.assignment import Assignment
+from gerrychain.random import random
 
 from rdabase import Graph as RDAGraph, mkAdjacencies
 
@@ -25,8 +26,8 @@ from rdabase import Graph as RDAGraph, mkAdjacencies
 def gen_recom_ensemble(
     size: int,  # Number of random maps to generate <<< TODO
     steps: int,  # Number of steps to run each Markov chain <<< TODO
-    initial: List[Dict[str, str | int]],  # Initial district assignments
-    seed: int,  # Starting random seed <<< TODO
+    initialplan: List[Dict[str, str | int]],  # Initial district assignments
+    seed: int,
     data: Dict[str, Dict[str, int | str]],
     graph: Dict[str, List[str]],
     logfile,
@@ -38,10 +39,12 @@ def gen_recom_ensemble(
 ) -> List[Dict[str, str | float | Dict[str, int | str]]]:
     """Generate an ensemble of maps using ReCom."""
 
+    random.seed(seed)
+
     # Prep the data
 
     initial_assignments: Dict[str, int | str] = {
-        str(a["GEOID"]): a["DISTRICT"] for a in initial
+        str(a["GEOID"]): a["DISTRICT"] for a in initialplan
     }
 
     nodes: List[Tuple] = [
