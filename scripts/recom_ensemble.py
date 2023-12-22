@@ -25,6 +25,8 @@ import argparse
 from argparse import ArgumentParser, Namespace
 from typing import Any, List, Dict
 
+from gerrychain.proposals import recom
+
 from rdabase import (
     require_args,
     starting_seed,
@@ -32,7 +34,7 @@ from rdabase import (
     write_json,
 )
 from rdascore import load_data, load_shapes, load_graph, load_metadata
-from rdaensemble import ensemble_metadata, gen_recom_ensemble
+from rdaensemble import ensemble_metadata, gen_mcmc_ensemble
 
 
 def main() -> None:
@@ -56,7 +58,8 @@ def main() -> None:
     )
 
     with open(args.log, "w") as f:
-        plans: List[Dict[str, str | float | Dict[str, int | str]]] = gen_recom_ensemble(
+        plans: List[Dict[str, str | float | Dict[str, int | str]]] = gen_mcmc_ensemble(
+            recom,
             args.size,
             args.steps,
             root_plan,

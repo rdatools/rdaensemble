@@ -16,14 +16,15 @@ from gerrychain import (
     Election,
 )
 from gerrychain.updaters import Tally
-from gerrychain.proposals import recom
+
 from gerrychain.partition.assignment import Assignment
 from gerrychain.random import random
 
 from rdabase import Graph as RDAGraph, mkAdjacencies
 
 
-def gen_recom_ensemble(
+def gen_mcmc_ensemble(
+    method: Callable,
     size: int,  # Number of random maps to generate <<< TODO
     steps: int,  # Number of steps to run each Markov chain <<< TODO
     initialplan: List[Dict[str, str | int]],  # Initial district assignments
@@ -42,8 +43,8 @@ def gen_recom_ensemble(
     random.seed(seed)
 
     recom_graph, elections, back_map = prep_data(initialplan, data, graph)
-    chain = setup_Markov_Chain(
-        recom,
+    chain = setup_markov_chain(
+        method,
         size,
         recom_graph,
         elections,
@@ -102,7 +103,7 @@ def prep_data(
     return recom_graph, elections, back_map
 
 
-def setup_Markov_Chain(
+def setup_markov_chain(
     method: Callable,
     size: int,
     recom_graph: Graph,
