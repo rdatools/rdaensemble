@@ -7,10 +7,10 @@ For example:
 
 $ scripts/recom_ensemble.py \
 --state NC \
+--size 1000 \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
 --root ../rdaroot/output/NC20C_RMfRST_100_rootmap.csv \
---size 1000 \
 --plans ensembles/NC20C_ReCom_1000_plans.json \
 --log ensembles/NC20C_ReCom_1000_log.txt \
 --no-debug
@@ -38,6 +38,8 @@ from rdaensemble import ensemble_metadata, gen_mcmc_ensemble
 
 
 def main() -> None:
+    """Generate an ensemble of maps using MCMC/ReCom."""
+
     args: argparse.Namespace = parse_args()
 
     data: Dict[str, Dict[str, int | str]] = load_data(args.data)
@@ -61,7 +63,6 @@ def main() -> None:
         plans: List[Dict[str, str | float | Dict[str, int | str]]] = gen_mcmc_ensemble(
             recom,
             args.size,
-            args.steps,
             root_plan,
             seed,
             data,
@@ -80,7 +81,7 @@ def main() -> None:
 
 def parse_args():
     parser: ArgumentParser = argparse.ArgumentParser(
-        description="Generate a collection of random maps."
+        description="Generate an ensemble of maps using MCMC/ReCom."
     )
 
     parser.add_argument(
@@ -91,7 +92,6 @@ def parse_args():
     parser.add_argument(
         "--size", type=int, default=1000, help="Number of maps to generate"
     )
-    parser.add_argument("--steps", type=int, default=1, help="Number of steps map")
     parser.add_argument(
         "--data",
         type=str,

@@ -8,8 +8,8 @@ The code in this repository supports several methods for generating ensembles of
 
 - Random maps from random spanning trees (RMfRST)
 - Random maps from random starting points (RMfRSP)
-- ReCom -- TODO
-- Sequential Monte Carlo (SMC) -- TODO
+- Ensemble of maps using MCMC/ReCom (ReCom)
+- Ensemble of maps using Sequential Monte Carlo (SMC) <<< TODO
 
 ## Input Files
 
@@ -104,6 +104,7 @@ scripts/score_ensemble.py \
 ```
 
 To generate random maps from random starting points (RMfRSP) instead, use the `rmfrst_ensemble.py` script.
+For ReCom, use the `recom_ensemble.py` script.
 
 Note: Ensemble JSON files can be quite large, bigger than GitHub's 100 MB file size limit,
 so we recommend that you write them to the `ensembles` directory, which is ignored by Git.

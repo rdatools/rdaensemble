@@ -25,9 +25,8 @@ from rdabase import Graph as RDAGraph, mkAdjacencies
 
 def gen_mcmc_ensemble(
     method: Callable,
-    size: int,  # Number of random maps to generate <<< TODO
-    steps: int,  # Number of steps to run each Markov chain <<< TODO
-    initialplan: List[Dict[str, str | int]],  # Initial district assignments
+    size: int,
+    initial_plan: List[Dict[str, str | int]],
     seed: int,
     data: Dict[str, Dict[str, int | str]],
     graph: Dict[str, List[str]],
@@ -38,11 +37,11 @@ def gen_mcmc_ensemble(
     node_repeats: int = 1,
     verbose: bool = False,
 ) -> List[Dict[str, str | float | Dict[str, int | str]]]:
-    """Generate an ensemble of maps using ReCom."""
+    """Generate an ensemble of maps using the ReCom variant of MCMC."""
 
     random.seed(seed)
 
-    recom_graph, elections, back_map = prep_data(initialplan, data, graph)
+    recom_graph, elections, back_map = prep_data(initial_plan, data, graph)
     chain = setup_markov_chain(
         method,
         size,
@@ -133,30 +132,23 @@ def setup_markov_chain(
     my_proposal: Callable
     my_constraints: List
 
-    match method:
-        case "recom":
-            my_proposal = partial(
-                method,  # type: ignore
-                pop_col="TOTAL_POP",
-                pop_target=ideal_population,
-                epsilon=roughly_equal / 2,  # 1/2 of what you want to end up with
-                node_repeats=node_repeats,
-            )
+    my_proposal = partial(
+        method,
+        pop_col="TOTAL_POP",
+        pop_target=ideal_population,
+        epsilon=roughly_equal / 2,  # 1/2 of what you want to end up with
+        node_repeats=node_repeats,
+    )
 
-            compactness_bound = constraints.UpperBound(
-                lambda p: len(p["cut_edges"]),
-                elasticity * len(initial_partition["cut_edges"]),
-            )
+    compactness_bound = constraints.UpperBound(
+        lambda p: len(p["cut_edges"]),
+        elasticity * len(initial_partition["cut_edges"]),
+    )  # Per Moon Duchin, not strictly necessary.
 
-            pop_constraint = constraints.within_percent_of_ideal_population(
-                initial_partition, roughly_equal
-            )
-            my_constraints = [compactness_bound, pop_constraint]
-        case _:
-            raise NotImplementedError(f"Unknown method: {method}")
-
-    assert my_proposal is not None
-    assert my_constraints is not None
+    pop_constraint = constraints.within_percent_of_ideal_population(
+        initial_partition, roughly_equal
+    )
+    my_constraints = [compactness_bound, pop_constraint]
 
     chain = MarkovChain(
         proposal=my_proposal,
