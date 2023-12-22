@@ -23,37 +23,16 @@ $ scripts/recom_ensemble.py -h
 
 import argparse
 from argparse import ArgumentParser, Namespace
-from typing import Any, List, Dict, Tuple
-
-from functools import partial
-
-# import networkx as nx
-from gerrychain import (
-    GeographicPartition,
-    Partition,
-    Graph,
-    MarkovChain,
-    proposals,
-    updaters,
-    constraints,
-    accept,
-    Election,
-)
-from gerrychain.updaters import Tally, cut_edges
-from gerrychain.proposals import recom
-from gerrychain.partition.assignment import Assignment
+from typing import Any, List, Dict
 
 from rdabase import (
     require_args,
-    Graph as RDAGraph,
-    mkAdjacencies,
+    starting_seed,
     read_csv,
-    read_json,
-    write_csv,
     write_json,
 )
 from rdascore import load_data, load_shapes, load_graph, load_metadata
-from rdaensemble import *
+from rdaensemble import ensemble_metadata, gen_recom_ensemble
 
 
 def main() -> None:
@@ -63,92 +42,11 @@ def main() -> None:
     # shapes: Dict[str, Any] = load_shapes(args.shapes)
     graph: Dict[str, List[str]] = load_graph(args.graph)
     metadata: Dict[str, Any] = load_metadata(args.state, args.data)
-    N: int = int(metadata["D"])
 
     root_plan: List[Dict[str, str | int]] = read_csv(args.root, [str, int])
 
-    #
-
-    initial_assignments: Dict[str, int | str] = {
-        str(a["GEOID"]): a["DISTRICT"] for a in root_plan
-    }
-
-    # Pour the data & graph into a NetworkX graph for GerryChain
-
-    nodes: List[Tuple] = [
-        (
-            i,
-            {
-                "GEOID": str(data[geoid]["GEOID"]),
-                "TOTAL_POP": data[geoid]["TOTAL_POP"],
-                "REP_VOTES": data[geoid]["REP_VOTES"],
-                "DEM_VOTES": data[geoid]["DEM_VOTES"],
-                "INITIAL": initial_assignments[geoid],
-            },
-        )
-        for i, geoid in enumerate(data)
-    ]
-    node_index: Dict[str, int] = {geoid: i for i, geoid in enumerate(data)}
-    back_map: Dict[int, str] = {v: k for k, v in node_index.items()}
-
-    pairs: List[Tuple[str, str]] = mkAdjacencies(RDAGraph(graph))
-    edges: List[Tuple[int, int]] = [
-        (node_index[geoid1], node_index[geoid2]) for geoid1, geoid2 in pairs
-    ]
-
-    recom_graph = Graph()
-    # recom_graph = nx.Graph()
-    recom_graph.add_nodes_from(nodes)
-    recom_graph.add_edges_from(edges)
-
-    elections = [
-        Election("composite", {"Democratic": "DEM_VOTES", "Republican": "REP_VOTES"}),
-    ]
-
-    #
-
-    my_updaters: dict[str, Tally] = {
-        "population": updaters.Tally("TOTAL_POP", alias="population")
-    }
-    election_updaters: dict[str, Election] = {
-        election.name: election for election in elections
-    }
-    my_updaters.update(election_updaters)  # type: ignore
-
-    initial_partition = GeographicPartition(
-        recom_graph, assignment="INITIAL", updaters=my_updaters
-    )
-
-    ideal_population = sum(initial_partition["population"].values()) / len(
-        initial_partition
-    )
-
-    proposal = partial(
-        recom,
-        pop_col="TOTAL_POP",
-        pop_target=ideal_population,
-        epsilon=args.roughlyequal / 2,  # 1/2 of what you want to end up with
-        node_repeats=args.noderepeats,
-    )
-
-    compactness_bound = constraints.UpperBound(
-        lambda p: len(p["cut_edges"]),
-        args.elasticity * len(initial_partition["cut_edges"]),
-    )
-
-    pop_constraint = constraints.within_percent_of_ideal_population(
-        initial_partition, args.roughlyequal
-    )
-
-    chain = MarkovChain(
-        proposal=proposal,
-        constraints=[pop_constraint, compactness_bound],
-        accept=accept.always_accept,
-        initial_state=initial_partition,
-        total_steps=args.size,
-    )
-
-    #
+    N: int = int(metadata["D"])
+    seed: int = starting_seed(args.state, N)
 
     ensemble: Dict[str, Any] = ensemble_metadata(
         xx="NC",
@@ -156,19 +54,21 @@ def main() -> None:
         size=args.size,
         method="ReCom",
     )
-    plans: List[Dict[str, str | float | Dict[str, int | str]]] = list()
 
     with open(args.log, "w") as f:
-        for step, partition in enumerate(chain):
-            print(f"... {step} ...")
-            assert partition is not None
-            assignments: Assignment = partition.assignment
-
-            plan_name: str = f"{step:04d}"
-            plan: Dict[str, int | str] = {
-                back_map[node]: part for node, part in assignments.items()
-            }
-            plans.append({"name": plan_name, "plan": plan})  # No weights.
+        plans: List[Dict[str, str | float | Dict[str, int | str]]] = gen_recom_ensemble(
+            args.size,
+            args.steps,
+            root_plan,
+            seed,
+            data,
+            graph,
+            f,
+            roughly_equal=args.roughlyequal,
+            elasticity=args.elasticity,
+            node_repeats=args.noderepeats,
+            verbose=args.verbose,
+        )
 
     ensemble["plans"] = plans
 
@@ -185,6 +85,10 @@ def parse_args():
         help="The two-character state code (e.g., NC)",
         type=str,
     )
+    parser.add_argument(
+        "--size", type=int, default=1000, help="Number of maps to generate"
+    )
+    parser.add_argument("--steps", type=int, default=1, help="Number of steps map")
     parser.add_argument(
         "--data",
         type=str,
@@ -204,9 +108,6 @@ def parse_args():
         "--root",
         type=str,
         help="Root plan",
-    )
-    parser.add_argument(
-        "--size", type=int, default=1000, help="Number of maps to generate"
     )
     parser.add_argument(
         "--plans",

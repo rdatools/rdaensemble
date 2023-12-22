@@ -23,7 +23,7 @@ from rdabase import Graph as RDAGraph, mkAdjacencies
 
 
 def gen_recom_ensemble(
-    size: int,  # Number of random maps to generate
+    size: int,  # Number of random maps to generate <<< TODO
     steps: int,  # Number of steps to run each Markov chain <<< TODO
     initial: List[Dict[str, str | int]],  # Initial district assignments
     seed: int,  # Starting random seed <<< TODO
@@ -34,6 +34,7 @@ def gen_recom_ensemble(
     roughly_equal: float = 0.02,
     elasticity: float = 2.0,
     node_repeats: int = 1,
+    verbose: bool = False,
 ) -> List[Dict[str, str | float | Dict[str, int | str]]]:
     """Generate an ensemble of maps using ReCom."""
 
