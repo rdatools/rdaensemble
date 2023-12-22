@@ -7,11 +7,11 @@ For example:
 
 $ scripts/score_ensemble.py \
 --state NC \
---plans output/NC20C_RMfRST_1000_plans.json \
+--plans ensembles/NC20C_RMfRST_1000_plans.json \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
---scores output/NC20C_RMfRST_1000_scores.csv \
+--scores ensembles/NC20C_RMfRST_1000_scores.csv \
 --no-debug
 
 For documentation, type:
@@ -106,11 +106,11 @@ def parse_args():
     # Default values for args in debug mode
     debug_defaults: Dict[str, Any] = {
         "state": "NC",
-        "plans": "output/NC20C_RMfRST_1000_plans.json",
+        "plans": "ensembles/NC20C_RMfRST_1000_plans.json",
         "data": "../rdabase/data/NC/NC_2020_data.csv",
         "shapes": "../rdabase/data/NC/NC_2020_shapes_simplified.json",
         "graph": "../rdabase/data/NC/NC_2020_graph.json",
-        "scores": "output/NC20C_RMfRST_1000_scores.csv",
+        "scores": "ensembles/NC20C_RMfRST_1000_scores.csv",
     }
     args = require_args(args, args.debug, debug_defaults)
 

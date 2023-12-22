@@ -2,6 +2,7 @@
 
 from .rmfrst import random_map, gen_rmfrst_ensemble
 from .rmfrsp import gen_rmfrsp_ensemble
+from .mcmc import gen_mcmc_ensemble
 from .spanning_tree import random_spanning_tree
 from .compactness import cuts_and_boundaries
 from .score import score_ensemble
