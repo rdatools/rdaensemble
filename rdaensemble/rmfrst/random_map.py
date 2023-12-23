@@ -31,7 +31,9 @@ def random_map(
 
     total_population: int = sum(populations.values())
     target_population: int = int(total_population / N)
-    root: Node
+    # root: Node
+
+    graph: Graph = mkGraph(adjacencies, populations)
 
     while True:
         tbc: Set[str] = set(populations.keys())
@@ -51,23 +53,39 @@ def random_map(
             if remaining_population < target_population * 1.5:  # hack
                 break
 
+            # TODO - Modified
             # Get a spanning tree.
-            # root: Tree = RandomTree(graph)
-            root = Create(tbc, adjacencies, populations)  # TODO
-            tree_pops = tree_populations(root, populations)  # TODO - spanning_kids?
-            all_nodes: List[Node] = nodes_in_tree(root)  # TODO
+            # root = Create(tbc, adjacencies, populations)
+            # tree_pops = tree_populations(root, populations)
+            # all_nodes: List[Node] = nodes_in_tree(root)
+            spanning: Tree = RandomTree(graph)
+            spanning.compute_weight()
+            cuts: list[Tree] = spanning.all_subtrees()
 
+            # TODO - Modified: Is this right?
             # Sort the cuts by their deviation from the target population, and
             # then filter out the ones that wouldn't yield 'roughly equal' population.
-            ranked = sorted(
-                all_nodes,
-                key=lambda n: abs(tree_pops[n.id] - target_population)
-                / target_population,
+            # ranked = sorted(
+            #     graph.nodes,
+            #     # all_nodes,
+            #     key=lambda n: abs(tree_pops[n.id] - target_population)
+            #     / target_population,
+            # )
+            ranked: List[Tree] = sorted(
+                cuts,
+                key=lambda x: abs(
+                    min(
+                        dev(x.subtree_weight, target_population),
+                        dev(total_population - x.subtree_weight, target_population),
+                    )
+                ),
             )
             ranked = [
                 n
                 for n in ranked
-                if abs(tree_pops[n.id] - target_population) / target_population
+                # TODO - Modified
+                # if abs(tree_pops[n.id] - target_population) / target_population
+                if abs(n.subtree_weight - target_population) / target_population
                 < roughly_equal
             ]
             if not ranked:
@@ -77,19 +95,33 @@ def random_map(
             random_i = random.randint(0, 20)
             if random_i >= len(ranked):
                 continue
-            choice: Node = ranked[random_i]
+            # TODO - Modified
+            # choice: Node = ranked[random_i]
+            choice: Tree = ranked[random_i]
 
             # If the deviation of the district would be too large, try again.
+            # TODO - Modified
+            # deviation = (
+            #     abs(tree_pops[choice.id] - target_population) / target_population
+            # )
             deviation = (
-                abs(tree_pops[choice.id] - target_population) / target_population
+                abs(choice.subtree_weight - target_population) / target_population
             )
             if deviation > roughly_equal:
                 continue
 
+            # TODO - Modified
             # If the deviation of the remaining population would be too large, try again.
+            # deviation = (
+            #     abs(
+            #         (remaining_population - tree_pops[choice.id]) / (N - district)
+            #         - target_population
+            #     )
+            #     / target_population
+            # )
             deviation = (
                 abs(
-                    (remaining_population - tree_pops[choice.id]) / (N - district)
+                    (remaining_population - choice.subtree_weight) / (N - district)
                     - target_population
                 )
                 / target_population
@@ -97,17 +129,21 @@ def random_map(
             if deviation > roughly_equal:
                 continue
 
+            # TODO - This needs to be modified
             # Assign the GEOIDs in the chosen cut to the current district.
             assign_district(choice, district, tbc, assignments)
 
             # Increment the district and repeat.
             district += 1
 
+        # TODO
         # Must handle the last district, which may have a bad size.
         assert (
             abs(remaining_population - target_population)
         ) / target_population < roughly_equal
-        root = Create(tbc, adjacencies, populations)
+        # TODO - This needs to be modified. tbc keeps track of the remaining nodes.
+        # root = Create(tbc, adjacencies, populations)
+        spanning = RandomTree(graph)
         assign_district(root, district, tbc, assignments)
         break
 
@@ -125,6 +161,23 @@ def random_map(
     ]
 
     return plan
+
+
+# TODO - Added
+def mkGraph(adjacencies: List[Tuple[str, str]], populations: Dict[str, int]):
+    nodes: Dict[str, Node] = {
+        geoid: Node(geoid, populations[geoid], set()) for geoid in populations.keys()
+    }
+    for a, b in adjacencies:
+        nodes[a].neighbors.add(nodes[b])
+        nodes[b].neighbors.add(nodes[a])
+    graph: Graph = Graph(frozenset(nodes.values()))
+    return graph
+
+
+# TODO - Added: What is this, and how/why is it different from population deviation?
+def dev(x: float, target: float) -> float:
+    return abs(x / target - 1)
 
 
 # # TODO - Required suporting code to be replaced.
@@ -217,21 +270,22 @@ def random_map(
 #
 
 
-def tree_populations0(
-    root: Node, populations: Dict[str, int], tree_pops: Dict[str, int]
-):
-    tree_pops[root.id] = populations[root.id]
-    for n in root.spanning_kids:  # TODO
-        tree_populations0(n, populations, tree_pops)
-        tree_pops[root.id] += tree_pops[n.id]
+# def tree_populations0(
+#     root: Node, populations: Dict[str, int], tree_pops: Dict[str, int]
+# ):
+#     tree_pops[root.id] = populations[root.id]
+#     for n in root.spanning_kids:  # TODO
+#         tree_populations0(n, populations, tree_pops)
+#         tree_pops[root.id] += tree_pops[n.id]
 
 
-def tree_populations(root: Node, populations: Dict[str, int]) -> Dict[str, int]:
-    tree_pops: Dict[str, int] = {}
-    tree_populations0(root, populations, tree_pops)
-    return tree_pops
+# def tree_populations(root: Node, populations: Dict[str, int]) -> Dict[str, int]:
+#     tree_pops: Dict[str, int] = {}
+#     tree_populations0(root, populations, tree_pops)
+#     return tree_pops
 
 
+# TODO - This needs to be re-worked
 def assign_district(
     root: Node, district: int, tbc: Set[str], assignments: Dict[str, int]
 ):
