@@ -52,8 +52,8 @@ def random_map(
                 break
 
             # Get a spanning tree.
-            root: Tree = RandomTree(graph)
-            # root = Create(tbc, adjacencies, populations)  # TODO
+            # root: Tree = RandomTree(graph)
+            root = Create(tbc, adjacencies, populations)  # TODO
             tree_pops = tree_populations(root, populations)  # TODO - spanning_kids?
             all_nodes: List[Node] = nodes_in_tree(root)  # TODO
 
