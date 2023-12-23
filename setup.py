@@ -14,7 +14,7 @@ setup(
         "rdaensemble.rmfrsp",
         "rdaensemble.rmfrst",
         "rdaensemble.smc",
-        "rdaensemble.spanning_tree",
+        "rdaensemble.ust",
     ],
     install_requires=["rdabase", "rdascore"],
     zip_safe=False,
