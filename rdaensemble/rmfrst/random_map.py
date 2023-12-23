@@ -11,11 +11,11 @@ from typing import List, Dict, Tuple, Set, Optional
 
 from rdabase import Assignment
 
-# from ..spanning_tree import random_spanning_tree  # TODO
+from ..ust import Node, Graph, Tree, RandomTree
 
 
 def random_map(
-    adjacencies: List[Tuple[str, str]],
+    adjacencies: List[Tuple[str, str]],  # TODO - replace with Graph?
     populations: Dict[str, int],
     N: int,
     seed: int,
@@ -52,9 +52,10 @@ def random_map(
                 break
 
             # Get a spanning tree.
-            root = Create(tbc, adjacencies, populations)
-            tree_pops = tree_populations(root, populations)
-            all_nodes: List[Node] = nodes_in_tree(root)
+            root: Tree = RandomTree(graph)
+            # root = Create(tbc, adjacencies, populations)  # TODO
+            tree_pops = tree_populations(root, populations)  # TODO - spanning_kids?
+            all_nodes: List[Node] = nodes_in_tree(root)  # TODO
 
             # Sort the cuts by their deviation from the target population, and
             # then filter out the ones that wouldn't yield 'roughly equal' population.
@@ -126,91 +127,91 @@ def random_map(
     return plan
 
 
-# TODO - Required suporting code to be replaced.
+# # TODO - Required suporting code to be replaced.
 
 
-class Node:
-    id: str
-    Next: Optional["Node"]
-    InTree: bool
-    neighbors: List["Node"]
-    spanning_kids: List["Node"]
+# class Node:
+#     id: str
+#     Next: Optional["Node"]
+#     InTree: bool
+#     neighbors: List["Node"]
+#     spanning_kids: List["Node"]
 
-    def __init__(self, id: str, population: int):
-        self.id = id
-        self.Next = None
-        self.InTree = False
-        self.neighbors = []
-        self.spanning_kids = []
+#     def __init__(self, id: str, population: int):
+#         self.id = id
+#         self.Next = None
+#         self.InTree = False
+#         self.neighbors = []
+#         self.spanning_kids = []
 
-    def __repr__(self):
-        return f"Node(id={self.id}, neighbors={len(self.neighbors)}, spanning_kids={len(self.spanning_kids)})"
-
-
-# Generating Random Spanning Trees More Quickly than the Cover Time
-# David Bruce Wilson
-# https://www.cs.cmu.edu/~15859n/RelatedWork/RandomTrees-Wilson.pdf
-def RandomTreeRoot(units: List[Node], r: Node):
-    u: Optional[Node]
-    for u in units:
-        u.InTree = False
-    r.InTree = True
-    r.Next = None
-    for i in units:
-        assert i is not None
-        u = i
-        while not u.InTree:
-            # NOTE - This should be using the same random seed set in random_map().
-            u.Next = random.choice(u.neighbors)
-            u = u.Next
-            assert u is not None
-        u = i
-        while not u.InTree:
-            u.InTree = True
-            assert u.Next is not None
-            u = u.Next
-            assert u is not None
+#     def __repr__(self):
+#         return f"Node(id={self.id}, neighbors={len(self.neighbors)}, spanning_kids={len(self.spanning_kids)})"
 
 
-def Create(
-    tbc: Set[str],
-    adjacencies: List[tuple[str, str]],
-    populations: Dict[str, int],
-) -> Node:
-    all = mklists(tbc, adjacencies, populations)
-    root: Node = random.choice(all)
-    RandomTreeRoot(all, root)
-    n: Node
-    for n in all:
-        if n.Next is not None and n not in n.Next.spanning_kids:
-            n.Next.spanning_kids.append(n)
-    return root
+# # Generating Random Spanning Trees More Quickly than the Cover Time
+# # David Bruce Wilson
+# # https://www.cs.cmu.edu/~15859n/RelatedWork/RandomTrees-Wilson.pdf
+# def RandomTreeRoot(units: List[Node], r: Node):
+#     u: Optional[Node]
+#     for u in units:
+#         u.InTree = False
+#     r.InTree = True
+#     r.Next = None
+#     for i in units:
+#         assert i is not None
+#         u = i
+#         while not u.InTree:
+#             # NOTE - This should be using the same random seed set in random_map().
+#             u.Next = random.choice(u.neighbors)
+#             u = u.Next
+#             assert u is not None
+#         u = i
+#         while not u.InTree:
+#             u.InTree = True
+#             assert u.Next is not None
+#             u = u.Next
+#             assert u is not None
 
 
-def mklists(
-    tbc: Set[str],
-    adjacencies: List[tuple[str, str]],
-    populations: Dict[str, int],
-) -> List[Node]:
-    nodes: Dict[str, Node] = {}
-    for a in adjacencies:
-        if a[0] in tbc and a[0] not in nodes:
-            nodes[a[0]] = Node(a[0], populations[a[0]])
-        if a[1] in tbc and a[1] not in nodes:
-            nodes[a[1]] = Node(a[1], populations[a[1]])
-        if a[0] in tbc and a[1] in tbc:
-            nodes[a[0]].neighbors.append(nodes[a[1]])
-            nodes[a[1]].neighbors.append(nodes[a[0]])
-    all = list(nodes.values())
-    return all
+# def Create(
+#     tbc: Set[str],
+#     adjacencies: List[tuple[str, str]],
+#     populations: Dict[str, int],
+# ) -> Node:
+#     all = mklists(tbc, adjacencies, populations)
+#     root: Node = random.choice(all)
+#     RandomTreeRoot(all, root)
+#     n: Node
+#     for n in all:
+#         if n.Next is not None and n not in n.Next.spanning_kids:
+#             n.Next.spanning_kids.append(n)
+#     return root
 
 
-def nodes_in_tree(root: Node) -> List[Node]:
-    nodes: List[Node] = []
-    nodes.append(root)
-    for n in root.spanning_kids:
-        nodes.extend(nodes_in_tree(n))
-    return nodes
+# def mklists(
+#     tbc: Set[str],
+#     adjacencies: List[tuple[str, str]],
+#     populations: Dict[str, int],
+# ) -> List[Node]:
+#     nodes: Dict[str, Node] = {}
+#     for a in adjacencies:
+#         if a[0] in tbc and a[0] not in nodes:
+#             nodes[a[0]] = Node(a[0], populations[a[0]])
+#         if a[1] in tbc and a[1] not in nodes:
+#             nodes[a[1]] = Node(a[1], populations[a[1]])
+#         if a[0] in tbc and a[1] in tbc:
+#             nodes[a[0]].neighbors.append(nodes[a[1]])
+#             nodes[a[1]].neighbors.append(nodes[a[0]])
+#     all = list(nodes.values())
+#     return all
+
+
+# def nodes_in_tree(root: Node) -> List[Node]:
+#     nodes: List[Node] = []
+#     nodes.append(root)
+#     for n in root.spanning_kids:
+#         nodes.extend(nodes_in_tree(n))
+#     return nodes
 
 
 #
@@ -220,7 +221,7 @@ def tree_populations0(
     root: Node, populations: Dict[str, int], tree_pops: Dict[str, int]
 ):
     tree_pops[root.id] = populations[root.id]
-    for n in root.spanning_kids:
+    for n in root.spanning_kids:  # TODO
         tree_populations0(n, populations, tree_pops)
         tree_pops[root.id] += tree_pops[n.id]
 
