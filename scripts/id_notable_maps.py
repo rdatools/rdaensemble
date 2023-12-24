@@ -6,9 +6,9 @@ FIND THE NOTABLE MAPS IN A SCORED ENSEMBLE OF MAPS
 For example:
 
 $ scripts/id_notable_maps.py \
---scores ensembles/NC20C_RMfRST_1000_scores.csv \
---metadata ensembles/NC20C_RMfRST_1000_scores_metadata.json \
---notables ensembles/NC20C_RMfRST_1000_notables_maps.json \
+--scores ~/iCloud/fileout/NC20C_RMfRST_1000_scores.csv \
+--metadata ~/iCloud/fileout/NC20C_RMfRST_1000_scores_metadata.json \
+--notables ~/iCloud/fileout/NC20C_RMfRST_1000_notables_maps.json \
 --no-debug
 
 For documentation, type:
@@ -134,9 +134,9 @@ def parse_args():
 
     # Default values for args in debug mode
     debug_defaults: Dict[str, Any] = {
-        "scores": "ensembles/NC20C_RMfRST_100_scores.csv",
-        "metadata": "ensembles/NC20C_RMfRST_100_scores_metadata.json",
-        "notables": "ensembles/NC20C_RMfRST_100_notable_maps.json",
+        "scores": "~/iCloud/fileout/NC20C_RMfRST_100_scores.csv",
+        "metadata": "~/iCloud/fileout/NC20C_RMfRST_100_scores_metadata.json",
+        "notables": "~/iCloud/fileout/NC20C_RMfRST_100_notable_maps.json",
         "splitting": 0,
     }
     args = require_args(args, args.debug, debug_defaults)

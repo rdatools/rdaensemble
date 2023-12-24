@@ -10,9 +10,9 @@ $ scripts/recom_ensemble.py \
 --size 1000 \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
---root ../rdaroot/output/NC20C_RMfRST_100_rootmap.csv \
---plans ensembles/NC20C_ReCom_1000_plans.json \
---log ensembles/NC20C_ReCom_1000_log.txt \
+--root ../rdaroot/~/iCloud/fileout/NC20C_RMfRST_100_rootmap.csv \
+--plans ~/iCloud/fileout/NC20C_ReCom_1000_plans.json \
+--log ~/iCloud/fileout/NC20C_ReCom_1000_log.txt \
 --no-debug
 
 For documentation, type:
@@ -159,9 +159,9 @@ def parse_args():
         "data": "../rdabase/data/NC/NC_2020_data.csv",
         # "shapes": "../rdabase/data/NC/NC_2020_shapes_simplified.json",
         "graph": "../rdabase/data/NC/NC_2020_graph.json",
-        "root": "../rdaroot/output/NC20C_RMfRST_100_rootmap.csv",
-        "plans": "ensembles/NC20C_ReCom_1000_plans.json",
-        "log": "ensembles/NC20C_ReCom_1000_log.txt",
+        "root": "../rdaroot/~/iCloud/fileout/NC20C_RMfRST_100_rootmap.csv",
+        "plans": "~/iCloud/fileout/NC20C_ReCom_1000_plans.json",
+        "log": "~/iCloud/fileout/NC20C_ReCom_1000_log.txt",
         "size": 10,
     }
     args = require_args(args, args.debug, debug_defaults)
