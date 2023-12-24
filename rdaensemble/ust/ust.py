@@ -1,7 +1,7 @@
 from typing import Optional
 import random
 
-from .graph import Node, Graph, Tree
+from .graph import Node, Graph, Tree, mkSubsetGraph
 
 
 # Generating Random Spanning Trees More Quickly than the Cover Time

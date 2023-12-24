@@ -11,7 +11,7 @@ from typing import List, Dict, Tuple, Set, Optional
 
 from rdabase import Assignment
 
-from ..ust import Node, Graph, Tree, RandomTree
+from ..ust import Node, Graph, Tree, RandomTree, mkSubsetGraph
 
 
 def random_map(
@@ -33,13 +33,15 @@ def random_map(
     target_population: int = int(total_population / N)
     # root: Node
 
-    while True:
-        graph: Graph = mkGraph(adjacencies, populations)
-        tbc: Set[str] = set(populations.keys())
-        assignments: Dict[str, int] = {}
-        district: int = 1
-        # tree_pops: Dict[str, int]
+    remainder: Graph = mkGraph(adjacencies, populations)
 
+    # tbc: Set[str] = set(populations.keys())
+
+    assignments: Dict[str, int] = {}
+    district: int = 1
+    # tree_pops: Dict[str, int]
+
+    while True:
         counter: int = 0
         while True:
             counter += 1
@@ -48,8 +50,10 @@ def random_map(
                 # The random seed is updated after each call,
                 # so the process should eventually succeed.
 
+            # TODO - Modified
             # Calculate the population yet to be assigned.
-            remaining_population = sum(populations[geoid] for geoid in tbc)
+            # remaining_population = sum(populations[geoid] for geoid in tbc)
+            remaining_population = sum(populations[node.id] for node in remainder.nodes)
             if remaining_population < target_population * 1.5:  # hack
                 break
 
@@ -58,9 +62,7 @@ def random_map(
             # root = Create(tbc, adjacencies, populations)
             # tree_pops = tree_populations(root, populations)
             # all_nodes: List[Node] = nodes_in_tree(root)
-            spanning: Tree = RandomTree(
-                graph
-            )  # TODO - How do we get the (next) spanning tree?
+            spanning: Tree = RandomTree(remainder)
             spanning.compute_weight()
             cuts: list[Tree] = spanning.all_subtrees()
 
@@ -95,16 +97,14 @@ def random_map(
                 continue
             # TODO - Modified
             # choice: Node = ranked[random_i]
-            choice: Tree = ranked[random_i]
+            cut: Tree = ranked[random_i]
 
             # If the deviation of the district would be too large, try again.
             # TODO - Modified
             # deviation = (
             #     abs(tree_pops[choice.id] - target_population) / target_population
             # )
-            deviation = (
-                abs(choice.subtree_weight - target_population) / target_population
-            )
+            deviation = abs(cut.subtree_weight - target_population) / target_population
             if deviation > roughly_equal:
                 continue
 
@@ -119,7 +119,7 @@ def random_map(
             # )
             deviation = (
                 abs(
-                    (remaining_population - choice.subtree_weight) / (N - district)
+                    (remaining_population - cut.subtree_weight) / (N - district)
                     - target_population
                 )
                 / target_population
@@ -127,22 +127,26 @@ def random_map(
             if deviation > roughly_equal:
                 continue
 
-            # TODO - This needs to be modified
+            # The cut is good ...
+
+            # TODO - Modified
             # Assign the GEOIDs in the chosen cut to the current district.
-            assign_district(choice, district, tbc, assignments)
+            # assign_district(root, district, tbc, assignments)
+            assign_district(cut, district, assignments)
 
-            # Increment the district and repeat.
+            # Increment the district, partition the graph, and repeat.
             district += 1
+            _, remainder = partition(spanning, cut)  # TODO - Added
 
-        # TODO
         # Must handle the last district, which may have a bad size.
         assert (
             abs(remaining_population - target_population)
         ) / target_population < roughly_equal
-        # TODO - This needs to be modified. tbc keeps track of the remaining nodes.
+        # TODO - Modified
         # root = Create(tbc, adjacencies, populations)
-        choice = RandomTree(graph)  # TODO - How do we get the last tree?
-        assign_district(choice, district, tbc, assignments)
+        # assign_district(root, district, tbc, assignments)
+        cut: Tree = RandomTree(remainder)
+        assign_district(cut, district, assignments)
         break
 
     # note that this may not generate N districts due to spanning tree issues.
@@ -171,6 +175,16 @@ def mkGraph(adjacencies: List[Tuple[str, str]], populations: Dict[str, int]):
         nodes[b].neighbors.add(nodes[a])
     graph: Graph = Graph(frozenset(nodes.values()))
     return graph
+
+
+# TODO - Added
+def partition(root: Tree, cut: Tree) -> tuple[Graph, Graph]:
+    remainder_nodes: set[Node] = set(c.node for c in root.all_subtrees_above(cut))
+    cleaved_nodes: set[Node] = set(c.node for c in cut.all_subtrees())
+    remainder: Graph = mkSubsetGraph(remainder_nodes)
+    cleaved: Graph = mkSubsetGraph(cleaved_nodes)
+    assert len(remainder.nodes) + len(cleaved.nodes) == root.nodecount()
+    return cleaved, remainder
 
 
 # # TODO - Required suporting code to be replaced.
@@ -278,15 +292,13 @@ def mkGraph(adjacencies: List[Tuple[str, str]], populations: Dict[str, int]):
 #     return tree_pops
 
 
-# TODO - This needs to be re-worked
-def assign_district(
-    tree: Tree, district: int, tbc: Set[str], assignments: Dict[str, int]
-):
-    assert tree.node.id not in assignments
-    assignments[tree.node.id] = district
-    tbc.remove(tree.node.id)
-    for n in tree.spanning_kids:  # TODO - ???
-        assign_district(n, district, tbc, assignments)
+# TODO - Modified
+# TODO - Make this iterative vs. recursive?
+def assign_district(cut: Tree, district: int, assignments: Dict[str, int]):
+    assert cut.node.id not in assignments
+    assignments[cut.node.id] = district
+    for child in cut.children:
+        assign_district(child, district, assignments)
 
 
 # def assign_district(
