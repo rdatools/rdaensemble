@@ -127,3 +127,6 @@ class Tree:
 def Tree2Graph(t: Tree) -> Graph:
     nodes: set[Node] = set(st.node for st in t.all_subtrees())
     return mkSubsetGraph(nodes)
+
+
+### END ###

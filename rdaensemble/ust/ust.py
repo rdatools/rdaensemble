@@ -46,3 +46,6 @@ def RandomTree(graph: Graph) -> Tree:
     root: Node = random.choice(all)
     t: Tree = RandomTreeRoot(all, root)
     return t
+
+
+### END ###
