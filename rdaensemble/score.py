@@ -18,6 +18,7 @@ from rdabase import (
 )
 from rdascore import analyze_plan
 from .compactness import cuts_and_boundaries
+from .utils import make_plan
 
 
 def score_ensemble(
@@ -74,15 +75,6 @@ def score_ensemble(
             pass
 
     return scores
-
-
-def make_plan(assignments: Dict[str, int | str]) -> List[Assignment]:
-    """Convert a dict of geoid: district assignments to a list of Assignments."""
-
-    plan: List[Assignment] = [
-        Assignment(geoid, district) for geoid, district in assignments.items()
-    ]
-    return plan
 
 
 ### END ###
