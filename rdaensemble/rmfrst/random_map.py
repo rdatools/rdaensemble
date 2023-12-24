@@ -33,13 +33,13 @@ def random_map(
     target_population: int = int(total_population / N)
     # root: Node
 
-    graph: Graph = mkGraph(adjacencies, populations)
-
     while True:
+        graph: Graph = mkGraph(adjacencies, populations)
         tbc: Set[str] = set(populations.keys())
-        district: int = 1
         assignments: Dict[str, int] = {}
-        tree_pops: Dict[str, int]
+        district: int = 1
+        # tree_pops: Dict[str, int]
+
         counter: int = 0
         while True:
             counter += 1
@@ -58,11 +58,13 @@ def random_map(
             # root = Create(tbc, adjacencies, populations)
             # tree_pops = tree_populations(root, populations)
             # all_nodes: List[Node] = nodes_in_tree(root)
-            spanning: Tree = RandomTree(graph)
+            spanning: Tree = RandomTree(
+                graph
+            )  # TODO - How do we get the (next) spanning tree?
             spanning.compute_weight()
             cuts: list[Tree] = spanning.all_subtrees()
 
-            # TODO - Modified: Is this right?
+            # TODO - Modified
             # Sort the cuts by their deviation from the target population, and
             # then filter out the ones that wouldn't yield 'roughly equal' population.
             # ranked = sorted(
@@ -73,12 +75,8 @@ def random_map(
             # )
             ranked: List[Tree] = sorted(
                 cuts,
-                key=lambda x: abs(
-                    min(
-                        dev(x.subtree_weight, target_population),
-                        dev(total_population - x.subtree_weight, target_population),
-                    )
-                ),
+                key=lambda x: abs(x.subtree_weight - target_population)
+                / target_population,
             )
             ranked = [
                 n
@@ -143,8 +141,8 @@ def random_map(
         ) / target_population < roughly_equal
         # TODO - This needs to be modified. tbc keeps track of the remaining nodes.
         # root = Create(tbc, adjacencies, populations)
-        spanning = RandomTree(graph)
-        assign_district(root, district, tbc, assignments)
+        choice = RandomTree(graph)  # TODO - How do we get the last tree?
+        assign_district(choice, district, tbc, assignments)
         break
 
     # note that this may not generate N districts due to spanning tree issues.
@@ -173,11 +171,6 @@ def mkGraph(adjacencies: List[Tuple[str, str]], populations: Dict[str, int]):
         nodes[b].neighbors.add(nodes[a])
     graph: Graph = Graph(frozenset(nodes.values()))
     return graph
-
-
-# TODO - Added: What is this, and how/why is it different from population deviation?
-def dev(x: float, target: float) -> float:
-    return abs(x / target - 1)
 
 
 # # TODO - Required suporting code to be replaced.
@@ -287,13 +280,23 @@ def dev(x: float, target: float) -> float:
 
 # TODO - This needs to be re-worked
 def assign_district(
-    root: Node, district: int, tbc: Set[str], assignments: Dict[str, int]
+    tree: Tree, district: int, tbc: Set[str], assignments: Dict[str, int]
 ):
-    assert root.id not in assignments
-    assignments[root.id] = district
-    tbc.remove(root.id)
-    for n in root.spanning_kids:
+    assert tree.node.id not in assignments
+    assignments[tree.node.id] = district
+    tbc.remove(tree.node.id)
+    for n in tree.spanning_kids:  # TODO - ???
         assign_district(n, district, tbc, assignments)
+
+
+# def assign_district(
+#     root: Node, district: int, tbc: Set[str], assignments: Dict[str, int]
+# ):
+#     assert root.id not in assignments
+#     assignments[root.id] = district
+#     tbc.remove(root.id)
+#     for n in root.spanning_kids:
+#         assign_district(n, district, tbc, assignments)
 
 
 ### END ###
