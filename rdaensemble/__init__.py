@@ -6,7 +6,6 @@ from .mcmc import gen_mcmc_ensemble
 from .general import (
     cuts_and_boundaries,
     score_ensemble,
-    make_plan,
     id_notable_maps,
     ratings_dimensions,
     ratings_indexes,

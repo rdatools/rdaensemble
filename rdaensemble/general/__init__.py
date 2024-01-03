@@ -1,7 +1,7 @@
 # rdaensemble/general/__init__.py
 
 from .compactness import cuts_and_boundaries
-from .score import score_ensemble, make_plan
+from .score import score_ensemble
 from .notable_maps import (
     id_notable_maps,
     ratings_dimensions,
