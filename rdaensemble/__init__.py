@@ -8,7 +8,7 @@ from .score import score_ensemble, make_plan
 from .notable_maps import (
     id_notable_maps,
     ratings_dimensions,
-    ratings_dimensions,
+    ratings_indexes,
     better_map,
     qualifying_map,
 )
