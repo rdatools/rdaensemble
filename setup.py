@@ -10,7 +10,7 @@ setup(
     license="MIT",
     packages=[
         "rdaensemble",
-        "rdaensemble.recom",
+        "rdaensemble.mcmc",
         "rdaensemble.rmfrsp",
         "rdaensemble.rmfrst",
         "rdaensemble.smc",
