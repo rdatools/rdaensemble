@@ -12,12 +12,10 @@ from rdabase import (
     Graph,
     Point,
     Assignment,
+    load_plan,
     IndexedWeightedAssignment,
     index_geoids,
     index_assignments,
-)
-from rdascore import (
-    load_plan,
 )
 from rdadccvt import (
     file_list,
