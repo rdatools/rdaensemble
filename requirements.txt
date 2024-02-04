@@ -2,3 +2,4 @@ gerrychain
 rdabase
 rdadccvt
 rdascore
+setuptools
