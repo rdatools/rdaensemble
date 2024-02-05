@@ -29,8 +29,11 @@ from rdabase import (
     require_args,
     starting_seed,
     write_json,
+    load_data,
+    load_shapes,
+    load_graph,
+    load_metadata,
 )
-from rdascore import load_data, load_shapes, load_graph, load_metadata
 
 from rdaensemble import gen_rmfrsp_ensemble, ensemble_metadata
 
@@ -54,18 +57,18 @@ def main() -> None:
     )
 
     with open(args.log, "w") as f:
-        plans: List[
-            Dict[str, str | float | Dict[str, int | str]]
-        ] = gen_rmfrsp_ensemble(
-            args.size,
-            seed,
-            data,
-            shapes,
-            graph,
-            N,
-            f,
-            roughly_equal=args.roughlyequal,
-            verbose=args.verbose,
+        plans: List[Dict[str, str | float | Dict[str, int | str]]] = (
+            gen_rmfrsp_ensemble(
+                args.size,
+                seed,
+                data,
+                shapes,
+                graph,
+                N,
+                f,
+                roughly_equal=args.roughlyequal,
+                verbose=args.verbose,
+            )
         )
 
     ensemble["plans"] = plans
