@@ -15,7 +15,7 @@ from ..ust import Node, Graph, Tree, RandomTree, mkSubsetGraph
 
 
 def random_map(
-    adjacencies: List[Tuple[str, str]],  # TODO - replace with Graph?
+    adjacencies: List[Tuple[str, str]],
     populations: Dict[str, int],
     N: int,
     seed: int,
@@ -50,31 +50,18 @@ def random_map(
                 # The random seed is updated after each call,
                 # so the process should eventually succeed.
 
-            # TODO - Modified
             # Calculate the population yet to be assigned.
-            # remaining_population = sum(populations[geoid] for geoid in tbc)
             remaining_population = sum(populations[node.id] for node in remainder.nodes)
             if remaining_population < target_population * 1.5:  # hack
                 break
 
-            # TODO - Modified
             # Get a spanning tree.
-            # root = Create(tbc, adjacencies, populations)
-            # tree_pops = tree_populations(root, populations)
-            # all_nodes: List[Node] = nodes_in_tree(root)
             spanning: Tree = RandomTree(remainder)
             spanning.compute_weight()
             cuts: list[Tree] = spanning.all_subtrees()
 
-            # TODO - Modified
             # Sort the cuts by their deviation from the target population, and
             # then filter out the ones that wouldn't yield 'roughly equal' population.
-            # ranked = sorted(
-            #     graph.nodes,
-            #     # all_nodes,
-            #     key=lambda n: abs(tree_pops[n.id] - target_population)
-            #     / target_population,
-            # )
             ranked: List[Tree] = sorted(
                 cuts,
                 key=lambda x: abs(x.subtree_weight - target_population)
@@ -83,8 +70,6 @@ def random_map(
             ranked = [
                 n
                 for n in ranked
-                # TODO - Modified
-                # if abs(tree_pops[n.id] - target_population) / target_population
                 if abs(n.subtree_weight - target_population) / target_population
                 < roughly_equal
             ]
@@ -95,28 +80,14 @@ def random_map(
             random_i = random.randint(0, 20)
             if random_i >= len(ranked):
                 continue
-            # TODO - Modified
-            # choice: Node = ranked[random_i]
             cut: Tree = ranked[random_i]
 
             # If the deviation of the district would be too large, try again.
-            # TODO - Modified
-            # deviation = (
-            #     abs(tree_pops[choice.id] - target_population) / target_population
-            # )
             deviation = abs(cut.subtree_weight - target_population) / target_population
             if deviation > roughly_equal:
                 continue
 
-            # TODO - Modified
             # If the deviation of the remaining population would be too large, try again.
-            # deviation = (
-            #     abs(
-            #         (remaining_population - tree_pops[choice.id]) / (N - district)
-            #         - target_population
-            #     )
-            #     / target_population
-            # )
             deviation = (
                 abs(
                     (remaining_population - cut.subtree_weight) / (N - district)
@@ -129,22 +100,17 @@ def random_map(
 
             # The cut is good ...
 
-            # TODO - Modified
             # Assign the GEOIDs in the chosen cut to the current district.
-            # assign_district(root, district, tbc, assignments)
             assign_district(cut, district, assignments)
 
             # Increment the district, partition the graph, and repeat.
             district += 1
-            _, remainder = partition(spanning, cut)  # TODO - Added
+            _, remainder = partition(spanning, cut)
 
         # Must handle the last district, which may have a bad size.
         assert (
             abs(remaining_population - target_population)
         ) / target_population < roughly_equal
-        # TODO - Modified
-        # root = Create(tbc, adjacencies, populations)
-        # assign_district(root, district, tbc, assignments)
         cut: Tree = RandomTree(remainder)
         assign_district(cut, district, assignments)
         break
@@ -165,7 +131,6 @@ def random_map(
     return plan
 
 
-# TODO - Added
 def mkGraph(adjacencies: List[Tuple[str, str]], populations: Dict[str, int]):
     nodes: Dict[str, Node] = {
         geoid: Node(geoid, populations[geoid], set()) for geoid in populations.keys()
@@ -177,7 +142,6 @@ def mkGraph(adjacencies: List[Tuple[str, str]], populations: Dict[str, int]):
     return graph
 
 
-# TODO - Added
 def partition(root: Tree, cut: Tree) -> tuple[Graph, Graph]:
     remainder_nodes: set[Node] = set(c.node for c in root.all_subtrees_above(cut))
     cleaved_nodes: set[Node] = set(c.node for c in cut.all_subtrees())
@@ -187,128 +151,11 @@ def partition(root: Tree, cut: Tree) -> tuple[Graph, Graph]:
     return cleaved, remainder
 
 
-# # TODO - Required suporting code to be replaced.
-
-
-# class Node:
-#     id: str
-#     Next: Optional["Node"]
-#     InTree: bool
-#     neighbors: List["Node"]
-#     spanning_kids: List["Node"]
-
-#     def __init__(self, id: str, population: int):
-#         self.id = id
-#         self.Next = None
-#         self.InTree = False
-#         self.neighbors = []
-#         self.spanning_kids = []
-
-#     def __repr__(self):
-#         return f"Node(id={self.id}, neighbors={len(self.neighbors)}, spanning_kids={len(self.spanning_kids)})"
-
-
-# # Generating Random Spanning Trees More Quickly than the Cover Time
-# # David Bruce Wilson
-# # https://www.cs.cmu.edu/~15859n/RelatedWork/RandomTrees-Wilson.pdf
-# def RandomTreeRoot(units: List[Node], r: Node):
-#     u: Optional[Node]
-#     for u in units:
-#         u.InTree = False
-#     r.InTree = True
-#     r.Next = None
-#     for i in units:
-#         assert i is not None
-#         u = i
-#         while not u.InTree:
-#             # NOTE - This should be using the same random seed set in random_map().
-#             u.Next = random.choice(u.neighbors)
-#             u = u.Next
-#             assert u is not None
-#         u = i
-#         while not u.InTree:
-#             u.InTree = True
-#             assert u.Next is not None
-#             u = u.Next
-#             assert u is not None
-
-
-# def Create(
-#     tbc: Set[str],
-#     adjacencies: List[tuple[str, str]],
-#     populations: Dict[str, int],
-# ) -> Node:
-#     all = mklists(tbc, adjacencies, populations)
-#     root: Node = random.choice(all)
-#     RandomTreeRoot(all, root)
-#     n: Node
-#     for n in all:
-#         if n.Next is not None and n not in n.Next.spanning_kids:
-#             n.Next.spanning_kids.append(n)
-#     return root
-
-
-# def mklists(
-#     tbc: Set[str],
-#     adjacencies: List[tuple[str, str]],
-#     populations: Dict[str, int],
-# ) -> List[Node]:
-#     nodes: Dict[str, Node] = {}
-#     for a in adjacencies:
-#         if a[0] in tbc and a[0] not in nodes:
-#             nodes[a[0]] = Node(a[0], populations[a[0]])
-#         if a[1] in tbc and a[1] not in nodes:
-#             nodes[a[1]] = Node(a[1], populations[a[1]])
-#         if a[0] in tbc and a[1] in tbc:
-#             nodes[a[0]].neighbors.append(nodes[a[1]])
-#             nodes[a[1]].neighbors.append(nodes[a[0]])
-#     all = list(nodes.values())
-#     return all
-
-
-# def nodes_in_tree(root: Node) -> List[Node]:
-#     nodes: List[Node] = []
-#     nodes.append(root)
-#     for n in root.spanning_kids:
-#         nodes.extend(nodes_in_tree(n))
-#     return nodes
-
-
-#
-
-
-# def tree_populations0(
-#     root: Node, populations: Dict[str, int], tree_pops: Dict[str, int]
-# ):
-#     tree_pops[root.id] = populations[root.id]
-#     for n in root.spanning_kids:  # TODO
-#         tree_populations0(n, populations, tree_pops)
-#         tree_pops[root.id] += tree_pops[n.id]
-
-
-# def tree_populations(root: Node, populations: Dict[str, int]) -> Dict[str, int]:
-#     tree_pops: Dict[str, int] = {}
-#     tree_populations0(root, populations, tree_pops)
-#     return tree_pops
-
-
-# TODO - Modified
-# TODO - Make this iterative vs. recursive?
 def assign_district(cut: Tree, district: int, assignments: Dict[str, int]):
     assert cut.node.id not in assignments
     assignments[cut.node.id] = district
     for child in cut.children:
         assign_district(child, district, assignments)
-
-
-# def assign_district(
-#     root: Node, district: int, tbc: Set[str], assignments: Dict[str, int]
-# ):
-#     assert root.id not in assignments
-#     assignments[root.id] = district
-#     tbc.remove(root.id)
-#     for n in root.spanning_kids:
-#         assign_district(n, district, tbc, assignments)
 
 
 ### END ###
