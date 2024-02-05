@@ -10,10 +10,12 @@ $ scripts/recom_ensemble.py \
 --size 1000 \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
---root ../rdaroot/~/iCloud/fileout/ensembles/NC20C_RMfRST_100_rootmap.csv \
---plans ~/iCloud/fileout/ensembles/NC20C_ReCom_1000_plans.json \
---log ~/iCloud/fileout/ensembles/NC20C_ReCom_1000_log.txt \
+--root ../../iCloud/fileout/rootmaps/NC20C_rootmap.csv \
+--plans ../../iCloud/fileout/ensembles/NC20C_ReCom_1000_plans.json \
+--log ../../iCloud/fileout/ensembles/NC20C_ReCom_1000_log.txt \
 --no-debug
+
+$ scripts/recom_ensemble.py
 
 For documentation, type:
 
@@ -33,7 +35,7 @@ from rdabase import (
     read_csv,
     write_json,
     load_data,
-    load_shapes,
+    # load_shapes,
     load_graph,
     load_metadata,
 )
@@ -100,11 +102,6 @@ def parse_args():
         type=str,
         help="Data file",
     )
-    # parser.add_argument(
-    #     "--shapes",
-    #     type=str,
-    #     help="Shapes abstract file",
-    # )
     parser.add_argument(
         "--graph",
         type=str,
@@ -160,11 +157,10 @@ def parse_args():
     debug_defaults: Dict[str, Any] = {
         "state": "NC",
         "data": "../rdabase/data/NC/NC_2020_data.csv",
-        # "shapes": "../rdabase/data/NC/NC_2020_shapes_simplified.json",
         "graph": "../rdabase/data/NC/NC_2020_graph.json",
-        "root": "../rdaroot/~/iCloud/fileout/ensembles/NC20C_RMfRST_100_rootmap.csv",
-        "plans": "~/iCloud/fileout/ensembles/NC20C_ReCom_1000_plans.json",
-        "log": "~/iCloud/fileout/ensembles/NC20C_ReCom_1000_log.txt",
+        "root": "../../iCloud/fileout/rootmaps/NC20C_rootmap.csv",
+        "plans": "../../iCloud/fileout/ensembles/NC20C_ReCom_1000_plans.json",
+        "log": "../../iCloud/fileout/ensembles/NC20C_ReCom_1000_log.txt",
         "size": 10,
     }
     args = require_args(args, args.debug, debug_defaults)

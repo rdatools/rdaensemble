@@ -18,7 +18,10 @@ from gerrychain import (
 from gerrychain.updaters import Tally
 
 from gerrychain.partition.assignment import Assignment
-from gerrychain.random import random
+
+import random
+
+# from gerrychain.random import random TODO
 
 from rdabase import Graph as RDAGraph, mkAdjacencies
 
