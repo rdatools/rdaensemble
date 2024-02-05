@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="rdaensemble",
-    version="1.2.3",
+    version="1.3.0",
     description="Redistricting ensembles",
     url="https://github.com/rdatools/rdaensemble",
     author="alecramsay",
