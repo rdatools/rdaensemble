@@ -23,7 +23,7 @@ import random
 
 # from gerrychain.random import random TODO
 
-from rdabase import Graph as RDAGraph, mkAdjacencies
+from rdabase import Graph as RDAGraph, mkAdjacencies, GeoID
 
 
 def gen_mcmc_ensemble(
@@ -78,6 +78,7 @@ def prep_data(
             i,
             {
                 "GEOID": str(data[geoid]["GEOID"]),
+                "COUNTY": GeoID(geoid).county[2:],
                 "TOTAL_POP": data[geoid]["TOTAL_POP"],
                 "REP_VOTES": data[geoid]["REP_VOTES"],
                 "DEM_VOTES": data[geoid]["DEM_VOTES"],
@@ -134,12 +135,14 @@ def setup_markov_chain(
 
     my_proposal: Callable
     my_constraints: List
+    my_weights = {"COUNTY": 0.5}
 
     my_proposal = partial(
         method,
         pop_col="TOTAL_POP",
         pop_target=ideal_population,
         epsilon=roughly_equal / 2,  # 1/2 of what you want to end up with
+        weight_dict=my_weights,
         node_repeats=node_repeats,
     )
 
