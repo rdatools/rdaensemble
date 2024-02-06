@@ -16,7 +16,7 @@ from gerrychain import (
     Election,
 )
 from gerrychain.updaters import Tally
-
+from gerrychain.constraints import contiguous
 from gerrychain.partition.assignment import Assignment
 
 import random
@@ -151,7 +151,7 @@ def setup_markov_chain(
     pop_constraint = constraints.within_percent_of_ideal_population(
         initial_partition, roughly_equal
     )
-    my_constraints = [compactness_bound, pop_constraint]
+    my_constraints = [contiguous, compactness_bound, pop_constraint]
 
     chain = MarkovChain(
         proposal=my_proposal,
