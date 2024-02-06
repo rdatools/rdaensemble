@@ -37,6 +37,7 @@ def gen_mcmc_ensemble(
     *,
     roughly_equal: float = 0.02,
     elasticity: float = 2.0,
+    countyweight: float = 0.75,
     node_repeats: int = 1,
     verbose: bool = False,
 ) -> List[Dict[str, str | float | Dict[str, int | str]]]:
@@ -52,6 +53,7 @@ def gen_mcmc_ensemble(
         elections,
         roughly_equal,
         elasticity,
+        countyweight,
         node_repeats,
     )
 
@@ -113,6 +115,7 @@ def setup_markov_chain(
     elections: List[Election],
     roughly_equal: float,
     elasticity: float,
+    countyweight: float,
     node_repeats: int,
 ) -> Any:
     """Set up the Markov chain."""
@@ -135,7 +138,7 @@ def setup_markov_chain(
 
     my_proposal: Callable
     my_constraints: List
-    my_weights = {"COUNTY": 0.5}
+    my_weights = {"COUNTY": countyweight}
 
     my_proposal = partial(
         method,

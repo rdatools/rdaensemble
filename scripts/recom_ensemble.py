@@ -75,6 +75,7 @@ def main() -> None:
             f,
             roughly_equal=args.roughlyequal,
             elasticity=args.elasticity,
+            countyweight=args.countyweight,
             node_repeats=args.noderepeats,
             verbose=args.verbose,
         )
@@ -133,6 +134,12 @@ def parse_args():
         type=float,
         default=2.0,
         help="Allowable district boundary stretch factor",
+    )
+    parser.add_argument(
+        "--countyweight",
+        type=float,
+        default=0.75,
+        help="County weights",
     )
     parser.add_argument(
         "--noderepeats",
