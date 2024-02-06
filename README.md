@@ -8,7 +8,7 @@ The code in this repository supports several methods for generating ensembles of
 
 - Random maps from random spanning trees (RMfRST)
 - Random maps from random starting points (RMfRSP)
-- Ensemble of maps using MCMC/ReCom (ReCom) <<< TODO
+- Ensemble of maps using MCMC/ReCom (ReCom)
 - Ensemble of maps using Sequential Monte Carlo (SMC) <<< TODO
 
 ## Input Files

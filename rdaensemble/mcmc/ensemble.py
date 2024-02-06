@@ -21,8 +21,6 @@ from gerrychain.partition.assignment import Assignment
 
 import random
 
-# from gerrychain.random import random TODO
-
 from rdabase import Graph as RDAGraph, mkAdjacencies, GeoID
 
 
