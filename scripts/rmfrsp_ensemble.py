@@ -11,8 +11,8 @@ $ scripts/rmfrsp_ensemble.py \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
---plans ~/iCloud/fileout/ensembles/NC20C_RMfRSP_1000_plans.json \
---log ~/iCloud/fileout/ensembles/NC20C_RMfRSP_1000_log.txt \
+--plans ../../iCloud/fileout/ensembles/NC20C_RMfRSP_1000_plans.json \
+--log ../../iCloud/fileout/ensembles/NC20C_RMfRSP_1000_log.txt \
 --no-debug
 
 For documentation, type:
@@ -144,8 +144,8 @@ def parse_args():
         "data": "../rdabase/data/NC/NC_2020_data.csv",
         "shapes": "../rdabase/data/NC/NC_2020_shapes_simplified.json",
         "graph": "../rdabase/data/NC/NC_2020_graph.json",
-        "plans": "~/iCloud/fileout/ensembles/NC20C_RMfRSP_1000_plans.json",
-        "log": "~/iCloud/fileout/ensembles/NC20C_RMfRSP_1000_log.txt",
+        "plans": "../../iCloud/fileout/ensembles/NC20C_RMfRSP_1000_plans.json",
+        "log": "../../iCloud/fileout/ensembles/NC20C_RMfRSP_1000_log.txt",
         "size": 10,
     }
     args = require_args(args, args.debug, debug_defaults)
