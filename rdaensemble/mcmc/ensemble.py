@@ -33,7 +33,7 @@ def gen_mcmc_ensemble(
     graph: Dict[str, List[str]],
     logfile,
     *,
-    roughly_equal: float = 0.02,
+    roughly_equal: float = 0.01,
     elasticity: float = 2.0,
     countyweight: float = 0.75,
     node_repeats: int = 1,
