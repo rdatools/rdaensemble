@@ -51,23 +51,23 @@ scripts/rmfrst_ensemble.py \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
---plans ../../iCloud/fileout/ensembles/NC20C_RMfRST_1000_plans.json \
---log ../../iCloud/fileout/ensembles/NC20C_RMfRST_1000_log.txt \
+--plans ../../iCloud/fileout/ensembles/NC20C_RMfRST_1K_plans.json \
+--log ../../iCloud/fileout/ensembles/NC20C_RMfRST_1K_log.txt \
 --no-debug
 
 scripts/score_ensemble.py \
 --state NC \
---plans ../../iCloud/fileout/ensembles/NC20C_RMfRST_1000_plans.json \
+--plans ../../iCloud/fileout/ensembles/NC20C_RMfRST_1K_plans.json \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
---scores ../../iCloud/fileout/ensembles/NC20C_RMfRST_1000_scores.csv \
+--scores ../../iCloud/fileout/ensembles/NC20C_RMfRST_1K_scores.csv \
 --no-debug
 
 scripts/id_notable_maps.py \
---scores ../../iCloud/fileout/ensembles/NC20C_RMfRST_1000_scores.csv \
---metadata ../../iCloud/fileout/ensembles/NC20C_RMfRST_1000_scores_metadata.json \
---notables ../../iCloud/fileout/ensembles/NC20C_RMfRST_1000_notables_maps.json \
+--scores ../../iCloud/fileout/ensembles/NC20C_RMfRST_1K_scores.csv \
+--metadata ../../iCloud/fileout/ensembles/NC20C_RMfRST_1K_scores_metadata.json \
+--notables ../../iCloud/fileout/ensembles/NC20C_RMfRST_1K_notables_maps.json \
 --splitting 0 \
 --no-debug
 
@@ -79,22 +79,22 @@ scripts/recom_ensemble.py \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
 --root ../rdaroot/../../iCloud/fileout/ensembles/NC20C_RMfRST_100_rootmap.csv \
---plans ../../iCloud/fileout/ensembles/NC20C_ReCom_1000_plans.json \
---log ../../iCloud/fileout/ensembles/NC20C_ReCom_1000_log.txt \
+--plans ../../iCloud/fileout/ensembles/NC20C_ReCom_1K_plans.json \
+--log ../../iCloud/fileout/ensembles/NC20C_ReCom_1K_log.txt \
 --no-debug
 
 scripts/score_ensemble.py \
 --state NC \
---plans ../../iCloud/fileout/ensembles/NC20C_ReCom_1000_plans.json \
+--plans ../../iCloud/fileout/ensembles/NC20C_ReCom_1K_plans.json \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
---scores ../../iCloud/fileout/ensembles/NC20C_ReCom_1000_scores.csv \
+--scores ../../iCloud/fileout/ensembles/NC20C_ReCom_1K_scores.csv \
 --no-debug
 
 scripts/id_notable_maps.py \
---scores ../../iCloud/fileout/ensembles/NC20C_ReCom_1000_scores.csv \
---metadata ../../iCloud/fileout/ensembles/NC20C_ReCom_1000_scores_metadata.json \
---notables ../../iCloud/fileout/ensembles/NC20C_ReCom_1000_notables_maps.json \
+--scores ../../iCloud/fileout/ensembles/NC20C_ReCom_1K_scores.csv \
+--metadata ../../iCloud/fileout/ensembles/NC20C_ReCom_1K_scores_metadata.json \
+--notables ../../iCloud/fileout/ensembles/NC20C_ReCom_1K_notables_maps.json \
 --splitting 0 \
 --no-debug

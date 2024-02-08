@@ -11,8 +11,8 @@ $ scripts/recom_ensemble.py \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
 --root ../../iCloud/fileout/rootmaps/NC20C_rootmap.csv \
---plans ../../iCloud/fileout/ensembles/NC20C_ReCom_1000_plans.json \
---log ../../iCloud/fileout/ensembles/NC20C_ReCom_1000_log.txt \
+--plans ../../iCloud/fileout/ensembles/NC20C_ReCom_1K_plans.json \
+--log ../../iCloud/fileout/ensembles/NC20C_ReCom_1K_log.txt \
 --no-debug
 
 $ scripts/recom_ensemble.py
