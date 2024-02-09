@@ -15,6 +15,7 @@ from gerrychain import (
     accept,
     Election,
 )
+from gerrychain.tree import bipartition_tree
 from gerrychain.updaters import Tally
 from gerrychain.constraints import contiguous
 from gerrychain.partition.assignment import Assignment
@@ -25,7 +26,7 @@ from rdabase import Graph as RDAGraph, mkAdjacencies, GeoID
 
 
 def gen_mcmc_ensemble(
-    method: Callable,
+    proposal: Callable,
     size: int,
     initial_plan: List[Dict[str, str | int]],
     seed: int,
@@ -45,7 +46,7 @@ def gen_mcmc_ensemble(
 
     recom_graph, elections, back_map = prep_data(initial_plan, data, graph)
     chain = setup_markov_chain(
-        method,
+        proposal,
         size,
         recom_graph,
         elections,
@@ -107,7 +108,7 @@ def prep_data(
 
 
 def setup_markov_chain(
-    method: Callable,
+    proposal: Callable,
     size: int,
     recom_graph: Graph,
     elections: List[Election],
@@ -138,13 +139,16 @@ def setup_markov_chain(
     my_constraints: List
     my_weights = {"COUNTY": countyweight}
 
+    method = partial(bipartition_tree, allow_pair_reselection=True)
+
     my_proposal = partial(
-        method,
+        proposal,
         pop_col="TOTAL_POP",
         pop_target=ideal_population,
         epsilon=roughly_equal / 2,  # 1/2 of what you want to end up with
         weight_dict=my_weights,
         node_repeats=node_repeats,
+        method=method,
     )
 
     compactness_bound = constraints.UpperBound(

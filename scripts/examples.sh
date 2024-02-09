@@ -78,7 +78,7 @@ scripts/recom_ensemble.py \
 --size 1000 \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
---root ../rdaroot/../../iCloud/fileout/ensembles/NC20C_RMfRST_100_rootmap.csv \
+--root ../rdaroot/../../iCloud/fileout/ensembles/NC20C_RMfRST_100_root_map.csv \
 --plans ../../iCloud/fileout/ensembles/NC20C_ReCom_1K_plans.json \
 --log ../../iCloud/fileout/ensembles/NC20C_ReCom_1K_log.txt \
 --no-debug
