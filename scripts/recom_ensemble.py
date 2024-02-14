@@ -57,6 +57,8 @@ def main() -> None:
     N: int = int(metadata["D"])
     seed: int = starting_seed(args.state, N)
 
+    # seed = 2 * 14 * 24  # HACK
+
     ensemble: Dict[str, Any] = ensemble_metadata(
         xx="NC",
         ndistricts=N,
