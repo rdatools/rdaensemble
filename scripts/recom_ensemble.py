@@ -11,8 +11,8 @@ $ scripts/recom_ensemble.py \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
 --root ../../iCloud/fileout/rootmaps/NC20C_root_map.csv \
---plans ../../iCloud/fileout/ensembles/NC20C_ReCom_1K_plans.json \
---log ../../iCloud/fileout/ensembles/NC20C_ReCom_1K_log.txt \
+--plans ../../iCloud/fileout/ensembles/NC20C_plans.json \
+--log ../../iCloud/fileout/ensembles/NC20C_log.txt \
 --no-debug
 
 $ scripts/recom_ensemble.py
@@ -168,8 +168,8 @@ def parse_args():
         "data": "../rdabase/data/NC/NC_2020_data.csv",
         "graph": "../rdabase/data/NC/NC_2020_graph.json",
         "root": "../../iCloud/fileout/rootmaps/NC20C_root_map.csv",
-        "plans": "../../iCloud/fileout/ensembles/NC20C_ReCom_10_plans.json",
-        "log": "../../iCloud/fileout/ensembles/NC20C_ReCom_10_log.txt",
+        "plans": "../../iCloud/fileout/ensembles/NC20C_plans.json",
+        "log": "../../iCloud/fileout/ensembles/NC20C_log.txt",
         "size": 10,
     }
     args = require_args(args, args.debug, debug_defaults)

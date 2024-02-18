@@ -62,8 +62,8 @@ You can name ensemble and score files anything you want.
 To facilitate understanding the contents of these files without having to open them, 
 we recommend the following the convention:
 
-- Ensemble example: `NC20C_RMfRST_1K_plans.json`
-- Scores example: `NC20C_RMfRST_1K_scores.csv`
+- Ensemble example: `NC20C_plans.json`
+- Scores example: `NC20C_scores.csv`
 
 where "NC" is the state code, "20" stands for the 2020 census cycle, 
 "C" abbreviates "Congress" (as opposed to state upper or lower house), 
@@ -72,7 +72,7 @@ where "NC" is the state code, "20" stands for the 2020 census cycle,
 
 Note: The scores metadata file will be named the same as the scores file,
 except it will end `_metadata.json` instead of `.csv`, 
-for example, `NC20C_RMfRST_1K_scores_metadata.json`.
+for example, `NC20C_scores_metadata.json`.
 
 ## Usage
 
@@ -85,8 +85,8 @@ scripts/rmfrst_ensemble.py \
 --shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
 --size 1000 \
---plans ../../iCloud/fileout/ensembles/NC20C_RMfRST_1K_plans.json \
---log ../../iCloud/fileout/ensembles/NC20C_RMfRST_1K_log.txt \
+--plans ../../iCloud/fileout/ensembles/NC20C_plans.json \
+--log ../../iCloud/fileout/ensembles/NC20C_log.txt \
 --no-debug
 ```
 
@@ -95,11 +95,11 @@ To score the resulting ensemble, run:
 ```bash
 scripts/score_ensemble.py \
 --state NC \
---plans ../../iCloud/fileout/ensembles/NC20C_RMfRST_1K_plans.json \
+--plans ../../iCloud/fileout/ensembles/NC20C_plans.json \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
---scores ../../iCloud/fileout/ensembles/NC20C_RMfRST_1K_scores.csv \
+--scores ../../iCloud/fileout/ensembles/NC20C_scores.csv \
 --no-debug
 ```
 
