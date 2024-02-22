@@ -36,6 +36,9 @@ def main() -> None:
 
     ensemble: Dict[str, Any] = read_json(args.plans)
 
+    if "packed" in ensemble and ensemble["packed"] == True:
+        raise Exception(f"Ensemble ({args.plans}) is packed. Unpack it first.")
+
     plan_item: Dict[str, str | float | Dict[str, int | str]] = plan_from_ensemble(
         args.id, ensemble
     )
@@ -44,8 +47,6 @@ def main() -> None:
     plan: List[Dict[str, str | int]] = [
         {"GEOID": a.geoid, "DISTRICT": a.district} for a in assignments
     ]
-    # for a in assignments:
-    #     plan.append({"GEOID": a.geoid, "DISTRICT": a.district})
 
     write_csv(args.output, plan, ["GEOID", "DISTRICT"])
 

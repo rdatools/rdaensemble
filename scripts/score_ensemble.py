@@ -56,6 +56,10 @@ def main() -> None:
 
     ensemble: Dict[str, Any] = read_json(args.plans)
     plans: List[Dict[str, str | float | Dict[str, int | str]]] = ensemble["plans"]
+
+    if "packed" in ensemble and ensemble["packed"] == True:
+        raise Exception(f"Ensemble ({args.plans}) is packed. Unpack it first.")
+
     scores: List[Dict] = score_ensemble(plans, data, shapes, graph, metadata)
 
     metadata: Dict[str, Any] = scores_metadata(xx=args.state, plans=args.plans)
