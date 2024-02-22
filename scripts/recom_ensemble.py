@@ -65,6 +65,7 @@ def main() -> None:
         size=args.size,
         method="ReCom",
     )
+    ensemble["packed"] = False
 
     with open(args.log, "w") as f:
         plans: List[Dict[str, str | float | Dict[str, int | str]]] = gen_mcmc_ensemble(

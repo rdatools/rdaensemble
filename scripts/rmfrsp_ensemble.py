@@ -55,6 +55,7 @@ def main() -> None:
         size=args.size,
         method="Random maps from random spanning trees (RMfRSP)",
     )
+    ensemble["packed"] = False
 
     with open(args.log, "w") as f:
         plans: List[Dict[str, str | float | Dict[str, int | str]]] = (
