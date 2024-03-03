@@ -69,6 +69,7 @@ def main() -> None:
     extended_ensemble["plans"] = plans
 
     extended_ensemble["size"] = len(plans)
+    extended_ensemble["method"] = f"{existing_ensemble['method']}, augmented"
     timestamp = datetime.datetime.now()
     extended_ensemble["date_created"] = timestamp.strftime("%x")
     extended_ensemble["time_created"] = timestamp.strftime("%X")
