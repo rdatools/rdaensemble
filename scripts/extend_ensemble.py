@@ -19,7 +19,11 @@ import argparse
 from argparse import ArgumentParser, Namespace
 from typing import Any, List, Dict
 
-from rdabase import require_args, read_json, write_json
+import os
+from os import listdir
+from os.path import isfile, join
+
+from rdabase import require_args, read_json, read_csv, write_json
 
 
 def main() -> None:
@@ -29,6 +33,15 @@ def main() -> None:
 
     ensemble: Dict[str, Any] = read_json(args.ensemble)
     plans: List[Dict[str, str | float | Dict[str, int | str]]] = ensemble["plans"]
+
+    plan_files = [f for f in listdir(args.plans) if isfile(join(args.plans, f))]
+
+    for p in plan_files:
+        filename, file_extension = os.path.splitext(p)
+        if file_extension == ".csv":
+            plan_path: str = f"{args.plans}/{p}"
+            plan: List[Dict[str, str | int]] = read_csv(plan_path, [str, int])
+            pass
 
     pass
 
