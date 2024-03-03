@@ -12,12 +12,12 @@ $ scripts/extend_ensemble.py \
 
 For documentation, type:
 
-$ scripts/find_frontiers.py
+$ scripts/extend_ensemble.py
 """
 
 import argparse
 from argparse import ArgumentParser, Namespace
-from typing import Any, List, Dict
+from typing import Any, List, Dict, TypeAlias
 
 import os
 from os import listdir
@@ -25,23 +25,50 @@ from os.path import isfile, join
 
 from rdabase import require_args, read_json, read_csv, write_json
 
+GeoID: TypeAlias = str
+DistrictID: TypeAlias = int | str
+Name: TypeAlias = str
+
 
 def main() -> None:
     """Add plans to an ensemble."""
 
     args: argparse.Namespace = parse_args()
 
-    ensemble: Dict[str, Any] = read_json(args.ensemble)
-    plans: List[Dict[str, str | float | Dict[str, int | str]]] = ensemble["plans"]
+    existing_ensemble: Dict[str, Any] = read_json(args.input)
+    plans: List[Dict[str, str | float | Dict[str, int | str]]] = existing_ensemble[
+        "plans"
+    ]
+    print(f"# of plans in: {len(plans)}")
 
+    extended_ensemble: Dict[str, Any] = {
+        k: v for k, v in existing_ensemble.items() if k != "plans"
+    }
     plan_files = [f for f in listdir(args.plans) if isfile(join(args.plans, f))]
 
     for p in plan_files:
         filename, file_extension = os.path.splitext(p)
         if file_extension == ".csv":
             plan_path: str = f"{args.plans}/{p}"
-            plan: List[Dict[str, str | int]] = read_csv(plan_path, [str, int])
-            pass
+            assignments: List[Dict[str, str | int]] = read_csv(plan_path, [str, int])
+
+            district_by_geoid: Dict[GeoID, DistrictID] = {
+                str(a["GEOID"]): a["DISTRICT"] for a in assignments
+            }
+            name: str = "foo"  # TODO
+
+            plan: Dict[str, Name | Dict[GeoID, DistrictID]] = {
+                "name": name,
+                "plan": district_by_geoid,
+            }
+
+            plans.append(plan)  # type: ignore
+
+    extended_ensemble["plans"] = plans
+    print(f"# of plans out: {len(plans)}")
+    # TODO - Update time.
+
+    write_json(args.output, extended_ensemble)
 
     pass
 
@@ -52,14 +79,19 @@ def parse_args():
     )
 
     parser.add_argument(
-        "--ensemble",
+        "--input",
         type=str,
-        help="The ensemble to extend",
+        help="An existing ensemble of plans",
+    )
+    parser.add_argument(
+        "--output",
+        type=str,
+        help="The extended ensemble of plans",
     )
     parser.add_argument(
         "--plans",
         type=str,
-        help="The directory with the CSV plans to add to it",
+        help="The directory of plans to add to it",
     )
 
     parser.add_argument(
@@ -76,7 +108,8 @@ def parse_args():
 
     # Default values for args in debug mode
     debug_defaults: Dict[str, Any] = {
-        "ensemble": "../../iCloud/fileout/ensembles/NC20C_plans.json",
+        "input": "../../iCloud/fileout/ensembles/NC20C_plans.json",
+        "output": "../../iCloud/fileout/ensembles/NC20C_plans_augmented.json",
         "plans": "../../iCloud/fileout/hpc_batch/NC/pushed",
         "verbose": True,
     }
