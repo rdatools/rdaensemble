@@ -22,6 +22,7 @@ from typing import Any, List, Dict, TypeAlias
 import os
 from os import listdir
 from os.path import isfile, join
+import datetime
 
 from rdabase import require_args, read_json, read_csv, write_json
 
@@ -39,7 +40,6 @@ def main() -> None:
     plans: List[Dict[str, str | float | Dict[str, int | str]]] = existing_ensemble[
         "plans"
     ]
-    print(f"# of plans in: {len(plans)}")
 
     extended_ensemble: Dict[str, Any] = {
         k: v for k, v in existing_ensemble.items() if k != "plans"
@@ -55,7 +55,7 @@ def main() -> None:
             district_by_geoid: Dict[GeoID, DistrictID] = {
                 str(a["GEOID"]): a["DISTRICT"] for a in assignments
             }
-            name: str = "foo"  # TODO
+            name: str = f"X_{filename.split('_')[1:-1]}"
 
             plan: Dict[str, Name | Dict[GeoID, DistrictID]] = {
                 "name": name,
@@ -65,8 +65,11 @@ def main() -> None:
             plans.append(plan)  # type: ignore
 
     extended_ensemble["plans"] = plans
-    print(f"# of plans out: {len(plans)}")
-    # TODO - Update time.
+
+    extended_ensemble["size"] = len(plans)
+    timestamp = datetime.datetime.now()
+    extended_ensemble["date_created"] = timestamp.strftime("%x")
+    extended_ensemble["time_created"] = timestamp.strftime("%X")
 
     write_json(args.output, extended_ensemble)
 
