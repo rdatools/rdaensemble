@@ -6,7 +6,8 @@ ADD PLANS TO AN ENSEMBLE
 For example:
 
 $ scripts/extend_ensemble.py \
---ensemble ../../iCloud/fileout/ensembles/NC20C_plans.json \
+--input ../../iCloud/fileout/ensembles/NC20C_plans.json \
+--output ../../iCloud/fileout/ensembles/NC20C_plans_augmented.json \
 --plans ../../iCloud/fileout/hpc_batch/NC/pushed \
 --no-debug
 
@@ -55,7 +56,8 @@ def main() -> None:
             district_by_geoid: Dict[GeoID, DistrictID] = {
                 str(a["GEOID"]): a["DISTRICT"] for a in assignments
             }
-            name: str = f"X_{filename.split('_')[1:-1]}"
+            root: str = "_".join(filename.split("_")[1:-1])
+            name: str = f"X_{root}"
 
             plan: Dict[str, Name | Dict[GeoID, DistrictID]] = {
                 "name": name,
