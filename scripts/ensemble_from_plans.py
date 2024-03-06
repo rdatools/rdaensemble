@@ -1,19 +1,21 @@
 #!/usr/bin/env python3
 
 """
-ADD PLANS TO AN ENSEMBLE
+MAKE AN ENSEMBLE FROM A DIRECTORY OF PLAN CSVs
+created from a base ensemble, e.g., by pushing
 
 For example:
 
-$ scripts/extend_ensemble.py \
---input ../../iCloud/fileout/ensembles/NC20C_plans.json \
---output ../../iCloud/fileout/ensembles/NC20C_plans_augmented.json \
---plans ../../iCloud/fileout/hpc_batch/NC/pushed \
+$ scripts/ensemble_from_plans.py \
+--base ../../iCloud/fileout/ensembles/NC20C_plans.json \
+--plans ../../iCloud/fileout/ensembles/NC20C_plans_pushed.json \
+--dir ../../iCloud/fileout/hpc_dropbox/NC/pushed \
 --no-debug
 
 For documentation, type:
 
-$ scripts/extend_ensemble.py
+$ scripts/ensemble_from_plans.py
+
 """
 
 import argparse
@@ -33,24 +35,23 @@ Name: TypeAlias = str
 
 
 def main() -> None:
-    """Add plans to an ensemble."""
+    """Make an ensemble from a directory of plans."""
 
     args: argparse.Namespace = parse_args()
 
-    existing_ensemble: Dict[str, Any] = read_json(args.input)
-    plans: List[Dict[str, str | float | Dict[str, int | str]]] = existing_ensemble[
-        "plans"
-    ]
+    existing_ensemble: Dict[str, Any] = read_json(args.base)
+    plans: List[Dict[str, str | float | Dict[str, int | str]]] = []
+    # = existing_ensemble["plans"]
 
-    extended_ensemble: Dict[str, Any] = {
+    new_ensemble: Dict[str, Any] = {
         k: v for k, v in existing_ensemble.items() if k != "plans"
     }
-    plan_files = [f for f in listdir(args.plans) if isfile(join(args.plans, f))]
+    plan_files = [f for f in listdir(args.dir) if isfile(join(args.dir, f))]
 
     for p in plan_files:
         filename, file_extension = os.path.splitext(p)
         if file_extension == ".csv":
-            plan_path: str = f"{args.plans}/{p}"
+            plan_path: str = f"{args.dir}/{p}"
             assignments: List[Dict[str, str | int]] = read_csv(plan_path, [str, int])
 
             district_by_geoid: Dict[GeoID, DistrictID] = {
@@ -66,15 +67,15 @@ def main() -> None:
 
             plans.append(plan)  # type: ignore
 
-    extended_ensemble["plans"] = plans
+    new_ensemble["plans"] = plans
 
-    extended_ensemble["size"] = len(plans)
-    extended_ensemble["method"] = f"{existing_ensemble['method']}, augmented"
+    new_ensemble["size"] = len(plans)
+    new_ensemble["method"] = f"{existing_ensemble['method']}, pushed"
     timestamp = datetime.datetime.now()
-    extended_ensemble["date_created"] = timestamp.strftime("%x")
-    extended_ensemble["time_created"] = timestamp.strftime("%X")
+    new_ensemble["date_created"] = timestamp.strftime("%x")
+    new_ensemble["time_created"] = timestamp.strftime("%X")
 
-    write_json(args.output, extended_ensemble)
+    write_json(args.plans, new_ensemble)
 
     pass
 
@@ -85,17 +86,17 @@ def parse_args():
     )
 
     parser.add_argument(
-        "--input",
+        "--base",
         type=str,
         help="An existing ensemble of plans",
     )
     parser.add_argument(
-        "--output",
+        "--plans",
         type=str,
         help="The extended ensemble of plans",
     )
     parser.add_argument(
-        "--plans",
+        "--dir",
         type=str,
         help="The directory of plans to add to it",
     )
@@ -114,9 +115,9 @@ def parse_args():
 
     # Default values for args in debug mode
     debug_defaults: Dict[str, Any] = {
-        "input": "../../iCloud/fileout/ensembles/NC20C_plans.json",
-        "output": "../../iCloud/fileout/ensembles/NC20C_plans_augmented.json",
-        "plans": "../../iCloud/fileout/hpc_batch/NC/pushed",
+        "base": "../../iCloud/fileout/ensembles/NC20C_plans.json",
+        "plans": "../../iCloud/fileout/ensembles/NC20C_plans_augmented.json",
+        "dir": "../../iCloud/fileout/hpc_batch/NC/pushed",
         "verbose": True,
     }
     args = require_args(args, args.debug, debug_defaults)

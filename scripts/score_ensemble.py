@@ -24,6 +24,10 @@ import argparse
 from argparse import ArgumentParser, Namespace
 from typing import Any, List, Dict
 
+import warnings
+
+warnings.warn = lambda *args, **kwargs: None
+
 from rdabase import (
     require_args,
     read_json,
