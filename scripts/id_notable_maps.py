@@ -6,9 +6,9 @@ FIND THE NOTABLE MAPS IN A SCORED ENSEMBLE OF MAPS
 For example:
 
 $ scripts/id_notable_maps.py \
---scores ../../iCloud/fileout/ensembles/NC20C_scores.csv \
+--scores ../../iCloud/fileout/ensembles/NC20C_scores_augmented.csv \
 --metadata ../../iCloud/fileout/ensembles/NC20C_scores_metadata.json \
---notables ../../iCloud/fileout/ensembles/NC20C_notables_maps.json \
+--notables ../../iCloud/fileout/ensembles/NC20C_notable_maps.json \
 --no-debug
 
 For documentation, type:
