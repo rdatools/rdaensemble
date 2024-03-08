@@ -21,6 +21,10 @@ import argparse
 from argparse import ArgumentParser, Namespace
 from typing import Any, List, Dict
 
+import warnings
+
+warnings.warn = lambda *args, **kwargs: None
+
 import csv
 
 from rdabase import (
