@@ -49,6 +49,7 @@ def main() -> None:
     graph: Dict[str, List[str]] = load_graph(args.graph)
     metadata: Dict[str, Any] = load_metadata(args.state, args.data)
 
+    # TYPE HINT
     ensemble: Dict[str, Any] = read_json(args.plans)
     plans: List[Dict[str, str | float | Dict[str, int | str]]] = ensemble["plans"]
 

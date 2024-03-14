@@ -65,6 +65,7 @@ def main() -> None:
                 "plan": district_by_geoid,
             }
 
+            # TYPE HINT
             plans.append(plan)  # type: ignore
 
     new_ensemble["plans"] = plans

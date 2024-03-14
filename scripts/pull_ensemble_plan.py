@@ -39,6 +39,7 @@ def main() -> None:
     if "packed" in ensemble and ensemble["packed"] == True:
         raise Exception(f"Ensemble ({args.plans}) is packed. Unpack it first.")
 
+    # TYPE HINT
     plan_item: Dict[str, str | float | Dict[str, int | str]] = plan_from_ensemble(
         args.id, ensemble
     )
