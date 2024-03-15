@@ -19,7 +19,7 @@ from rdabase import (
 )
 from rdadccvt import (
     file_list,
-    clean,
+    # clean,
     dccvt_randomsites,
     dccvt_initial,
     dccvt_points,
@@ -39,10 +39,10 @@ from rdadccvt import (
     consolidate,
     complete,
     postprocess,
-    calc_energy_file,
+    # calc_energy_file,
     calc_population_deviation_file,
     write_redistricting_points,
-    write_assignments,
+    # write_assignments,
 )
 
 
