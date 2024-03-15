@@ -18,7 +18,7 @@ from rdabase import (
     index_assignments,
 )
 from rdadccvt import (
-    file_list,
+    # file_list,
     # clean,
     dccvt_randomsites,
     dccvt_initial,
