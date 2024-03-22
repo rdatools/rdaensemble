@@ -187,8 +187,12 @@ def run_chain(
 
         plan_name: str = f"{step:04d}"
         plan: Dict[str, int | str] = {
-            back_map[node]: part - 1
-            for node, part in assignments.items()  # Why are these 2-based?
+            back_map[node]: part
+            # NOTE - The following decrement was ostensibly in the code when I generated the NC ensemble originally.
+            # back_map[node]: part - 1
+            # It's not at all clear why it was there, as the districts are (at least now) one-based.
+            # I also don't understand how the 10K NC seemed to be well formed.
+            for node, part in assignments.items()
         }
         plans.append({"name": plan_name, "plan": plan})  # No weights.
 
