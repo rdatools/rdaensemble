@@ -117,14 +117,12 @@ def parse_args():
 
     # Default values for args in debug mode
     debug_defaults: Dict[str, Any] = {
-        "state": "NC",
-        "plans": "../../iCloud/fileout/ensembles/NC20C_plans.json",
-        # "plans": "../../iCloud/fileout/ensembles/NC20C_plans.json",
-        "data": "../rdabase/data/NC/NC_2020_data.csv",
-        "shapes": "../rdabase/data/NC/NC_2020_shapes_simplified.json",
-        "graph": "../rdabase/data/NC/NC_2020_graph.json",
-        "scores": "../../iCloud/fileout/ensembles/NC20C_scores.csv",
-        # "scores": "../../iCloud/fileout/ensembles/NC20C_scores.csv",
+        "state": "MD",
+        "plans": "../../iCloud/fileout/tradeoffs/MD/ensembles/MD20C_plans.json",
+        "data": "../rdabase/data/MD/MD_2020_data.csv",
+        "shapes": "../rdabase/data/MD/MD_2020_shapes_simplified.json",
+        "graph": "../rdabase/data/MD/MD_2020_graph.json",
+        "scores": "../../iCloud/fileout/tradeoffs/MD/ensembles/MD20C_scores.csv",
     }
     args = require_args(args, args.debug, debug_defaults)
 

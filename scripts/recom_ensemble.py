@@ -61,10 +61,8 @@ def main() -> None:
     N: int = int(metadata["D"])
     seed: int = starting_seed(args.state, N)
 
-    # seed = 2 * 14 * 24  # HACK
-
     ensemble: Dict[str, Any] = ensemble_metadata(
-        xx="NC",
+        xx=args.state,
         ndistricts=N,
         size=args.size,
         method="ReCom",
@@ -87,6 +85,7 @@ def main() -> None:
             verbose=args.verbose,
         )
 
+    # TODO - The plans from ReCom have zero-based district IDs. Need to convert them to one-based district IDs.
     ensemble["plans"] = plans
 
     write_json(args.plans, ensemble)
@@ -172,11 +171,20 @@ def parse_args():
         "state": "NC",
         "data": "../rdabase/data/NC/NC_2020_data.csv",
         "graph": "../rdabase/data/NC/NC_2020_graph.json",
-        "root": "../../iCloud/fileout/rootmaps/NC20C_root_map.csv",
-        "plans": "../../iCloud/fileout/ensembles/NC20C_plans.json",
-        "log": "../../iCloud/fileout/ensembles/NC20C_log.txt",
+        "root": "../tradeoffs/root_maps/NC20C_root_map.csv",
+        "plans": "../../iCloud/fileout/tradeoffs/XX/ensembles/NC20C_plans.json",
+        "log": "../../iCloud/fileout/tradeoffs/XX/ensembles/NC20C_log.txt",
         "size": 10,
     }
+    # debug_defaults: Dict[str, Any] = {
+    #     "state": "MD",
+    #     "data": "../rdabase/data/MD/MD_2020_data.csv",
+    #     "graph": "../rdabase/data/MD/MD_2020_graph.json",
+    #     "root": "../tradeoffs/root_maps/MD20C_root_map.csv",
+    #     "plans": "../../iCloud/fileout/tradeoffs/MD/ensembles/MD20C_plans.json",
+    #     "log": "../../iCloud/fileout/tradeoffs/MD/ensembles/MD20C_log.txt",
+    #     "size": 10,
+    # }
     args = require_args(args, args.debug, debug_defaults)
 
     return args
