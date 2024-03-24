@@ -40,10 +40,10 @@ def score_ensemble(
     scores: List[Dict] = list()
 
     for i, p in enumerate(plans):
-        print(f"... {i} ...")
+        plan_name: str = str(p["name"])
+        print(f"... {i}: {plan_name} ...")
 
         try:
-            plan_name: str = str(p["name"])
             plan_dict: Dict[str, int | str] = p["plan"]  # type: ignore
             assignments: List[Assignment] = make_plan(plan_dict)
             indexed_assignments: List[IndexedWeightedAssignment] = index_assignments(
