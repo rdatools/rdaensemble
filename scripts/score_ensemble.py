@@ -56,7 +56,10 @@ def main() -> None:
     if "packed" in ensemble and ensemble["packed"] == True:
         raise Exception(f"Ensemble ({args.plans}) is packed. Unpack it first.")
 
-    scores: List[Dict] = score_ensemble(plans, data, shapes, graph, metadata)
+    alt_minority: bool = not args.no_alt_minority
+    scores: List[Dict] = score_ensemble(
+        plans, data, shapes, graph, metadata, alt_minority=alt_minority
+    )
 
     metadata: Dict[str, Any] = scores_metadata(xx=args.state, plans=args.plans)
     metadata_path: str = args.scores.replace(".csv", "_metadata.json")
@@ -104,6 +107,13 @@ def parse_args():
     )
 
     parser.add_argument(
+        "-m",
+        "--no-alt-minority",
+        dest="no_alt_minority",
+        action="store_true",
+        help="No alt minority mode, i.e., use the DRA minority rating",
+    )  # By default, use the alt minority rating
+    parser.add_argument(
         "-v", "--verbose", dest="verbose", action="store_true", help="Verbose mode"
     )
 
@@ -117,12 +127,12 @@ def parse_args():
 
     # Default values for args in debug mode
     debug_defaults: Dict[str, Any] = {
-        "state": "MD",
-        "plans": "../../iCloud/fileout/tradeoffs/MD/ensembles/MD20C_plans.json",
-        "data": "../rdabase/data/MD/MD_2020_data.csv",
-        "shapes": "../rdabase/data/MD/MD_2020_shapes_simplified.json",
-        "graph": "../rdabase/data/MD/MD_2020_graph.json",
-        "scores": "../../iCloud/fileout/tradeoffs/MD/ensembles/MD20C_scores.csv",
+        "state": "NC",
+        "plans": "../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_plans.json",
+        "data": "../rdabase/data/NC/NC_2020_data.csv",
+        "shapes": "../rdabase/data/NC/NC_2020_shapes_simplified.json",
+        "graph": "../rdabase/data/NC/NC_2020_graph.json",
+        "scores": "temp/NC20C_scores_alt.csv",
     }
     args = require_args(args, args.debug, debug_defaults)
 

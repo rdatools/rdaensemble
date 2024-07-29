@@ -27,6 +27,7 @@ def score_ensemble(
     shapes: Dict[str, Any],
     graph: Dict[str, List[str]],
     metadata: Dict[str, Any],
+    alt_minority: bool = False,
 ) -> List[Dict]:
     """Score an ensemble of maps."""
 
@@ -66,9 +67,16 @@ def score_ensemble(
                 shapes,
                 graph,
                 metadata,
+                alt_minority=alt_minority,
             )
+
+            if alt_minority:
+                scorecard["minority"] = scorecard["minority_alt"]
+                scorecard.pop("minority_alt")
+
             record.update(scorecard)
             scores.append(record)
+            pass  # for break point
 
         except Exception as e:
             print(f"Failure: {e}")
