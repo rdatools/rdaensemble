@@ -8,7 +8,7 @@ For example:
 $ scripts/pull_ensemble_plan.py \
 --plans ../../iCloud/fileout/ensembles/NC20C_plans.json \
 --id 000_518
---output ../../iCloud/fileout/ensembles/NC20C_plan_000_519.csv \
+--output ../../iCloud/fileout/ensembles/NC20C_plan_000_518.csv \
 --no-debug
 
 For documentation, type:
@@ -87,9 +87,9 @@ def parse_args():
 
     # Default values for args in debug mode
     debug_defaults: Dict[str, Any] = {
-        "plans": "../../iCloud/fileout/ensembles/NC20C_plans.json",
-        "id": "000_518",
-        "output": "../../iCloud/fileout/ensembles/NC20C_plan_000_519.csv",
+        "plans": "../../iCloud/fileout/tradeoffs/NC-alt/ensembles/NC20C_plans.json",
+        "id": "1634",
+        "output": "temp/NC20C_plan_1634.csv",
     }
     args = require_args(args, args.debug, debug_defaults)
 
