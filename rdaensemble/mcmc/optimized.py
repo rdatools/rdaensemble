@@ -1,5 +1,10 @@
 """
 GENERATE AN ENSEMBLE OF MAPS using RECOM
+
+NOTE - This is an exploration of ReCom's SingleMetricOptimizer feature.
+NOTE - It is a clone of ensemble.py with the addition of the SingleMetricOptimizer feature.
+
+TODO - Look for opportunities to rationalize the code in the two files.
 """
 
 from typing import Any, List, Dict, Tuple, Callable
@@ -25,7 +30,7 @@ import random
 from rdabase import Graph as RDAGraph, mkAdjacencies, GeoID
 
 
-def gen_mcmc_ensemble(
+def gen_optimized_mcmc_ensemble(
     proposal: Callable,
     size: int,
     initial_plan: List[Dict[str, str | int]],

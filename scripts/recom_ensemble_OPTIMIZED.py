@@ -2,6 +2,10 @@
 
 """
 GENERATE AN ENSEMBLE OF MAPS using RECOM
+OPTIMIZING for ONE RATINGS DIMENSION
+
+NOTE - This is an exploration of ReCom's SingleMetricOptimizer feature.
+NOTE - It is a clone of scripts/recom_ensemble.py with the addition of the SingleMetricOptimizer feature.
 
 For example:
 
@@ -11,8 +15,8 @@ $ scripts/recom_ensemble.py \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
 --root ../../iCloud/fileout/rootmaps/NC20C_root_map.csv \
---plans ../../iCloud/fileout/ensembles/NC20C_plans.json \
---log ../../iCloud/fileout/ensembles/NC20C_log.txt \
+--plans ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_plans.json \
+--log ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_log.txt \
 --no-debug
 
 $ scripts/recom_ensemble.py
@@ -43,7 +47,7 @@ from rdabase import (
     load_graph,
     load_metadata,
 )
-from rdaensemble import ensemble_metadata, gen_mcmc_ensemble
+from rdaensemble import ensemble_metadata, gen_optimized_mcmc_ensemble
 
 
 def main() -> None:
@@ -70,19 +74,21 @@ def main() -> None:
     ensemble["packed"] = False
 
     with open(args.log, "w") as f:
-        plans: List[Dict[str, str | float | Dict[str, int | str]]] = gen_mcmc_ensemble(
-            recom,
-            args.size,
-            root_plan,
-            seed,
-            data,
-            graph,
-            f,
-            roughly_equal=args.roughlyequal,
-            elasticity=args.elasticity,
-            countyweight=args.countyweight,
-            node_repeats=args.noderepeats,
-            verbose=args.verbose,
+        plans: List[Dict[str, str | float | Dict[str, int | str]]] = (
+            gen_optimized_mcmc_ensemble(
+                recom,
+                args.size,
+                root_plan,
+                seed,
+                data,
+                graph,
+                f,
+                roughly_equal=args.roughlyequal,
+                elasticity=args.elasticity,
+                countyweight=args.countyweight,
+                node_repeats=args.noderepeats,
+                verbose=args.verbose,
+            )
         )
 
     ensemble["plans"] = plans
