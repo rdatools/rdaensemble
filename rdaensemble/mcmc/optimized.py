@@ -9,6 +9,7 @@ TODO - Look for opportunities to rationalize the code in the two files.
 
 from typing import Any, List, Dict, Tuple, Callable
 
+import random
 from functools import partial
 
 from gerrychain import (
@@ -25,7 +26,9 @@ from gerrychain.updaters import Tally
 from gerrychain.constraints import contiguous
 from gerrychain.partition.assignment import Assignment
 
-import random
+# Added for SingleMetricOptimizer
+from gerrychain.optimization import SingleMetricOptimizer, Gingleator
+from tqdm import tqdm
 
 from rdabase import Graph as RDAGraph, mkAdjacencies, GeoID
 
@@ -68,6 +71,7 @@ def gen_optimized_mcmc_ensemble(
     return plans
 
 
+# NOTE - Unchanged from ensemble.py
 def prep_data(
     initialplan: List[Dict[str, str | int]],
     data: Dict[str, Dict[str, int | str]],
@@ -112,6 +116,7 @@ def prep_data(
     return recom_graph, elections, back_map
 
 
+# NOTE - Unchanged from ensemble.py
 def setup_markov_chain(
     proposal: Callable,
     size: int,
@@ -177,6 +182,7 @@ def setup_markov_chain(
     return chain
 
 
+# NOTE - Unchanged from ensemble.py
 def run_chain(
     chain, back_map: Dict[int, str], logfile
 ) -> List[Dict[str, str | float | Dict[str, int | str]]]:

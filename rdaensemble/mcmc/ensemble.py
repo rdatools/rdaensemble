@@ -4,6 +4,7 @@ GENERATE AN ENSEMBLE OF MAPS using RECOM
 
 from typing import Any, List, Dict, Tuple, Callable
 
+import random
 from functools import partial
 
 from gerrychain import (
@@ -19,8 +20,6 @@ from gerrychain.tree import bipartition_tree
 from gerrychain.updaters import Tally
 from gerrychain.constraints import contiguous
 from gerrychain.partition.assignment import Assignment
-
-import random
 
 from rdabase import Graph as RDAGraph, mkAdjacencies, GeoID
 
@@ -146,7 +145,7 @@ def setup_markov_chain(
         pop_col="TOTAL_POP",
         pop_target=ideal_population,
         epsilon=roughly_equal / 2,  # 1/2 of what you want to end up with
-        weight_dict=my_weights,
+        region_surcharge=my_weights,  # was: weight_dict=my_weights in 0.3.0
         node_repeats=node_repeats,
         method=method,
     )
@@ -184,6 +183,8 @@ def run_chain(
         print(f"... {step} ...", file=logfile)
         assert partition is not None
         assignments: Assignment = partition.assignment
+
+        print(assignments)
 
         # Convert the ReCom partition to a plan.
         plan: Dict[str, int | str] = {
