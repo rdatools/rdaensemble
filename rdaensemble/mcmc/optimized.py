@@ -156,7 +156,7 @@ def setup_markov_chain(
         pop_col="TOTAL_POP",
         pop_target=ideal_population,
         epsilon=roughly_equal / 2,  # 1/2 of what you want to end up with
-        weight_dict=my_weights,
+        region_surcharge=my_weights,  # was: weight_dict=my_weights in 0.3.0
         node_repeats=node_repeats,
         method=method,
     )

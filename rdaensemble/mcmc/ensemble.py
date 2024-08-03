@@ -184,7 +184,7 @@ def run_chain(
         assert partition is not None
         assignments: Assignment = partition.assignment
 
-        print(assignments)
+        # print(assignments)
 
         # Convert the ReCom partition to a plan.
         plan: Dict[str, int | str] = {

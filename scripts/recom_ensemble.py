@@ -101,7 +101,7 @@ def parse_args():
         type=str,
     )
     parser.add_argument(
-        "--size", type=int, default=1000, help="Number of maps to generate"
+        "--size", type=int, default=10, help="Number of maps to generate"
     )
     parser.add_argument(
         "--data",

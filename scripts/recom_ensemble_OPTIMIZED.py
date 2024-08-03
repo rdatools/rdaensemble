@@ -107,7 +107,7 @@ def parse_args():
         type=str,
     )
     parser.add_argument(
-        "--size", type=int, default=1000, help="Number of maps to generate"
+        "--size", type=int, default=10, help="Number of maps to generate"
     )
     parser.add_argument(
         "--data",
@@ -177,8 +177,8 @@ def parse_args():
         "data": "../rdabase/data/NC/NC_2020_data.csv",
         "graph": "../rdabase/data/NC/NC_2020_graph.json",
         "root": "../tradeoffs/root_maps/NC20C_root_map.csv",
-        "plans": "temp/NC20C_plans.json",
-        "log": "temp/NC20C_log.txt",
+        "plans": "temp/NC20C_optimized_plans.json",
+        "log": "temp/NC20C_optimized_log.txt",
         "size": 10,
     }
     args = require_args(args, args.debug, debug_defaults)
