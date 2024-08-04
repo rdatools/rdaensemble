@@ -12,7 +12,6 @@ from typing import Any, List, Dict, Tuple, Callable
 import random
 from functools import partial
 import numpy as np
-import copy
 
 from gerrychain import (
     GeographicPartition,
@@ -35,75 +34,49 @@ from tqdm import tqdm
 from rdabase import Graph as RDAGraph, mkAdjacencies, GeoID
 
 
-def gen_optimized_mcmc_ensemble(
-    proposal: Callable,
-    size: int,
-    initial_plan: List[Dict[str, str | int]],
-    seed: int,
-    data: Dict[str, Dict[str, int | str]],
-    graph: Dict[str, List[str]],
-    logfile,
-    *,
-    roughly_equal: float = 0.01,
-    elasticity: float = 2.0,
-    countyweight: float = 0.75,
-    node_repeats: int = 1,
-    verbose: bool = False,
-    debug: bool = False,
-) -> List[Dict[str, str | float | Dict[str, int | str]]]:
-    """
-    Generate an ensemble of maps using the ReCom variant of MCMC.
+# TODO
+# def gen_optimized_mcmc_ensemble(
+#     proposal: Callable,
+#     size: int,
+#     initial_plan: List[Dict[str, str | int]],
+#     seed: int,
+#     data: Dict[str, Dict[str, int | str]],
+#     graph: Dict[str, List[str]],
+#     logfile,
+#     *,
+#     roughly_equal: float = 0.01,
+#     elasticity: float = 2.0,
+#     countyweight: float = 0.75,
+#     node_repeats: int = 1,
+#     verbose: bool = False,
+#     debug: bool = False,
+# ) -> List[Dict[str, str | float | Dict[str, int | str]]]:
+#     """
+#     Generate an ensemble of maps using the ReCom variant of MCMC.
 
-    NOTE - The same as gen_mcmc_ensemble in ensemble.py, except 'size' moved from setup_ to run_chain.
-    """
+#     NOTE - The same as gen_mcmc_ensemble in ensemble.py, except 'size' moved from setup_ to run_chain.
+#     """
 
-    random.seed(seed)
+#     random.seed(seed)
 
-    recom_graph, elections, back_map = prep_data(initial_plan, data, graph)
+#     recom_graph, elections, back_map = prep_data(initial_plan, data, graph)
 
-    chain = setup_markov_chain(
-        proposal,
-        # size, # NOTE - Removed this
-        recom_graph,
-        elections,
-        roughly_equal,
-        elasticity,
-        countyweight,
-        node_repeats,
-    )
+#     chain = setup_markov_chain(
+#         proposal,
+#         # size, # NOTE - Removed this
+#         recom_graph,
+#         elections,
+#         roughly_equal,
+#         elasticity,
+#         countyweight,
+#         node_repeats,
+#     )
 
-    plans: List[Dict[str, str | float | Dict[str, int | str]]] = (
-        run_simulated_annealing_chain(chain, size, back_map, logfile, debug=debug)
-    )
+#     plans: List[Dict[str, str | float | Dict[str, int | str]]] = (
+#         run_simulated_annealing_chain(chain, size, back_map, logfile, debug=debug)
+#     )
 
-    # deepcopy doesn't work on the MarkovChain object, so we can't re-use it.
-    chain = setup_markov_chain(
-        proposal,
-        # size, # NOTE - Removed this
-        recom_graph,
-        elections,
-        roughly_equal,
-        elasticity,
-        countyweight,
-        node_repeats,
-    )
-
-    # TODO - Short Bursts
-
-    chain = setup_markov_chain(
-        proposal,
-        # size, # NOTE - Removed this
-        recom_graph,
-        elections,
-        roughly_equal,
-        elasticity,
-        countyweight,
-        node_repeats,
-    )
-
-    # TODO - Tilted Runs
-
-    return plans
+#     return plans
 
 
 def prep_data(
@@ -275,7 +248,8 @@ def run_simulated_annealing_chain(
             plan_name: str = f"{step:04d}"
             plans.append({"name": plan_name, "plan": plan})  # No weights.
         else:
-            print(f"      Min. scores: {min_scores}")
+            # print(f"      Min. scores: {min_scores}")
+            pass
 
     # TODO - Do something with min_scores
 

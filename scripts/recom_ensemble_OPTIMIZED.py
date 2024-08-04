@@ -31,6 +31,8 @@ import argparse
 from argparse import ArgumentParser, Namespace
 from typing import Any, List, Dict
 
+import random
+
 import warnings
 
 warnings.warn = lambda *args, **kwargs: None
@@ -47,7 +49,13 @@ from rdabase import (
     load_graph,
     load_metadata,
 )
-from rdaensemble import ensemble_metadata, gen_optimized_mcmc_ensemble
+from rdaensemble import (
+    ensemble_metadata,
+    prep_data,
+    setup_markov_chain,
+    run_simulated_annealing_chain,
+    # gen_optimized_mcmc_ensemble,
+)
 
 
 def main() -> None:
@@ -74,27 +82,47 @@ def main() -> None:
     ensemble["packed"] = False
 
     with open(args.log, "w") as f:
-        plans: List[Dict[str, str | float | Dict[str, int | str]]] = (
-            gen_optimized_mcmc_ensemble(
-                recom,
-                args.size,
-                root_plan,
-                seed,
-                data,
-                graph,
-                f,
-                roughly_equal=args.roughlyequal,
-                elasticity=args.elasticity,
-                countyweight=args.countyweight,
-                node_repeats=args.noderepeats,
-                verbose=args.verbose,
-                debug=args.debug,
-            )
+        random.seed(seed)
+
+        recom_graph, elections, back_map = prep_data(root_plan, data, graph)
+
+        chain = setup_markov_chain(
+            recom,
+            recom_graph,
+            elections,
+            roughly_equal=0.01,
+            elasticity=2.0,
+            countyweight=0.75,
+            node_repeats=1,
         )
 
-    ensemble["plans"] = plans
+        plans: List[Dict[str, str | float | Dict[str, int | str]]] = (
+            run_simulated_annealing_chain(
+                chain, args.size, back_map, f, debug=args.debug
+            )
+        )
+        # TODO
+        # plans: List[Dict[str, str | float | Dict[str, int | str]]] = (
+        #     gen_optimized_mcmc_ensemble(
+        #         recom,
+        #         args.size,
+        #         root_plan,
+        #         seed,
+        #         data,
+        #         graph,
+        #         f,
+        #         roughly_equal=args.roughlyequal,
+        #         elasticity=args.elasticity,
+        #         countyweight=args.countyweight,
+        #         node_repeats=args.noderepeats,
+        #         verbose=args.verbose,
+        #         debug=args.debug,
+        #     )
+        # )
 
-    write_json(args.plans, ensemble)
+    ensemble["plans"] = plans
+    if not args.debug:
+        write_json(args.plans, ensemble)
 
 
 def parse_args():
@@ -178,8 +206,8 @@ def parse_args():
         "data": "../rdabase/data/NC/NC_2020_data.csv",
         "graph": "../rdabase/data/NC/NC_2020_graph.json",
         "root": "../tradeoffs/root_maps/NC20C_root_map.csv",
-        "plans": "temp/NC20C_optimized_plans.json",
-        "log": "temp/NC20C_optimized_log.txt",
+        "plans": "temp/NC20C_sa_optimized_plans.json",
+        "log": "temp/NC20C_sa_optimized_log.txt",
         "size": 10,
     }
     args = require_args(args, args.debug, debug_defaults)
