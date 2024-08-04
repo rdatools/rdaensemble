@@ -60,6 +60,7 @@ def gen_optimized_mcmc_ensemble(
     random.seed(seed)
 
     recom_graph, elections, back_map = prep_data(initial_plan, data, graph)
+
     chain = setup_markov_chain(
         proposal,
         # size, # NOTE - Removed this
@@ -74,6 +75,33 @@ def gen_optimized_mcmc_ensemble(
     plans: List[Dict[str, str | float | Dict[str, int | str]]] = (
         run_simulated_annealing_chain(chain, size, back_map, logfile, debug=debug)
     )
+
+    # deepcopy doesn't work on the MarkovChain object, so we can't re-use it.
+    chain = setup_markov_chain(
+        proposal,
+        # size, # NOTE - Removed this
+        recom_graph,
+        elections,
+        roughly_equal,
+        elasticity,
+        countyweight,
+        node_repeats,
+    )
+
+    # TODO - Short Bursts
+
+    chain = setup_markov_chain(
+        proposal,
+        # size, # NOTE - Removed this
+        recom_graph,
+        elections,
+        roughly_equal,
+        elasticity,
+        countyweight,
+        node_repeats,
+    )
+
+    # TODO - Tilted Runs
 
     return plans
 
