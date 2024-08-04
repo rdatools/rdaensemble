@@ -12,6 +12,7 @@ from typing import Any, List, Dict, Tuple, Callable
 import random
 from functools import partial
 import numpy as np
+import copy
 
 from gerrychain import (
     GeographicPartition,
@@ -48,6 +49,7 @@ def gen_optimized_mcmc_ensemble(
     countyweight: float = 0.75,
     node_repeats: int = 1,
     verbose: bool = False,
+    debug: bool = False,
 ) -> List[Dict[str, str | float | Dict[str, int | str]]]:
     """
     Generate an ensemble of maps using the ReCom variant of MCMC.
@@ -69,8 +71,8 @@ def gen_optimized_mcmc_ensemble(
         node_repeats,
     )
 
-    plans: List[Dict[str, str | float | Dict[str, int | str]]] = run_chain(
-        chain, size, back_map, logfile
+    plans: List[Dict[str, str | float | Dict[str, int | str]]] = (
+        run_simulated_annealing_chain(chain, size, back_map, logfile, debug=debug)
     )
 
     return plans
@@ -202,8 +204,13 @@ def setup_markov_chain(
     return optimizer
 
 
-def run_chain(
-    optimizer, size: int, back_map: Dict[int, str], logfile  # NOTE - Added size
+def run_simulated_annealing_chain(
+    optimizer,
+    size: int,
+    back_map: Dict[int, str],
+    logfile,
+    *,
+    debug: bool = False,  # NOTE - Added size
 ) -> List[Dict[str, str | float | Dict[str, int | str]]]:
     """
     Run an optimized Markov chain.
@@ -213,32 +220,36 @@ def run_chain(
 
     plans: List[Dict[str, str | float | Dict[str, int | str]]] = list()
 
-    # Simulated Annealing
-    min_scores_anneal = np.zeros(size)
+    print()
+    print("SIMULATED ANNEALING")
+    print("===================")
+
+    min_scores = np.zeros(size)
     for step, partition in enumerate(
         optimizer.simulated_annealing(
             size,
             optimizer.jumpcycle_beta_function(200, 800),
             beta_magnitude=1,
-            with_progress_bar=True,
+            with_progress_bar=False,
         )
     ):
-        print(f"... {step} ...")
-        print(f"... {step} ...", file=logfile)
-        assert partition is not None
-        assignments: Assignment = partition.assignment
+        print(f"{step:04d}: Best score: {optimizer.best_score} ...")
+        min_scores[step] = optimizer.best_score
+        if not debug:
+            print(f"... {step:04d} ...", file=logfile)
+            assert partition is not None
+            assignments: Assignment = partition.assignment
 
-        # Convert the ReCom partition to a plan.
-        plan: Dict[str, int | str] = {
-            back_map[node]: part for node, part in assignments.items()
-        }
-        plan_name: str = f"{step:04d}"
-        plans.append({"name": plan_name, "plan": plan})  # No weights.
+            # Convert the ReCom partition to a plan.
+            plan: Dict[str, int | str] = {
+                back_map[node]: part for node, part in assignments.items()
+            }
+            plan_name: str = f"{step:04d}"
+            plans.append({"name": plan_name, "plan": plan})  # No weights.
+        else:
+            print(f"      Min. scores: {min_scores}")
 
-        print(f"... {optimizer.best_score} ...")
-        min_scores_anneal[step] = optimizer.best_score
-
-    # TODO - Do something with min_scores_anneal
+    # TODO - Do something with min_scores
 
     return plans
 

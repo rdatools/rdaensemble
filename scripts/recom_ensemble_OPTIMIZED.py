@@ -88,6 +88,7 @@ def main() -> None:
                 countyweight=args.countyweight,
                 node_repeats=args.noderepeats,
                 verbose=args.verbose,
+                debug=args.debug,
             )
         )
 
