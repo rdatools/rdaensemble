@@ -53,7 +53,7 @@ from rdaensemble import (
     ensemble_metadata,
     prep_data,
     setup_markov_chain,
-    run_simulated_annealing_chain,
+    run_short_bursts_chain,
 )
 
 
@@ -96,9 +96,7 @@ def main() -> None:
 
         # TODO
         plans: List[Dict[str, str | float | Dict[str, int | str]]] = (
-            run_simulated_annealing_chain(
-                chain, args.size, back_map, f, debug=args.debug
-            )
+            run_short_bursts_chain(chain, args.size, back_map, f, debug=args.debug)
         )
 
     ensemble["plans"] = plans

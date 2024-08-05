@@ -53,7 +53,7 @@ from rdaensemble import (
     ensemble_metadata,
     prep_data,
     setup_markov_chain,
-    run_simulated_annealing_chain,
+    run_tilted_runs_chain,
 )
 
 
@@ -63,7 +63,6 @@ def main() -> None:
     args: argparse.Namespace = parse_args()
 
     data: Dict[str, Dict[str, int | str]] = load_data(args.data)
-    # shapes: Dict[str, Any] = load_shapes(args.shapes)
     graph: Dict[str, List[str]] = load_graph(args.graph)
     metadata: Dict[str, Any] = load_metadata(args.state, args.data)
 
@@ -97,9 +96,7 @@ def main() -> None:
 
         # TODO
         plans: List[Dict[str, str | float | Dict[str, int | str]]] = (
-            run_simulated_annealing_chain(
-                chain, args.size, back_map, f, debug=args.debug
-            )
+            run_tilted_runs_chain(chain, args.size, back_map, f, debug=args.debug)
         )
 
     ensemble["plans"] = plans
