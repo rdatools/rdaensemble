@@ -8,13 +8,32 @@ NOTE - It is a clone of ensemble.py with the addition of the SingleMetricOptimiz
 TODO - Rationalize this into one driver function w/ 3 helper functions.
 """
 
-from typing import Any, List, Dict
+from typing import Any, List, Dict, Callable
 
 import numpy as np
 
 from gerrychain.partition.assignment import Assignment
 
+### OPTIMIZATION METHODS ###
 
+
+def simulated_annealing(optimizer, size: int) -> Any:
+    """Simulated annealing."""
+
+    partitions = optimizer.simulated_annealing(
+        size,
+        optimizer.jumpcycle_beta_function(200, 800),
+        beta_magnitude=1,
+        with_progress_bar=False,
+    )
+
+    return partitions
+
+
+### RUN A RECOM CHAIN ###
+
+
+# TODO - Generalize this back to one function: run_chain()
 def run_simulated_annealing_chain(
     optimizer,
     size: int,
@@ -23,27 +42,19 @@ def run_simulated_annealing_chain(
     *,
     debug: bool = False,  # NOTE - Added size
 ) -> List[Dict[str, str | float | Dict[str, int | str]]]:
-    """
-    Run an optimized Markov chain.
+    """Run an optimized Markov chain."""
 
-    NOTE - The same as run_chain in ensemble.py, except using an optimizer chain and simulated annealing.
-    """
+    label: str = "Simulated Annealing"
+    method: Callable = simulated_annealing
 
     plans: List[Dict[str, str | float | Dict[str, int | str]]] = list()
 
     print()
-    print("SIMULATED ANNEALING")
+    print(f"{label.upper()}")
     print("===================")
 
     min_scores = np.zeros(size)
-    for step, partition in enumerate(
-        optimizer.simulated_annealing(
-            size,
-            optimizer.jumpcycle_beta_function(200, 800),
-            beta_magnitude=1,
-            with_progress_bar=False,
-        )
-    ):
+    for step, partition in enumerate(method(optimizer, size)):
         print(f"{step:04d}: Best score: {optimizer.best_score} ...")
         min_scores[step] = optimizer.best_score
         if not debug:
@@ -64,6 +75,58 @@ def run_simulated_annealing_chain(
     # TODO - Do something with min_scores
 
     return plans
+
+
+# TODO - Rationalize this
+# def run_simulated_annealing_chain(
+#     optimizer,
+#     size: int,
+#     back_map: Dict[int, str],
+#     logfile,
+#     *,
+#     debug: bool = False,  # NOTE - Added size
+# ) -> List[Dict[str, str | float | Dict[str, int | str]]]:
+#     """
+#     Run an optimized Markov chain.
+
+#     NOTE - The same as run_chain in ensemble.py, except using an optimizer chain and simulated annealing.
+#     """
+
+#     plans: List[Dict[str, str | float | Dict[str, int | str]]] = list()
+
+#     print()
+#     print("SIMULATED ANNEALING")
+#     print("===================")
+
+#     min_scores = np.zeros(size)
+#     for step, partition in enumerate(
+#         optimizer.simulated_annealing(
+#             size,
+#             optimizer.jumpcycle_beta_function(200, 800),
+#             beta_magnitude=1,
+#             with_progress_bar=False,
+#         )
+#     ):
+#         print(f"{step:04d}: Best score: {optimizer.best_score} ...")
+#         min_scores[step] = optimizer.best_score
+#         if not debug:
+#             print(f"... {step:04d} ...", file=logfile)
+#             assert partition is not None
+#             assignments: Assignment = partition.assignment
+
+#             # Convert the ReCom partition to a plan.
+#             plan: Dict[str, int | str] = {
+#                 back_map[node]: part for node, part in assignments.items()
+#             }
+#             plan_name: str = f"{step:04d}"
+#             plans.append({"name": plan_name, "plan": plan})  # No weights.
+#         else:
+#             # print(f"      Min. scores: {min_scores}")
+#             pass
+
+#     # TODO - Do something with min_scores
+
+#     return plans
 
 
 def run_short_bursts_chain(
