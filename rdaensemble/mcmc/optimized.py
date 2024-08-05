@@ -107,12 +107,10 @@ def run_short_bursts_chain(
     print("============")
 
     min_scores = np.zeros(size)
+    burst_length: int = 5
     for step, partition in enumerate(
-        optimizer.simulated_annealing(
-            size,
-            optimizer.jumpcycle_beta_function(200, 800),
-            beta_magnitude=1,
-            with_progress_bar=False,
+        optimizer.short_bursts(
+            burst_length, size // burst_length, with_progress_bar=False
         )
     ):
         print(f"{step:04d}: Best score: {optimizer.best_score} ...")
