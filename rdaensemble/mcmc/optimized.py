@@ -47,7 +47,7 @@ def tilted_runs(optimizer, size: int, *, p: float = 0.125) -> Any:
 ### RUN A RECOM CHAIN ###
 
 
-def run_chain(
+def run_optimized_chain(
     optimizer,
     size: int,
     back_map: Dict[int, str],

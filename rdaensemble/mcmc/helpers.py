@@ -2,15 +2,17 @@
 HELPERS FOR GENERATING AN ENSEMBLE OF MAPS using RECOM
 """
 
-from typing import Any, List, Dict, Tuple, Callable
+from typing import Any, List, Dict, Tuple, Optional, Callable
 
 from functools import partial
 
 from gerrychain import (
     GeographicPartition,
     Graph,
+    MarkovChain,
     updaters,
     constraints,
+    accept,
     Election,
 )
 from gerrychain.tree import bipartition_tree
@@ -68,7 +70,8 @@ def prep_data(
 
 def setup_markov_chain(
     proposal: Callable,
-    metric: Callable,
+    size: int,
+    metric: Optional[Callable],
     recom_graph: Graph,
     elections: List[Election],
     roughly_equal: float,
@@ -120,15 +123,25 @@ def setup_markov_chain(
     )
     my_constraints = [contiguous, compactness_bound, pop_constraint]
 
-    optimizer = SingleMetricOptimizer(
-        proposal=my_proposal,
-        constraints=my_constraints,
-        initial_state=initial_partition,
-        optimization_metric=metric,
-        maximize=False,
-    )
+    chain: Any = None
+    if metric is not None:
+        chain = SingleMetricOptimizer(
+            proposal=my_proposal,
+            constraints=my_constraints,
+            initial_state=initial_partition,
+            optimization_metric=metric,
+            maximize=False,
+        )
+    else:
+        chain = MarkovChain(
+            proposal=my_proposal,
+            constraints=my_constraints,
+            accept=accept.always_accept,
+            initial_state=initial_partition,
+            total_steps=size,
+        )
 
-    return optimizer
+    return chain
 
 
 ### END ###

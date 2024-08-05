@@ -15,8 +15,6 @@ $ scripts/recom_ensemble.py \
 --log ../../iCloud/fileout/ensembles/NC20C_log.txt \
 --no-debug
 
-TODO - Rationalize this w/ optimized.py and optimized script.
-
 $ scripts/recom_ensemble.py
 
 For documentation, type:
@@ -28,6 +26,8 @@ $ scripts/recom_ensemble.py -h
 import argparse
 from argparse import ArgumentParser, Namespace
 from typing import Any, List, Dict
+
+import random
 
 import warnings
 
@@ -41,11 +41,15 @@ from rdabase import (
     read_csv,
     write_json,
     load_data,
-    # load_shapes,
     load_graph,
     load_metadata,
 )
-from rdaensemble import ensemble_metadata, gen_mcmc_ensemble
+from rdaensemble import (
+    ensemble_metadata,
+    prep_data,
+    setup_markov_chain,
+    run_unbiased_chain,
+)
 
 
 def main() -> None:
@@ -54,7 +58,6 @@ def main() -> None:
     args: argparse.Namespace = parse_args()
 
     data: Dict[str, Dict[str, int | str]] = load_data(args.data)
-    # shapes: Dict[str, Any] = load_shapes(args.shapes)
     graph: Dict[str, List[str]] = load_graph(args.graph)
     metadata: Dict[str, Any] = load_metadata(args.state, args.data)
 
@@ -72,24 +75,33 @@ def main() -> None:
     ensemble["packed"] = False
 
     with open(args.log, "w") as f:
-        plans: List[Dict[str, str | float | Dict[str, int | str]]] = gen_mcmc_ensemble(
+        random.seed(seed)
+
+        recom_graph, elections, back_map = prep_data(root_plan, data, graph)
+
+        chain = setup_markov_chain(
             recom,
             args.size,
-            root_plan,
-            seed,
-            data,
-            graph,
-            f,
+            None,
+            recom_graph,
+            elections,
             roughly_equal=args.roughlyequal,
             elasticity=args.elasticity,
             countyweight=args.countyweight,
-            node_repeats=args.noderepeats,
-            verbose=args.verbose,
+            node_repeats=1,
+        )
+
+        plans: List[Dict[str, str | float | Dict[str, int | str]]] = run_unbiased_chain(
+            chain,
+            args.size,
+            back_map,
+            f,
+            debug=args.debug,
         )
 
     ensemble["plans"] = plans
-
-    write_json(args.plans, ensemble)
+    if not args.debug:
+        write_json(args.plans, ensemble)
 
 
 def parse_args():

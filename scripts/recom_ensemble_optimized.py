@@ -51,7 +51,7 @@ from rdaensemble import (
     ensemble_metadata,
     prep_data,
     setup_markov_chain,
-    run_chain,
+    run_optimized_chain,
     simulated_annealing,
     short_bursts,
     tilted_runs,
@@ -98,6 +98,7 @@ def main() -> None:
 
         chain = setup_markov_chain(
             recom,
+            args.size,
             metric,
             recom_graph,
             elections,
@@ -107,8 +108,16 @@ def main() -> None:
             node_repeats=1,
         )
 
-        plans: List[Dict[str, str | float | Dict[str, int | str]]] = run_chain(
-            chain, args.size, back_map, f, label=label, method=method, debug=args.debug
+        plans: List[Dict[str, str | float | Dict[str, int | str]]] = (
+            run_optimized_chain(
+                chain,
+                args.size,
+                back_map,
+                f,
+                label=label,
+                method=method,
+                debug=args.debug,
+            )
         )
 
     ensemble["plans"] = plans
