@@ -12,10 +12,10 @@ For example:
 
 $ scripts/recom_ensemble_tilted_runs.py \
 --state NC \
---size 1000 \
+--size 10000 \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
---root ../../iCloud/fileout/rootmaps/NC20C_root_map.csv \
+--root ../tradeoffs/root_maps/NC20C_root_map.csv \
 --plans ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_tr_optimized_plans.json \
 --log ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_tr_optimized_log.txt \
 --no-debug
