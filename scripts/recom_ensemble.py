@@ -15,6 +15,8 @@ $ scripts/recom_ensemble.py \
 --log ../../iCloud/fileout/ensembles/NC20C_log.txt \
 --no-debug
 
+TODO - Rationalize this w/ optimized.py and optimized script.
+
 $ scripts/recom_ensemble.py
 
 For documentation, type:

@@ -24,6 +24,7 @@ from gerrychain.partition.assignment import Assignment
 from rdabase import Graph as RDAGraph, mkAdjacencies, GeoID
 
 
+# TODO - Rationalize this w/ optimized.py and optimized script.
 def gen_mcmc_ensemble(
     proposal: Callable,
     size: int,
@@ -173,6 +174,7 @@ def setup_markov_chain(
     return chain
 
 
+# TODO - Rationalize this w/ optimized.py
 def run_chain(
     chain, back_map: Dict[int, str], logfile
 ) -> List[Dict[str, str | float | Dict[str, int | str]]]:

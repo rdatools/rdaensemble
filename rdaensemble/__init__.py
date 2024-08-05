@@ -6,9 +6,10 @@ from .mcmc import (
     gen_mcmc_ensemble,
     prep_data,
     setup_markov_chain,
-    run_simulated_annealing_chain,
-    run_short_bursts_chain,
-    run_tilted_runs_chain,
+    run_chain,
+    simulated_annealing,
+    short_bursts,
+    tilted_runs,
 )
 from .general import (
     cuts_and_boundaries,

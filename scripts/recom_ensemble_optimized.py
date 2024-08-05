@@ -1,23 +1,21 @@
 #!/usr/bin/env python3
 
 """
-GENERATE AN ENSEMBLE OF MAPS using RECOM
+GENERATE AN ENSEMBLE OF PLANS using RECOM and
 OPTIMIZING for ONE RATINGS DIMENSION
-USING SHORT BURSTS
-
-NOTE - This is an exploration of ReCom's SingleMetricOptimizer feature.
-NOTE - It is a clone of scripts/recom_ensemble.py with the addition of the SingleMetricOptimizer feature.
+USING ONE OF THREE OPTIMIZATION METHODS.
 
 For example:
 
-$ scripts/recom_ensemble_short_bursts.py \
+# TODO
+$ scripts/recom_optimized_ensemble.py \
 --state NC \
 --size 10000 \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
 --root ../tradeoffs/root_maps/NC20C_root_map.csv \
---plans ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_sb_optimized_plans.json \
---log ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_sb_optimized_log.txt \
+--plans ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_sa_optimized_plans.json \
+--log ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_sa_optimized_log.txt \
 --no-debug
 
 $ scripts/recom_ensemble.py
@@ -30,7 +28,7 @@ $ scripts/recom_ensemble.py -h
 
 import argparse
 from argparse import ArgumentParser, Namespace
-from typing import Any, List, Dict
+from typing import Any, List, Dict, Callable
 
 import random
 
@@ -53,7 +51,10 @@ from rdaensemble import (
     ensemble_metadata,
     prep_data,
     setup_markov_chain,
-    run_short_bursts_chain,
+    run_chain,
+    simulated_annealing,
+    short_bursts,
+    tilted_runs,
 )
 
 
@@ -61,6 +62,14 @@ def main() -> None:
     """Generate an ensemble of maps using MCMC/ReCom."""
 
     args: argparse.Namespace = parse_args()
+
+    methods: Dict[str, Callable] = {
+        "simulated_annealing": simulated_annealing,
+        "short_bursts": short_bursts,
+        "tilted_runs": tilted_runs,
+    }
+    label: str = args.method
+    method: Callable = methods[label]
 
     data: Dict[str, Dict[str, int | str]] = load_data(args.data)
     graph: Dict[str, List[str]] = load_graph(args.graph)
@@ -88,15 +97,14 @@ def main() -> None:
             recom,
             recom_graph,
             elections,
-            roughly_equal=0.01,
-            elasticity=2.0,
-            countyweight=0.75,
+            roughly_equal=args.roughlyequal,
+            elasticity=args.elasticity,
+            countyweight=args.countyweight,
             node_repeats=1,
         )
 
-        # TODO
-        plans: List[Dict[str, str | float | Dict[str, int | str]]] = (
-            run_short_bursts_chain(chain, args.size, back_map, f, debug=args.debug)
+        plans: List[Dict[str, str | float | Dict[str, int | str]]] = run_chain(
+            chain, args.size, back_map, f, label=label, method=method, debug=args.debug
         )
 
     ensemble["plans"] = plans
@@ -160,11 +168,18 @@ def parse_args():
         default=0.75,
         help="County weights",
     )
+    # TODO - DELETE???
+    # parser.add_argument(
+    #     "--noderepeats",
+    #     type=int,
+    #     default=1,
+    #     help="How many different choices of root to use before drawing a new spanning tree.",
+    # )
     parser.add_argument(
-        "--noderepeats",
-        type=int,
-        default=1,
-        help="How many different choices of root to use before drawing a new spanning tree.",
+        "--method",
+        type=str,
+        default="simulated_annealing",
+        help="A ReCom SingleMetricOptimizer optimization method",
     )
 
     parser.add_argument(
@@ -185,9 +200,10 @@ def parse_args():
         "data": "../rdabase/data/NC/NC_2020_data.csv",
         "graph": "../rdabase/data/NC/NC_2020_graph.json",
         "root": "../tradeoffs/root_maps/NC20C_root_map.csv",
-        "plans": "temp/NC20C_sb_optimized_plans.json",
-        "log": "temp/NC20C_sb_optimized_log.txt",
+        "plans": "temp/NC20C_sa_optimized_plans.json",
+        "log": "temp/NC20C_sa_optimized_log.txt",
         "size": 10,
+        "method": "simulated_annealing",
     }
     args = require_args(args, args.debug, debug_defaults)
 
