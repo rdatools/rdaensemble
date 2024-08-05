@@ -1,74 +1,42 @@
 """
-GENERATE AN ENSEMBLE OF MAPS using RECOM
+HELPERS FOR GENERATING AN ENSEMBLE OF MAPS using RECOM
+
+TODO - Delete dead code.
 """
 
 from typing import Any, List, Dict, Tuple, Callable
 
-import random
 from functools import partial
 
 from gerrychain import (
     GeographicPartition,
     Graph,
-    MarkovChain,
+    # MarkovChain,
     updaters,
     constraints,
-    accept,
+    # accept,
     Election,
 )
 from gerrychain.tree import bipartition_tree
 from gerrychain.updaters import Tally
 from gerrychain.constraints import contiguous
-from gerrychain.partition.assignment import Assignment
+from gerrychain.optimization import SingleMetricOptimizer  # , Gingleator
+
+# from tqdm import tqdm
 
 from rdabase import Graph as RDAGraph, mkAdjacencies, GeoID
 
 
-def gen_mcmc_ensemble(
-    proposal: Callable,
-    size: int,
-    initial_plan: List[Dict[str, str | int]],
-    seed: int,
-    data: Dict[str, Dict[str, int | str]],
-    graph: Dict[str, List[str]],
-    logfile,
-    *,
-    roughly_equal: float = 0.01,
-    elasticity: float = 2.0,
-    countyweight: float = 0.75,
-    node_repeats: int = 1,
-    verbose: bool = False,
-) -> List[Dict[str, str | float | Dict[str, int | str]]]:
-    """Generate an ensemble of maps using the ReCom variant of MCMC."""
-
-    random.seed(seed)
-
-    recom_graph, elections, back_map = prep_data(initial_plan, data, graph)
-    chain = setup_markov_chain(
-        proposal,
-        size,
-        recom_graph,
-        elections,
-        roughly_equal,
-        elasticity,
-        countyweight,
-        node_repeats,
-    )
-
-    plans: List[Dict[str, str | float | Dict[str, int | str]]] = run_chain(
-        chain, back_map, logfile
-    )
-
-    return plans
-
-
-# TODO - Rationalize this w/ helpers.py
 def prep_data(
     initialplan: List[Dict[str, str | int]],
     data: Dict[str, Dict[str, int | str]],
     graph: Dict[str, List[str]],
 ) -> Tuple[Graph, List[Election], Dict[int, str]]:
-    """Prepare the data for ReCom."""
+    """
+    Prepare the data for ReCom.
+
+    # NOTE - Unchanged from ensemble.py
+    """
 
     initial_assignments: Dict[str, int | str] = {
         str(a["GEOID"]): a["DISTRICT"] for a in initialplan
@@ -84,6 +52,7 @@ def prep_data(
                 "REP_VOTES": data[geoid]["REP_VOTES"],
                 "DEM_VOTES": data[geoid]["DEM_VOTES"],
                 "INITIAL": initial_assignments[geoid],
+                # TODO - Need to update this to include VAP data
             },
         )
         for i, geoid in enumerate(data)
@@ -107,10 +76,9 @@ def prep_data(
     return recom_graph, elections, back_map
 
 
-# TODO - Rationalize this w/ helpers.py
 def setup_markov_chain(
     proposal: Callable,
-    size: int,
+    # size: int, # NOTE - Removed this
     recom_graph: Graph,
     elections: List[Election],
     roughly_equal: float,
@@ -118,7 +86,11 @@ def setup_markov_chain(
     countyweight: float,
     node_repeats: int,
 ) -> Any:
-    """Set up the Markov chain."""
+    """
+    Set up the Markov chain.
+
+    NOTE - Tweaked to setup an optimizer chain using SingleMetricOptimizer.
+    """
 
     my_updaters: dict[str, Tally] = {
         "population": updaters.Tally("TOTAL_POP", alias="population")
@@ -162,40 +134,23 @@ def setup_markov_chain(
     )
     my_constraints = [contiguous, compactness_bound, pop_constraint]
 
-    chain = MarkovChain(
+    # NOTE - Added an objective function for SingleMetricOptimizer
+    # TODO - Figure out proxies for each of the 5 ratings dimensions
+    num_cut_edges = lambda p: len(p["cut_edges"])
+
+    # NOTE - Modified this
+    # chain = MarkovChain(
+    optimizer = SingleMetricOptimizer(
         proposal=my_proposal,
         constraints=my_constraints,
-        accept=accept.always_accept,
+        # accept=accept.always_accept, # NOTE - Removed this
         initial_state=initial_partition,
-        total_steps=size,
+        # total_steps=size, # NOTE - Removed this
+        optimization_metric=num_cut_edges,  # NOTE - Added this
+        maximize=False,  # NOTE - Added this
     )
 
-    return chain
-
-
-def run_chain(
-    chain, back_map: Dict[int, str], logfile
-) -> List[Dict[str, str | float | Dict[str, int | str]]]:
-    """Run a Markov chain."""
-
-    plans: List[Dict[str, str | float | Dict[str, int | str]]] = list()
-
-    for step, partition in enumerate(chain):
-        print(f"... {step} ...")
-        print(f"... {step} ...", file=logfile)
-        assert partition is not None
-        assignments: Assignment = partition.assignment
-
-        # print(assignments)
-
-        # Convert the ReCom partition to a plan.
-        plan: Dict[str, int | str] = {
-            back_map[node]: part for node, part in assignments.items()
-        }
-        plan_name: str = f"{step:04d}"
-        plans.append({"name": plan_name, "plan": plan})  # No weights.
-
-    return plans
+    return optimizer
 
 
 ### END ###

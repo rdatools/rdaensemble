@@ -3,20 +3,21 @@
 """
 GENERATE AN ENSEMBLE OF MAPS using RECOM
 OPTIMIZING for ONE RATINGS DIMENSION
+USING TILETED RUNS
 
 NOTE - This is an exploration of ReCom's SingleMetricOptimizer feature.
 NOTE - It is a clone of scripts/recom_ensemble.py with the addition of the SingleMetricOptimizer feature.
 
 For example:
 
-$ scripts/recom_ensemble.py \
+$ scripts/recom_ensemble_tilted_runs.py \
 --state NC \
 --size 1000 \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
 --root ../../iCloud/fileout/rootmaps/NC20C_root_map.csv \
---plans ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_plans.json \
---log ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_log.txt \
+--plans ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_tr_optimized_plans.json \
+--log ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_tr_optimized_log.txt \
 --no-debug
 
 $ scripts/recom_ensemble.py
@@ -45,7 +46,6 @@ from rdabase import (
     read_csv,
     write_json,
     load_data,
-    # load_shapes,
     load_graph,
     load_metadata,
 )
@@ -54,7 +54,6 @@ from rdaensemble import (
     prep_data,
     setup_markov_chain,
     run_simulated_annealing_chain,
-    # gen_optimized_mcmc_ensemble,
 )
 
 
@@ -96,29 +95,12 @@ def main() -> None:
             node_repeats=1,
         )
 
+        # TODO
         plans: List[Dict[str, str | float | Dict[str, int | str]]] = (
             run_simulated_annealing_chain(
                 chain, args.size, back_map, f, debug=args.debug
             )
         )
-        # TODO
-        # plans: List[Dict[str, str | float | Dict[str, int | str]]] = (
-        #     gen_optimized_mcmc_ensemble(
-        #         recom,
-        #         args.size,
-        #         root_plan,
-        #         seed,
-        #         data,
-        #         graph,
-        #         f,
-        #         roughly_equal=args.roughlyequal,
-        #         elasticity=args.elasticity,
-        #         countyweight=args.countyweight,
-        #         node_repeats=args.noderepeats,
-        #         verbose=args.verbose,
-        #         debug=args.debug,
-        #     )
-        # )
 
     ensemble["plans"] = plans
     if not args.debug:
@@ -206,8 +188,8 @@ def parse_args():
         "data": "../rdabase/data/NC/NC_2020_data.csv",
         "graph": "../rdabase/data/NC/NC_2020_graph.json",
         "root": "../tradeoffs/root_maps/NC20C_root_map.csv",
-        "plans": "temp/NC20C_sa_optimized_plans.json",
-        "log": "temp/NC20C_sa_optimized_log.txt",
+        "plans": "temp/NC20C_tr_optimized_plans.json",
+        "log": "temp/NC20C_tr_optimized_log.txt",
         "size": 10,
     }
     args = require_args(args, args.debug, debug_defaults)
