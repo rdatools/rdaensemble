@@ -4,35 +4,13 @@ GENERATE AN ENSEMBLE OF MAPS using RECOM
 NOTE - This is an exploration of ReCom's SingleMetricOptimizer feature.
 NOTE - It is a clone of ensemble.py with the addition of the SingleMetricOptimizer feature.
        Shared code has been moved to helpers.py.
-
-TODO - Delete dead code.
 """
 
-from typing import Any, List, Dict, Tuple, Callable
+from typing import Any, List, Dict
 
-# import random
-# from functools import partial
 import numpy as np
 
-# from gerrychain import (
-#     GeographicPartition,
-#     Graph,
-#     MarkovChain,
-#     updaters,
-#     constraints,
-#     accept,
-#     Election,
-# )
-from gerrychain.tree import bipartition_tree
-from gerrychain.updaters import Tally
-from gerrychain.constraints import contiguous
 from gerrychain.partition.assignment import Assignment
-
-# Added for SingleMetricOptimizer
-# from gerrychain.optimization import SingleMetricOptimizer, Gingleator
-# from tqdm import tqdm
-
-# from rdabase import Graph as RDAGraph, mkAdjacencies, GeoID
 
 
 def run_simulated_annealing_chain(
@@ -157,12 +135,7 @@ def run_tilted_runs_chain(
 
     min_scores = np.zeros(size)
     for step, partition in enumerate(
-        optimizer.simulated_annealing(
-            size,
-            optimizer.jumpcycle_beta_function(200, 800),
-            beta_magnitude=1,
-            with_progress_bar=False,
-        )
+        optimizer.tilted_run(size, p=0.125, with_progress_bar=False)
     ):
         print(f"{step:04d}: Best score: {optimizer.best_score} ...")
         min_scores[step] = optimizer.best_score
