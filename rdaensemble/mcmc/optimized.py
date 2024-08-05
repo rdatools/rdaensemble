@@ -55,7 +55,7 @@ def run_chain(
     *,
     label: str = "Simulated Annealing",
     method: Callable = simulated_annealing,
-    debug: bool = False,  # NOTE - Added size
+    debug: bool = False,
 ) -> List[Dict[str, str | float | Dict[str, int | str]]]:
     """Run an optimized Markov chain."""
 

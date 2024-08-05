@@ -1,7 +1,5 @@
 """
 HELPERS FOR GENERATING AN ENSEMBLE OF MAPS using RECOM
-
-TODO - Delete dead code.
 """
 
 from typing import Any, List, Dict, Tuple, Callable
@@ -11,18 +9,14 @@ from functools import partial
 from gerrychain import (
     GeographicPartition,
     Graph,
-    # MarkovChain,
     updaters,
     constraints,
-    # accept,
     Election,
 )
 from gerrychain.tree import bipartition_tree
 from gerrychain.updaters import Tally
 from gerrychain.constraints import contiguous
-from gerrychain.optimization import SingleMetricOptimizer  # , Gingleator
-
-# from tqdm import tqdm
+from gerrychain.optimization import SingleMetricOptimizer  # TODO - Add Gingleator
 
 from rdabase import Graph as RDAGraph, mkAdjacencies, GeoID
 
@@ -32,11 +26,7 @@ def prep_data(
     data: Dict[str, Dict[str, int | str]],
     graph: Dict[str, List[str]],
 ) -> Tuple[Graph, List[Election], Dict[int, str]]:
-    """
-    Prepare the data for ReCom.
-
-    # NOTE - Unchanged from ensemble.py
-    """
+    """Prepare the data for ReCom."""
 
     initial_assignments: Dict[str, int | str] = {
         str(a["GEOID"]): a["DISTRICT"] for a in initialplan
@@ -78,7 +68,7 @@ def prep_data(
 
 def setup_markov_chain(
     proposal: Callable,
-    # size: int, # NOTE - Removed this
+    metric: Callable,
     recom_graph: Graph,
     elections: List[Election],
     roughly_equal: float,
@@ -86,11 +76,7 @@ def setup_markov_chain(
     countyweight: float,
     node_repeats: int,
 ) -> Any:
-    """
-    Set up the Markov chain.
-
-    NOTE - Tweaked to setup an optimizer chain using SingleMetricOptimizer.
-    """
+    """Set up the Markov chain."""
 
     my_updaters: dict[str, Tally] = {
         "population": updaters.Tally("TOTAL_POP", alias="population")
@@ -134,20 +120,12 @@ def setup_markov_chain(
     )
     my_constraints = [contiguous, compactness_bound, pop_constraint]
 
-    # NOTE - Added an objective function for SingleMetricOptimizer
-    # TODO - Figure out proxies for each of the 5 ratings dimensions
-    num_cut_edges = lambda p: len(p["cut_edges"])
-
-    # NOTE - Modified this
-    # chain = MarkovChain(
     optimizer = SingleMetricOptimizer(
         proposal=my_proposal,
         constraints=my_constraints,
-        # accept=accept.always_accept, # NOTE - Removed this
         initial_state=initial_partition,
-        # total_steps=size, # NOTE - Removed this
-        optimization_metric=num_cut_edges,  # NOTE - Added this
-        maximize=False,  # NOTE - Added this
+        optimization_metric=metric,
+        maximize=False,
     )
 
     return optimizer

@@ -70,6 +70,9 @@ def main() -> None:
     }
     label: str = args.method
     method: Callable = methods[label]
+    metric: Callable
+    num_cut_edges: Callable = lambda p: len(p["cut_edges"])
+    metric = num_cut_edges  # TODO - Paramaterize this
 
     data: Dict[str, Dict[str, int | str]] = load_data(args.data)
     graph: Dict[str, List[str]] = load_graph(args.graph)
@@ -95,6 +98,7 @@ def main() -> None:
 
         chain = setup_markov_chain(
             recom,
+            metric,
             recom_graph,
             elections,
             roughly_equal=args.roughlyequal,
@@ -168,13 +172,6 @@ def parse_args():
         default=0.75,
         help="County weights",
     )
-    # TODO - DELETE???
-    # parser.add_argument(
-    #     "--noderepeats",
-    #     type=int,
-    #     default=1,
-    #     help="How many different choices of root to use before drawing a new spanning tree.",
-    # )
     parser.add_argument(
         "--method",
         type=str,
