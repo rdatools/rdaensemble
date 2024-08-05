@@ -4,6 +4,8 @@ GENERATE AN ENSEMBLE OF MAPS using RECOM
 NOTE - This is an exploration of ReCom's SingleMetricOptimizer feature.
 NOTE - It is a clone of ensemble.py with the addition of the SingleMetricOptimizer feature.
        Shared code has been moved to helpers.py.
+
+TODO - Rationalize this into one driver function w/ 3 helper functions.
 """
 
 from typing import Any, List, Dict
