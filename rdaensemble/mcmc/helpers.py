@@ -81,14 +81,17 @@ def setup_markov_chain(
 ) -> Any:
     """Set up the Markov chain."""
 
-    my_updaters: dict[str, Tally] = {
-        "population": updaters.Tally("TOTAL_POP", alias="population")
-    }
+    my_updaters: dict[str, Any] = {
+        "population": updaters.Tally("TOTAL_POP", alias="population"),
+        # "perimeter": updaters.perimeter,
+        # "area": updaters.Tally("area", alias="area"),
+    }  # TODO - Here: Can't get 'area' or 'perimeter' to be calculated
     election_updaters: dict[str, Election] = {
         election.name: election for election in elections
     }
     my_updaters.update(election_updaters)  # type: ignore
 
+    # TODO - Can't get 'area' to work
     initial_partition = GeographicPartition(
         recom_graph, assignment="INITIAL", updaters=my_updaters
     )
@@ -96,6 +99,9 @@ def setup_markov_chain(
     ideal_population = sum(initial_partition["population"].values()) / len(
         initial_partition
     )
+    # TODO - Can't get 'area' to work
+    # initial_partition["area"].values()
+    # initial_partition["perimeter"].values()
 
     my_proposal: Callable
     my_constraints: List
