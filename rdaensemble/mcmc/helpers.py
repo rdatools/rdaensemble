@@ -5,6 +5,7 @@ HELPERS FOR GENERATING AN ENSEMBLE OF MAPS using RECOM
 from typing import Any, List, Dict, Tuple, Optional, Callable
 
 from functools import partial
+import json, shapely.geometry
 
 from gerrychain import (
     GeographicPartition,
@@ -27,6 +28,7 @@ def prep_data(
     initialplan: List[Dict[str, str | int]],
     data: Dict[str, Dict[str, int | str]],
     graph: Dict[str, List[str]],
+    shapes: Optional[Dict[str, Any]] = None,
 ) -> Tuple[Graph, List[Election], Dict[int, str]]:
     """Prepare the data for ReCom."""
 
@@ -34,21 +36,28 @@ def prep_data(
         str(a["GEOID"]): a["DISTRICT"] for a in initialplan
     }
 
-    nodes: List[Tuple] = [
-        (
-            i,
-            {
-                "GEOID": str(data[geoid]["GEOID"]),
-                "COUNTY": GeoID(geoid).county[2:],
-                "TOTAL_POP": data[geoid]["TOTAL_POP"],
-                "REP_VOTES": data[geoid]["REP_VOTES"],
-                "DEM_VOTES": data[geoid]["DEM_VOTES"],
-                "INITIAL": initial_assignments[geoid],
-                # TODO - Need to update this to include VAP data
-            },
-        )
-        for i, geoid in enumerate(data)
-    ]
+    nodes: List[Tuple] = []
+    for i, geoid in enumerate(data):
+        attrs: Dict[str, Any] = {
+            "GEOID": str(data[geoid]["GEOID"]),
+            "COUNTY": GeoID(geoid).county[2:],
+            "TOTAL_POP": data[geoid]["TOTAL_POP"],
+            "REP_VOTES": data[geoid]["REP_VOTES"],
+            "DEM_VOTES": data[geoid]["DEM_VOTES"],
+            "INITIAL": initial_assignments[geoid],
+            # TODO - Need to update this to include VAP data
+        }
+
+        if shapes is not None:
+            simplified_poly = shapes[geoid]
+            shp = shapely.Polygon(simplified_poly["exterior"])
+            geojson = shapely.geometry.mapping(shp)
+            attrs["geometry"] = geojson
+
+        node: Tuple = (i, attrs)
+
+        nodes.append(node)
+
     node_index: Dict[str, int] = {geoid: i for i, geoid in enumerate(data)}
     back_map: Dict[int, str] = {v: k for k, v in node_index.items()}
 

@@ -7,11 +7,12 @@ USING ONE OF THREE OPTIMIZATION METHODS.
 
 For example:
 
-# TODO
+# TODO - Shapes
 $ scripts/recom_optimized_ensemble.py \
 --state NC \
 --size 10000 \
 --data ../rdabase/data/NC/NC_2020_data.csv \
+--shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
 --root ../tradeoffs/root_maps/NC20C_root_map.csv \
 --plans ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_sa_optimized_plans.json \
@@ -45,6 +46,7 @@ from rdabase import (
     read_csv,
     write_json,
     load_data,
+    load_shapes,
     load_graph,
     load_metadata,
 )
@@ -112,6 +114,7 @@ def main() -> None:
     metric = compactness_proxy
 
     data: Dict[str, Dict[str, int | str]] = load_data(args.data)
+    shapes: Dict[str, Any] = load_shapes(args.shapes)
     graph: Dict[str, List[str]] = load_graph(args.graph)
     metadata: Dict[str, Any] = load_metadata(args.state, args.data)
 
@@ -131,7 +134,7 @@ def main() -> None:
     with open(args.log, "w") as f:
         random.seed(seed)
 
-        recom_graph, elections, back_map = prep_data(root_plan, data, graph)
+        recom_graph, elections, back_map = prep_data(root_plan, data, graph, shapes)
 
         chain = setup_markov_chain(
             recom,
@@ -179,6 +182,11 @@ def parse_args():
         "--data",
         type=str,
         help="Data file",
+    )
+    parser.add_argument(
+        "--shapes",
+        type=str,
+        help="Shapes abstract file",
     )
     parser.add_argument(
         "--graph",
@@ -241,6 +249,7 @@ def parse_args():
     debug_defaults: Dict[str, Any] = {
         "state": "NC",
         "data": "../rdabase/data/NC/NC_2020_data.csv",
+        "shapes": "../rdabase/data/NC/NC_2020_shapes_simplified.json",
         "graph": "../rdabase/data/NC/NC_2020_graph.json",
         "root": "../tradeoffs/root_maps/NC20C_root_map.csv",
         "plans": "temp/NC20C_sa_optimized_plans.json",
