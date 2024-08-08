@@ -38,7 +38,7 @@ import warnings
 warnings.warn = lambda *args, **kwargs: None
 
 from gerrychain.proposals import recom
-from gerrychain.metrics.compactness import compute_polsby_popper  # polsby_popper
+from gerrychain.metrics.compactness import polsby_popper  # compute_polsby_popper
 
 from rdabase import (
     require_args,
@@ -62,23 +62,37 @@ from rdaensemble import (
 
 
 # TODO - For debugging
-def polsby_popper(partition) -> Dict[int, float]:
-    """
-    Computes Polsby-Popper compactness scores for each district in the partition.
+# def polsby_popper(partition) -> Dict[int, float]:
+#     """
+#     Computes Polsby-Popper compactness scores for each district in the partition.
 
-    :param partition: The partition to compute scores for
-    :type partition: Partition
+#     :param partition: The partition to compute scores for
+#     :type partition: Partition
 
-    :returns: A dictionary mapping each district ID to its Polsby-Popper score
-    :rtype: Dict[int, float]
-    """
-    pass
-    return {
-        part: compute_polsby_popper(
-            partition["area"][part], partition["perimeter"][part]
-        )
-        for part in partition.parts
-    }
+#     :returns: A dictionary mapping each district ID to its Polsby-Popper score
+#     :rtype: Dict[int, float]
+#     """
+#     pass
+#     return {
+#         part: compute_polsby_popper(
+#             partition["area"][part], partition["perimeter"][part]
+#         )
+#         for part in partition.parts
+#     }
+
+
+# TODO - Compactness
+# https://gerrychain.readthedocs.io/en/latest/_modules/gerrychain/metrics/compactness/#
+def average_polsby_popper(partition):
+    """Estimate the compactness of a partition, using just Polsby-Popper."""
+    # y = partition["perimeter"]
+    # x = partition["area"]
+
+    n: int = len(partition)
+    by_district: Dict[int, float] = polsby_popper(partition)
+    measurement: float = sum(by_district.values()) / n
+
+    return measurement
 
 
 def main() -> None:
@@ -98,20 +112,7 @@ def main() -> None:
     metric: Callable
     num_cut_edges: Callable = lambda p: len(p["cut_edges"])  # Example
 
-    # TODO - Here: Can't get 'area' to work
-    # https://gerrychain.readthedocs.io/en/latest/_modules/gerrychain/metrics/compactness/#
-    def compactness_proxy(partition):
-        """Estimate the compactness of a partition, using just Polsby-Popper."""
-        # y = partition["perimeter"]
-        # x = partition["area"]
-
-        n: int = len(partition)
-        by_district: Dict[int, float] = polsby_popper(partition)
-        measurement: float = sum(by_district.values()) / n
-
-        return measurement
-
-    metric = compactness_proxy
+    metric = average_polsby_popper
 
     data: Dict[str, Dict[str, int | str]] = load_data(args.data)
     shapes: Dict[str, Any] = load_shapes(args.shapes)
