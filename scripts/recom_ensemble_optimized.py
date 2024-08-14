@@ -85,14 +85,23 @@ from rdaensemble import (
 # https://gerrychain.readthedocs.io/en/latest/_modules/gerrychain/metrics/compactness/#
 def average_polsby_popper(partition):
     """Estimate the compactness of a partition, using just Polsby-Popper."""
-    # y = partition["perimeter"]
-    # x = partition["area"]
 
     n: int = len(partition)
-    by_district: Dict[int, float] = polsby_popper(partition)
+    by_district: Dict[int, float] = partition["polsby_popper"]
+    # by_district: Dict[int, float] = polsby_popper(partition)
     measurement: float = sum(by_district.values()) / n
 
     return measurement
+
+
+# def average_polsby_popper(partition):
+#     """Estimate the compactness of a partition, using just Polsby-Popper."""
+
+#     n: int = len(partition)
+#     by_district: Dict[int, float] = polsby_popper(partition)
+#     measurement: float = sum(by_district.values()) / n
+
+#     return measurement
 
 
 def main() -> None:

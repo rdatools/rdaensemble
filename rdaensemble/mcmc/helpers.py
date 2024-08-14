@@ -17,9 +17,9 @@ from gerrychain import (
     Election,
 )
 from gerrychain.tree import bipartition_tree
-from gerrychain.updaters import Tally
 from gerrychain.constraints import contiguous
 from gerrychain.optimization import SingleMetricOptimizer  # TODO - Add Gingleator
+from gerrychain.metrics.compactness import polsby_popper
 
 from rdabase import Graph as RDAGraph, mkAdjacencies, GeoID
 
@@ -50,9 +50,18 @@ def prep_data(
 
         if shapes is not None:
             simplified_poly = shapes[geoid]
+
             shp = shapely.Polygon(simplified_poly["exterior"])
             geojson = shapely.geometry.mapping(shp)
             attrs["geometry"] = geojson
+
+            attrs["area"] = simplified_poly["area"]
+
+            if "OUT_OF_STATE" in simplified_poly["arcs"]:
+                attrs["boundary_node"] = True
+                attrs["boundary_perim"] = simplified_poly["arcs"]["OUT_OF_STATE"]
+            else:
+                attrs["boundary_node"] = False
 
         node: Tuple = (i, attrs)
 
@@ -62,13 +71,25 @@ def prep_data(
     back_map: Dict[int, str] = {v: k for k, v in node_index.items()}
 
     pairs: List[Tuple[str, str]] = mkAdjacencies(RDAGraph(graph))
-    edges: List[Tuple[int, int]] = [
-        (node_index[geoid1], node_index[geoid2]) for geoid1, geoid2 in pairs
-    ]
+
+    edges: List[Tuple] = []
+    shared_perims: Dict[Tuple[int, int], float] = {}
+    for geoid1, geoid2 in pairs:
+        edge: Tuple = (node_index[geoid1], node_index[geoid2])
+
+        if shapes is not None:
+            simplified_poly = shapes[geoid1]
+            shared_perims[edge] = simplified_poly["arcs"][geoid2]
+
+        edges.append(edge)
 
     recom_graph = Graph()
     recom_graph.add_nodes_from(nodes)
-    recom_graph.add_edges_from(edges)
+    if shapes is not None:
+        for edge in edges:
+            recom_graph.add_edges_from([edge], shared_perim=shared_perims[edge])
+    else:
+        recom_graph.add_edges_from(edges)
 
     elections: List[Election] = [
         Election("composite", {"Democratic": "DEM_VOTES", "Republican": "REP_VOTES"}),
@@ -91,9 +112,20 @@ def setup_markov_chain(
     """Set up the Markov chain."""
 
     my_updaters: dict[str, Any] = {
+        "cut_edges": updaters.cut_edges,
         "population": updaters.Tally("TOTAL_POP", alias="population"),
         "perimeter": updaters.perimeter,
+        "exterior_boundaries": updaters.exterior_boundaries,
+        "interior_boundaries": updaters.interior_boundaries,
+        "boundary_nodes": updaters.boundary_nodes,
         "area": updaters.Tally("area", alias="area"),
+        "polsby_popper": polsby_popper,
+        "cut_edges_by_part": updaters.cut_edges_by_part,
+        # "population": updaters.Tally("TOTAL_POP", alias="population"),
+        # "perimeter": updaters.perimeter,
+        # "area": updaters.Tally("area", alias="area"),
+        # "boundary_nodes": updaters.boundary_nodes,
+        # "polsby_popper": polsby_popper,
     }  # TODO - Compactness
     election_updaters: dict[str, Election] = {
         election.name: election for election in elections
