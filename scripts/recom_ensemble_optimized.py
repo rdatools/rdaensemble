@@ -61,16 +61,10 @@ from rdaensemble import (
 )
 
 
-# TODO - Compactness
-# https://gerrychain.readthedocs.io/en/latest/_modules/gerrychain/metrics/compactness/#
 def average_polsby_popper(partition):
     """Estimate the compactness of a partition, using just Polsby-Popper."""
 
-    n: int = len(partition)
-    by_district: Dict[int, float] = partition["polsby_popper"]
-    # by_district: Dict[int, float] = polsby_popper(partition)
-    measurement: float = sum(by_district.values()) / n
-
+    measurement: float = sum(partition["polsby-popper"].values()) / len(partition)
     return measurement
 
 
@@ -78,6 +72,8 @@ def main() -> None:
     """Generate an ensemble of maps using MCMC/ReCom."""
 
     args: argparse.Namespace = parse_args()
+
+    # TODO - Paramaterize this
 
     methods: Dict[str, Callable] = {
         "simulated_annealing": simulated_annealing,
@@ -87,11 +83,13 @@ def main() -> None:
     label: str = args.method
     method: Callable = methods[label]
 
-    # TODO - Paramaterize this
     metric: Callable
     num_cut_edges: Callable = lambda p: len(p["cut_edges"])  # Example
 
     metric = average_polsby_popper
+    maximize: bool = True
+
+    #
 
     data: Dict[str, Dict[str, int | str]] = load_data(args.data)
     shapes: Dict[str, Any] = load_shapes(args.shapes)
@@ -126,6 +124,7 @@ def main() -> None:
             elasticity=args.elasticity,
             countyweight=args.countyweight,
             node_repeats=1,
+            maximize=maximize,
         )
 
         plans: List[Dict[str, str | float | Dict[str, int | str]]] = (

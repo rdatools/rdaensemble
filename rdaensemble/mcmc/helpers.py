@@ -108,25 +108,15 @@ def setup_markov_chain(
     elasticity: float,
     countyweight: float,
     node_repeats: int,
+    maximize: bool,
 ) -> Any:
     """Set up the Markov chain."""
 
     my_updaters: dict[str, Any] = {
         "cut_edges": updaters.cut_edges,
         "population": updaters.Tally("TOTAL_POP", alias="population"),
-        "perimeter": updaters.perimeter,
-        "exterior_boundaries": updaters.exterior_boundaries,
-        "interior_boundaries": updaters.interior_boundaries,
-        "boundary_nodes": updaters.boundary_nodes,
-        "area": updaters.Tally("area", alias="area"),
         "polsby_popper": polsby_popper,
-        "cut_edges_by_part": updaters.cut_edges_by_part,
-        # "population": updaters.Tally("TOTAL_POP", alias="population"),
-        # "perimeter": updaters.perimeter,
-        # "area": updaters.Tally("area", alias="area"),
-        # "boundary_nodes": updaters.boundary_nodes,
-        # "polsby_popper": polsby_popper,
-    }  # TODO - Compactness
+    }
     election_updaters: dict[str, Election] = {
         election.name: election for election in elections
     }
@@ -136,6 +126,8 @@ def setup_markov_chain(
         recom_graph, assignment="INITIAL", updaters=my_updaters
     )
 
+    print(initial_partition["polsby-popper"])  # TODO - HERE
+
     ideal_population = sum(initial_partition["population"].values()) / len(
         initial_partition
     )
@@ -144,7 +136,7 @@ def setup_markov_chain(
     my_constraints: List
     my_weights = {"COUNTY": countyweight}
 
-    method = partial(bipartition_tree, allow_pair_reselection=True)
+    method = partial(bipartition_tree, max_attempts=100, allow_pair_reselection=True)
 
     my_proposal = partial(
         proposal,
