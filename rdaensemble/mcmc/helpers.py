@@ -45,10 +45,10 @@ def prep_data(
             "REP_VOTES": data[geoid]["REP_VOTES"],
             "DEM_VOTES": data[geoid]["DEM_VOTES"],
             "INITIAL": initial_assignments[geoid],
-            # TODO - Need to update this to include VAP data
+            # TODO - Add VAP data for minority opportunity
         }
 
-        if shapes is not None:
+        if shapes:  # is not None:
             simplified_poly = shapes[geoid]
 
             shp = shapely.Polygon(simplified_poly["exterior"])
@@ -77,7 +77,7 @@ def prep_data(
     for geoid1, geoid2 in pairs:
         edge: Tuple = (node_index[geoid1], node_index[geoid2])
 
-        if shapes is not None:
+        if shapes:  # is not None:
             simplified_poly = shapes[geoid1]
             shared_perims[edge] = simplified_poly["arcs"][geoid2]
 
@@ -85,7 +85,7 @@ def prep_data(
 
     recom_graph = Graph()
     recom_graph.add_nodes_from(nodes)
-    if shapes is not None:
+    if shapes:  # is not None:
         for edge in edges:
             recom_graph.add_edges_from([edge], shared_perim=shared_perims[edge])
     else:
