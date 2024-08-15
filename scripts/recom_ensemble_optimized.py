@@ -7,7 +7,6 @@ USING ONE OF THREE OPTIMIZATION METHODS.
 
 For example:
 
-# TODO - Shapes
 $ scripts/recom_optimized_ensemble.py \
 --state NC \
 --size 10000 \
@@ -38,7 +37,6 @@ import warnings
 warnings.warn = lambda *args, **kwargs: None
 
 from gerrychain.proposals import recom
-from gerrychain.metrics.compactness import polsby_popper  # compute_polsby_popper
 
 from rdabase import (
     require_args,
@@ -60,11 +58,18 @@ from rdaensemble import (
     tilted_runs,
 )
 
+num_cut_edges: Callable = lambda p: len(p["cut_edges"])
+
 
 def average_polsby_popper(partition):
     """Estimate the compactness of a partition, using just Polsby-Popper."""
 
+    print(f"Polsby: {partition['polsby-popper']}")
+    print(f"Area: {partition['area']}")
+    print(f"Perimeter: {partition['perimeter']}")  # TODO - These are too big
+
     measurement: float = sum(partition["polsby-popper"].values()) / len(partition)
+
     return measurement
 
 
@@ -72,8 +77,6 @@ def main() -> None:
     """Generate an ensemble of maps using MCMC/ReCom."""
 
     args: argparse.Namespace = parse_args()
-
-    # TODO - Paramaterize this
 
     methods: Dict[str, Callable] = {
         "simulated_annealing": simulated_annealing,
@@ -83,11 +86,24 @@ def main() -> None:
     label: str = args.method
     method: Callable = methods[label]
 
-    metric: Callable
-    num_cut_edges: Callable = lambda p: len(p["cut_edges"])  # Example
+    # TODO - PARAMETERIZE THIS
 
-    metric = average_polsby_popper
-    maximize: bool = True
+    dimensions: List[str] = [
+        "proportionality",
+        "competitiveness",
+        "minority",
+        "compactness",
+        "splitting",
+    ]
+    dimension: str = "compactness"  # TODO
+
+    metrics: Dict[str, Any] = {
+        "compactness": {"metric": average_polsby_popper, "bigger_is_better": True},
+        # TODO - Add other metrics
+    }
+
+    metric: Callable = metrics[dimension]["metric"]
+    bigger_is_better: bool = metrics[dimension]["bigger_is_better"]
 
     #
 
@@ -124,7 +140,7 @@ def main() -> None:
             elasticity=args.elasticity,
             countyweight=args.countyweight,
             node_repeats=1,
-            maximize=maximize,
+            maximize=bigger_is_better,
         )
 
         plans: List[Dict[str, str | float | Dict[str, int | str]]] = (

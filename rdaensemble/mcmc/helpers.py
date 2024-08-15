@@ -75,9 +75,15 @@ def prep_data(
     edges: List[Tuple] = []
     shared_perims: Dict[Tuple[int, int], float] = {}
     for geoid1, geoid2 in pairs:
-        edge: Tuple = (node_index[geoid1], node_index[geoid2])
+        n1: int = node_index[geoid1]
+        n2: int = node_index[geoid2]
+        edge: Tuple = (n1, n2) if n1 < n2 else (n2, n1)
+
+        if edge in edges:
+            continue
 
         if shapes:  # is not None:
+            assert "OUT_OF_STATE" not in [geoid1, geoid2]
             simplified_poly = shapes[geoid1]
             shared_perims[edge] = simplified_poly["arcs"][geoid2]
 
@@ -115,7 +121,7 @@ def setup_markov_chain(
     my_updaters: dict[str, Any] = {
         "cut_edges": updaters.cut_edges,
         "population": updaters.Tally("TOTAL_POP", alias="population"),
-        "polsby_popper": polsby_popper,
+        "polsby-popper": polsby_popper,
     }
     election_updaters: dict[str, Election] = {
         election.name: election for election in elections
@@ -125,8 +131,6 @@ def setup_markov_chain(
     initial_partition = GeographicPartition(
         recom_graph, assignment="INITIAL", updaters=my_updaters
     )
-
-    print(initial_partition["polsby-popper"])  # TODO - HERE
 
     ideal_population = sum(initial_partition["population"].values()) / len(
         initial_partition
@@ -159,13 +163,13 @@ def setup_markov_chain(
     my_constraints = [contiguous, compactness_bound, pop_constraint]
 
     chain: Any = None
-    if metric is not None:
+    if metric:  # is not None:
         chain = SingleMetricOptimizer(
             proposal=my_proposal,
-            constraints=my_constraints,
+            constraints=[],  # TODO - my_constraints,
             initial_state=initial_partition,
             optimization_metric=metric,
-            maximize=False,
+            maximize=maximize,
         )
     else:
         chain = MarkovChain(
