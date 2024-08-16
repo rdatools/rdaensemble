@@ -71,6 +71,7 @@ def prep_data(
     back_map: Dict[int, str] = {v: k for k, v in node_index.items()}
 
     pairs: List[Tuple[str, str]] = mkAdjacencies(RDAGraph(graph))
+    # Unique pairs of geoids where geoid1 < geoid2 & OUT_OF_STATE removed
 
     edges: List[Tuple] = []
     shared_perims: Dict[Tuple[int, int], float] = {}
@@ -83,8 +84,9 @@ def prep_data(
             continue
 
         if shapes:  # is not None:
-            assert "OUT_OF_STATE" not in [geoid1, geoid2]
             simplified_poly = shapes[geoid1]
+            assert geoid2 in simplified_poly["arcs"]
+            assert edge not in shared_perims
             shared_perims[edge] = simplified_poly["arcs"][geoid2]
 
         edges.append(edge)
