@@ -86,8 +86,7 @@ def prep_data(
         n2: int = node_index[geoid2]
         edge: Tuple = (n1, n2) if n1 < n2 else (n2, n1)
 
-        if edge in edges:
-            continue
+        assert edge not in edges
 
         if shapes:  # is not None:
             simplified_poly = shapes[geoid1]
@@ -105,6 +104,7 @@ def prep_data(
 
         edges.append(edge)
 
+    assert len(edges)
     assert len(edges) == len(shared_perims)
 
     recom_graph = Graph()

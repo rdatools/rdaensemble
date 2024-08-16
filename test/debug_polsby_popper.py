@@ -118,6 +118,7 @@ def main() -> None:
             recom_exterior_perim += node_attr["boundary_perim"]
             recom_exterior_arcs += 1
 
+    mismatched_arcs: int = 0
     for edge, edge_attr in recom_graph.edges.items():
         recom_interior_perim += edge_attr["shared_perim"]
 
@@ -127,9 +128,10 @@ def main() -> None:
         recom_interior_arc: float = edge_attr["shared_perim"]
 
         if recom_interior_arc != input_interior_arc:
-            print(
-                f"Warning: input and recom interior arc lengths differ for {geoid} and {neighbor_geoid}!"
-            )
+            mismatched_arcs += 1
+            # print(
+            #     f"Warning: input and recom interior arc lengths differ for {geoid} and {neighbor_geoid}!"
+            # )
 
     recom_total_perim = recom_exterior_perim + recom_interior_perim
 
@@ -141,6 +143,7 @@ def main() -> None:
     print(
         f"recom -- area ({recom_nodes}): {recom_total_area:.6f}, perimeter: {recom_total_perim:.6f}, interior ({recom_interior_arcs}): {recom_interior_perim:.6f}, exterior ({recom_exterior_arcs}): {recom_exterior_perim:.6f}"
     )
+    print(f"Mismatched arcs: {mismatched_arcs}")
 
     pass
 
