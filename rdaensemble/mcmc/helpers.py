@@ -97,9 +97,10 @@ def prep_data(
 
             shared_perim: float = simplified_poly["arcs"][geoid2]
             if shared_perim == 0.0:
-                print(
-                    f"Warning: zero-length shared perimeter for {geoid1} and {geoid2}!"
-                )
+                # print(
+                #     f"Warning: zero-length shared perimeter for {geoid1} and {geoid2}!"
+                # )
+                continue
             shared_perims[edge] = shared_perim
 
         edges.append(edge)

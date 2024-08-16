@@ -121,6 +121,16 @@ def main() -> None:
     for edge, edge_attr in recom_graph.edges.items():
         recom_interior_perim += edge_attr["shared_perim"]
 
+        geoid: str = back_map[edge[0]]
+        neighbor_geoid: str = back_map[edge[1]]
+        input_interior_arc: float = shapes[geoid]["arcs"][neighbor_geoid]
+        recom_interior_arc: float = edge_attr["shared_perim"]
+
+        if recom_interior_arc != input_interior_arc:
+            print(
+                f"Warning: input and recom interior arc lengths differ for {geoid} and {neighbor_geoid}!"
+            )
+
     recom_total_perim = recom_exterior_perim + recom_interior_perim
 
     print()
