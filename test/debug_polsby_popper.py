@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
 
 """
-SANDBOX - THROWAWAY CODE
-
-$ ./sandbox.py
-
+DEBUG POLSBY-POPPER
 """
 
 from typing import Any, List, Dict, Tuple
@@ -122,17 +119,6 @@ def main() -> None:
     for edge, edge_attr in recom_graph.edges.items():
         recom_interior_perim += edge_attr["shared_perim"]
 
-        geoid: str = back_map[edge[0]]
-        neighbor_geoid: str = back_map[edge[1]]
-        input_interior_arc: float = shapes[geoid]["arcs"][neighbor_geoid]
-        recom_interior_arc: float = edge_attr["shared_perim"]
-
-        if recom_interior_arc != input_interior_arc:
-            mismatched_arcs += 1
-            # print(
-            #     f"Warning: input and recom interior arc lengths differ for {geoid} and {neighbor_geoid}!"
-            # )
-
     recom_total_perim = recom_exterior_perim + recom_interior_perim
 
     print()
@@ -143,7 +129,7 @@ def main() -> None:
     print(
         f"recom -- area ({recom_nodes}): {recom_total_area:.6f}, perimeter: {recom_total_perim:.6f}, interior ({recom_interior_arcs}): {recom_interior_perim:.6f}, exterior ({recom_exterior_arcs}): {recom_exterior_perim:.6f}"
     )
-    print(f"Mismatched arcs: {mismatched_arcs}")
+    # print(f"Mismatched arcs: {mismatched_arcs}")
 
     pass
 

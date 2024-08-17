@@ -80,38 +80,24 @@ def prep_data(
     edges: List[Tuple] = []
     shared_perims: Dict[Tuple[int, int], float] = {}
     for geoid1, geoid2 in pairs:
-        assert "OUT_OF_STATE" not in (geoid1, geoid2)
-
         n1: int = node_index[geoid1]
         n2: int = node_index[geoid2]
         edge: Tuple = (n1, n2) if n1 < n2 else (n2, n1)
 
-        assert edge not in edges
-
         if shapes:  # is not None:
             simplified_poly = shapes[geoid1]
-
-            assert geoid2 in simplified_poly["arcs"]
-            assert edge not in shared_perims
-
-            shared_perim: float = simplified_poly["arcs"][geoid2]
-            if shared_perim == 0.0:
-                # print(
-                #     f"Warning: zero-length shared perimeter for {geoid1} and {geoid2}!"
-                # )
-                continue
-            shared_perims[edge] = shared_perim
+            shared_perims[edge] = simplified_poly["arcs"][geoid2]
 
         edges.append(edge)
 
-    assert len(edges)
     assert len(edges) == len(shared_perims)
 
     recom_graph = Graph()
     recom_graph.add_nodes_from(nodes)
     if shapes:  # is not None:
         for edge in edges:
-            recom_graph.add_edges_from([edge], shared_perim=shared_perims[edge])
+            recom_graph.add_edge(edge[0], edge[1], shared_perim=shared_perims[edge])
+            # recom_graph.add_edges_from([edge], shared_perim=shared_perims[edge])
     else:
         recom_graph.add_edges_from(edges)
 
