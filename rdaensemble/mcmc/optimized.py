@@ -2,13 +2,95 @@
 GENERATE AN OPTIMIZED ENSEMBLE OF PLANS using RECOM and its SingleMetricOptimizer feature.
 """
 
-from typing import Any, List, Dict, Callable
+from typing import Any, List, Dict, Optional, Callable
 
-import numpy as np
+from functools import partial
+
+from gerrychain import (
+    GeographicPartition,
+    Graph,
+    MarkovChain,
+    updaters,
+    constraints,
+    accept,
+    Election,
+)
+from gerrychain.tree import bipartition_tree
+from gerrychain.constraints import contiguous
+from gerrychain.optimization import SingleMetricOptimizer  # TODO - Add Gingleator
+from gerrychain.metrics.compactness import polsby_popper
 
 from gerrychain.partition.assignment import Assignment
 
-### OPTIMIZATION METHODS ###
+
+def setup_optimized_markov_chain(
+    proposal: Callable,
+    size: int,
+    recom_graph: Graph,
+    elections: List[Election],
+    roughly_equal: float,
+    elasticity: float,
+    countyweight: float,
+    node_repeats: int,
+    *,
+    metric: Callable,
+    maximize: bool = True,
+) -> Any:
+    """Set up the Markov chain."""
+
+    my_updaters: dict[str, Any] = {
+        "cut_edges": updaters.cut_edges,
+        "population": updaters.Tally("TOTAL_POP", alias="population"),
+        "polsby-popper": polsby_popper,
+    }
+    election_updaters: dict[str, Election] = {
+        election.name: election for election in elections
+    }
+    my_updaters.update(election_updaters)  # type: ignore
+
+    initial_partition = GeographicPartition(
+        recom_graph, assignment="INITIAL", updaters=my_updaters
+    )
+
+    ideal_population = sum(initial_partition["population"].values()) / len(
+        initial_partition
+    )
+
+    my_proposal: Callable
+    my_constraints: List
+    my_weights = {"COUNTY": countyweight}
+
+    method = partial(bipartition_tree, max_attempts=100, allow_pair_reselection=True)
+
+    my_proposal = partial(
+        proposal,
+        pop_col="TOTAL_POP",
+        pop_target=ideal_population,
+        epsilon=roughly_equal / 2,  # 1/2 of what you want to end up with
+        region_surcharge=my_weights,  # was: weight_dict=my_weights in 0.3.0
+        node_repeats=node_repeats,
+        method=method,
+    )
+
+    compactness_bound = constraints.UpperBound(
+        lambda p: len(p["cut_edges"]),
+        elasticity * len(initial_partition["cut_edges"]),
+    )  # Per Moon Duchin, not strictly necessary.
+
+    pop_constraint = constraints.within_percent_of_ideal_population(
+        initial_partition, roughly_equal
+    )
+    my_constraints = [contiguous, pop_constraint]
+
+    chain: Any = SingleMetricOptimizer(
+        proposal=my_proposal,
+        constraints=my_constraints,
+        initial_state=initial_partition,
+        optimization_metric=metric,
+        maximize=maximize,
+    )
+
+    return chain
 
 
 def simulated_annealing(
@@ -42,9 +124,6 @@ def tilted_runs(optimizer, size: int, *, p: float = 0.125) -> Any:
     partitions = optimizer.tilted_run(size, p=p, with_progress_bar=False)
 
     return partitions
-
-
-### RUN A RECOM CHAIN ###
 
 
 def run_optimized_chain(

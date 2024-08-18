@@ -51,7 +51,7 @@ from rdabase import (
 from rdaensemble import (
     ensemble_metadata,
     prep_data,
-    setup_markov_chain,
+    setup_optimized_markov_chain,
     run_optimized_chain,
     simulated_annealing,
     short_bursts,
@@ -106,7 +106,7 @@ def main() -> None:
     metric: Callable = metrics[dimension]["metric"]
     bigger_is_better: bool = metrics[dimension]["bigger_is_better"]
 
-    #
+    # End parameterization
 
     data: Dict[str, Dict[str, int | str]] = load_data(args.data)
     shapes: Dict[str, Any] = load_shapes(args.shapes)
@@ -131,16 +131,16 @@ def main() -> None:
 
         recom_graph, elections, back_map = prep_data(root_plan, data, graph, shapes)
 
-        chain = setup_markov_chain(
+        chain = setup_optimized_markov_chain(
             recom,
             args.size,
-            metric,
             recom_graph,
             elections,
             roughly_equal=args.roughlyequal,
             elasticity=args.elasticity,
             countyweight=args.countyweight,
             node_repeats=1,
+            metric=metric,
             maximize=bigger_is_better,
         )
 
@@ -250,7 +250,7 @@ def parse_args():
         "root": "../tradeoffs/root_maps/NC20C_root_map.csv",
         "plans": "temp/NC20C_sa_optimized_plans.json",
         "log": "temp/NC20C_sa_optimized_log.txt",
-        "size": 100,
+        "size": 10,
         "method": "simulated_annealing",
     }
     args = require_args(args, args.debug, debug_defaults)

@@ -18,8 +18,6 @@ from gerrychain import (
 )
 from gerrychain.tree import bipartition_tree
 from gerrychain.constraints import contiguous
-from gerrychain.optimization import SingleMetricOptimizer  # TODO - Add Gingleator
-from gerrychain.metrics.compactness import polsby_popper
 
 from rdabase import Graph as RDAGraph, mkAdjacencies, GeoID
 
@@ -90,7 +88,8 @@ def prep_data(
 
         edges.append(edge)
 
-    assert len(edges) == len(shared_perims)
+    if shapes:  # is not None:
+        assert len(edges) == len(shared_perims)
 
     recom_graph = Graph()
     recom_graph.add_nodes_from(nodes)
@@ -106,87 +105,6 @@ def prep_data(
     ]
 
     return recom_graph, elections, back_map
-
-
-def setup_markov_chain(
-    proposal: Callable,
-    size: int,
-    metric: Optional[Callable],
-    recom_graph: Graph,
-    elections: List[Election],
-    roughly_equal: float,
-    elasticity: float,
-    countyweight: float,
-    node_repeats: int,
-    maximize: bool = True,
-) -> Any:
-    """Set up the Markov chain."""
-
-    my_updaters: dict[str, Any] = {
-        "cut_edges": updaters.cut_edges,
-        "population": updaters.Tally("TOTAL_POP", alias="population"),
-        "polsby-popper": polsby_popper,
-    }
-    election_updaters: dict[str, Election] = {
-        election.name: election for election in elections
-    }
-    my_updaters.update(election_updaters)  # type: ignore
-
-    initial_partition = GeographicPartition(
-        recom_graph, assignment="INITIAL", updaters=my_updaters
-    )
-
-    ideal_population = sum(initial_partition["population"].values()) / len(
-        initial_partition
-    )
-
-    my_proposal: Callable
-    my_constraints: List
-    my_weights = {"COUNTY": countyweight}
-
-    method = partial(bipartition_tree, max_attempts=100, allow_pair_reselection=True)
-
-    my_proposal = partial(
-        proposal,
-        pop_col="TOTAL_POP",
-        pop_target=ideal_population,
-        epsilon=roughly_equal / 2,  # 1/2 of what you want to end up with
-        region_surcharge=my_weights,  # was: weight_dict=my_weights in 0.3.0
-        node_repeats=node_repeats,  # TODO - ???
-        method=method,
-    )
-
-    compactness_bound = constraints.UpperBound(
-        lambda p: len(p["cut_edges"]),
-        elasticity * len(initial_partition["cut_edges"]),
-    )  # Per Moon Duchin, not strictly necessary.
-
-    pop_constraint = constraints.within_percent_of_ideal_population(
-        initial_partition, roughly_equal
-    )
-    my_constraints = [contiguous, pop_constraint]
-    if metric:  # is not None:
-        my_constraints.append(compactness_bound)
-
-    chain: Any = None
-    if metric:  # is not None:
-        chain = SingleMetricOptimizer(
-            proposal=my_proposal,
-            constraints=my_constraints,
-            initial_state=initial_partition,
-            optimization_metric=metric,
-            maximize=maximize,
-        )
-    else:
-        chain = MarkovChain(
-            proposal=my_proposal,
-            constraints=my_constraints,
-            accept=accept.always_accept,
-            initial_state=initial_partition,
-            total_steps=size,
-        )
-
-    return chain
 
 
 ### END ###

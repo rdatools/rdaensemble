@@ -47,7 +47,7 @@ from rdabase import (
 from rdaensemble import (
     ensemble_metadata,
     prep_data,
-    setup_markov_chain,
+    setup_unbiased_markov_chain,
     run_unbiased_chain,
 )
 
@@ -79,10 +79,9 @@ def main() -> None:
 
         recom_graph, elections, back_map = prep_data(root_plan, data, graph)
 
-        chain = setup_markov_chain(
+        chain = setup_unbiased_markov_chain(
             recom,
             args.size,
-            None,
             recom_graph,
             elections,
             roughly_equal=args.roughlyequal,

@@ -4,7 +4,8 @@ from .rmfrst import random_map, gen_rmfrst_ensemble
 from .rmfrsp import gen_rmfrsp_ensemble
 from .mcmc import (
     prep_data,
-    setup_markov_chain,
+    setup_optimized_markov_chain,
+    setup_unbiased_markov_chain,
     run_unbiased_chain,
     run_optimized_chain,
     simulated_annealing,
