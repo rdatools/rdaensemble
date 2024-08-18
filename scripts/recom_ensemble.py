@@ -92,10 +92,9 @@ def main() -> None:
 
         plans: List[Dict[str, str | float | Dict[str, int | str]]] = run_unbiased_chain(
             chain,
-            args.size,
+            # args.size,
             back_map,
             f,
-            debug=args.debug,
         )
 
     ensemble["plans"] = plans

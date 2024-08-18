@@ -88,11 +88,8 @@ def setup_unbiased_markov_chain(
 
 def run_unbiased_chain(
     chain,
-    size: int,
     back_map: Dict[int, str],
     logfile,
-    *,
-    debug: bool = False,
 ) -> List[Dict[str, str | float | Dict[str, int | str]]]:
     """Run a Markov chain."""
 

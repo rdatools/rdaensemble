@@ -2,22 +2,14 @@
 HELPERS FOR GENERATING AN ENSEMBLE OF MAPS using RECOM
 """
 
-from typing import Any, List, Dict, Tuple, Optional, Callable
+from typing import Any, List, Dict, Tuple, Optional
 
-from functools import partial
-import json, shapely.geometry
+import shapely.geometry
 
 from gerrychain import (
-    GeographicPartition,
     Graph,
-    MarkovChain,
-    updaters,
-    constraints,
-    accept,
     Election,
 )
-from gerrychain.tree import bipartition_tree
-from gerrychain.constraints import contiguous
 
 from rdabase import Graph as RDAGraph, mkAdjacencies, GeoID
 

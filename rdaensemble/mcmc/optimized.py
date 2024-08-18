@@ -1,5 +1,7 @@
 """
 GENERATE AN OPTIMIZED ENSEMBLE OF PLANS using RECOM and its SingleMetricOptimizer feature.
+
+TODO - Remove dead code.
 """
 
 from typing import Any, List, Dict, Optional, Callable
@@ -9,10 +11,8 @@ from functools import partial
 from gerrychain import (
     GeographicPartition,
     Graph,
-    MarkovChain,
     updaters,
     constraints,
-    accept,
     Election,
 )
 from gerrychain.tree import bipartition_tree
@@ -25,14 +25,14 @@ from gerrychain.partition.assignment import Assignment
 
 def setup_optimized_markov_chain(
     proposal: Callable,
-    size: int,
     recom_graph: Graph,
     elections: List[Election],
     roughly_equal: float,
-    elasticity: float,
-    countyweight: float,
+    # elasticity: float,
+    # countyweight: float,
     node_repeats: int,
     *,
+    ndistricts: int,
     metric: Callable,
     maximize: bool = True,
 ) -> Any:
@@ -48,9 +48,16 @@ def setup_optimized_markov_chain(
     }
     my_updaters.update(election_updaters)  # type: ignore
 
-    initial_partition = GeographicPartition(
-        recom_graph, assignment="INITIAL", updaters=my_updaters
+    initial_partition = GeographicPartition.from_random_assignment(
+        graph=recom_graph,
+        n_parts=ndistricts,
+        epsilon=roughly_equal / 2,  # 1/2 of what you want to end up with
+        pop_col="TOTAL_POP",
+        updaters=my_updaters,
     )
+    # initial_partition = GeographicPartition(
+    #     recom_graph, assignment="INITIAL", updaters=my_updaters
+    # )
 
     ideal_population = sum(initial_partition["population"].values()) / len(
         initial_partition
@@ -58,7 +65,7 @@ def setup_optimized_markov_chain(
 
     my_proposal: Callable
     my_constraints: List
-    my_weights = {"COUNTY": countyweight}
+    # my_weights = {"COUNTY": countyweight}
 
     method = partial(bipartition_tree, max_attempts=100, allow_pair_reselection=True)
 
@@ -67,15 +74,15 @@ def setup_optimized_markov_chain(
         pop_col="TOTAL_POP",
         pop_target=ideal_population,
         epsilon=roughly_equal / 2,  # 1/2 of what you want to end up with
-        region_surcharge=my_weights,  # was: weight_dict=my_weights in 0.3.0
+        # region_surcharge=my_weights,  # was: weight_dict=my_weights in 0.3.0
         node_repeats=node_repeats,
         method=method,
     )
 
-    compactness_bound = constraints.UpperBound(
-        lambda p: len(p["cut_edges"]),
-        elasticity * len(initial_partition["cut_edges"]),
-    )  # Per Moon Duchin, not strictly necessary.
+    # compactness_bound = constraints.UpperBound(
+    #     lambda p: len(p["cut_edges"]),
+    #     elasticity * len(initial_partition["cut_edges"]),
+    # )  # Per Moon Duchin, not strictly necessary.
 
     pop_constraint = constraints.within_percent_of_ideal_population(
         initial_partition, roughly_equal
@@ -94,49 +101,50 @@ def setup_optimized_markov_chain(
 
 
 def simulated_annealing(
-    optimizer, size: int, *, duration_hot: int = 200, duration_cold: int = 800
+    optimizer, total_steps: int, *, duration_hot: int = 200, duration_cold: int = 800
 ) -> Any:
     """Simulated annealing"""
 
     partitions = optimizer.simulated_annealing(
-        size,
+        total_steps,
         optimizer.jumpcycle_beta_function(duration_hot, duration_cold),
         beta_magnitude=1,
-        with_progress_bar=False,
+        with_progress_bar=True,
     )
 
     return partitions
 
 
-def short_bursts(optimizer, size: int, *, burst_length: int = 5) -> Any:
+def short_bursts(optimizer, total_steps: int, *, burst_length: int = 5) -> Any:
     """Short bursts"""
 
     partitions = optimizer.short_bursts(
-        burst_length, size // burst_length, with_progress_bar=False
+        burst_length, total_steps // burst_length, with_progress_bar=True
     )
 
     return partitions
 
 
-def tilted_runs(optimizer, size: int, *, p: float = 0.125) -> Any:
+def tilted_runs(optimizer, total_steps: int, *, p: float = 0.125) -> Any:
     """Tilted runs"""
 
-    partitions = optimizer.tilted_run(size, p=p, with_progress_bar=False)
+    partitions = optimizer.tilted_run(total_steps, p=p, with_progress_bar=True)
 
     return partitions
 
 
 def run_optimized_chain(
     optimizer,
-    size: int,
+    # size: int,
     back_map: Dict[int, str],
     logfile,
     *,
     label: str = "Simulated Annealing",
     method: Callable = simulated_annealing,
-    debug: bool = False,
+    max_steps: int = 1000,
+    stop_after: int = 10,  # TODO
 ) -> List[Dict[str, str | float | Dict[str, int | str]]]:
-    """Run an optimized Markov chain."""
+    """Run an optimized Markov chain -- Accumulate the plans along the path from a random starting point to the best plan found."""
 
     plans: List[Dict[str, str | float | Dict[str, int | str]]] = list()
 
@@ -145,7 +153,7 @@ def run_optimized_chain(
     print("===================")
 
     best_score: float = 0.0
-    for step, partition in enumerate(method(optimizer, size)):
+    for step, partition in enumerate(method(optimizer, max_steps)):
         print(f"... {step:04d} ...")
         if optimizer.best_score > best_score:
             best_score = optimizer.best_score

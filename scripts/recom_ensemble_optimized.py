@@ -126,6 +126,7 @@ def main() -> None:
     )
     ensemble["packed"] = False
 
+    # TODO - Iterate until args.size # of plans are generated
     with open(args.log, "w") as f:
         random.seed(seed)
 
@@ -133,13 +134,14 @@ def main() -> None:
 
         chain = setup_optimized_markov_chain(
             recom,
-            args.size,
+            # args.size,
             recom_graph,
             elections,
             roughly_equal=args.roughlyequal,
-            elasticity=args.elasticity,
-            countyweight=args.countyweight,
+            # elasticity=args.elasticity,
+            # countyweight=args.countyweight,
             node_repeats=1,
+            ndistricts=N,
             metric=metric,
             maximize=bigger_is_better,
         )
@@ -147,12 +149,11 @@ def main() -> None:
         plans: List[Dict[str, str | float | Dict[str, int | str]]] = (
             run_optimized_chain(
                 chain,
-                args.size,
+                # args.size,
                 back_map,
                 f,
                 label=label,
                 method=method,
-                debug=args.debug,
             )
         )
 
