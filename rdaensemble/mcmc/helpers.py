@@ -118,7 +118,7 @@ def setup_markov_chain(
     elasticity: float,
     countyweight: float,
     node_repeats: int,
-    maximize: bool,
+    maximize: bool = True,
 ) -> Any:
     """Set up the Markov chain."""
 
@@ -152,7 +152,7 @@ def setup_markov_chain(
         pop_target=ideal_population,
         epsilon=roughly_equal / 2,  # 1/2 of what you want to end up with
         region_surcharge=my_weights,  # was: weight_dict=my_weights in 0.3.0
-        node_repeats=node_repeats,
+        node_repeats=node_repeats,  # TODO - ???
         method=method,
     )
 
@@ -164,13 +164,15 @@ def setup_markov_chain(
     pop_constraint = constraints.within_percent_of_ideal_population(
         initial_partition, roughly_equal
     )
-    my_constraints = [contiguous, compactness_bound, pop_constraint]
+    my_constraints = [contiguous, pop_constraint]
+    if metric:  # is not None:
+        my_constraints.append(compactness_bound)
 
     chain: Any = None
     if metric:  # is not None:
         chain = SingleMetricOptimizer(
             proposal=my_proposal,
-            constraints=[],  # TODO - my_constraints,
+            constraints=my_constraints,
             initial_state=initial_partition,
             optimization_metric=metric,
             maximize=maximize,

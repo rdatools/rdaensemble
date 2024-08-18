@@ -65,12 +65,15 @@ def run_optimized_chain(
     print(f"{label.upper()}")
     print("===================")
 
-    min_scores = np.zeros(size)
+    best_score: float = 0.0
     for step, partition in enumerate(method(optimizer, size)):
-        print(f"{step:04d}: Best score: {optimizer.best_score} ...")
-        min_scores[step] = optimizer.best_score
-        if not debug:
+        print(f"... {step:04d} ...")
+        if optimizer.best_score > best_score:
+            best_score = optimizer.best_score
+
+            print(f"... Improves metric to {best_score} ...")
             print(f"... {step:04d} ...", file=logfile)
+            print(f"... Improves metric to {best_score} ...", file=logfile)
             assert partition is not None
             assignments: Assignment = partition.assignment
 
@@ -80,11 +83,6 @@ def run_optimized_chain(
             }
             plan_name: str = f"{step:04d}"
             plans.append({"name": plan_name, "plan": plan})  # No weights.
-        else:
-            # print(f"      Min. scores: {min_scores}")
-            pass
-
-    # TODO - Do something with min_scores
 
     return plans
 

@@ -24,18 +24,15 @@ def run_unbiased_chain(
     for step, partition in enumerate(chain):
         print(f"... {step:04d} ...")
         print(f"... {step:04d} ...", file=logfile)
-        if not debug:
-            assert partition is not None
-            assignments: Assignment = partition.assignment
+        assert partition is not None
+        assignments: Assignment = partition.assignment
 
-            # Convert the ReCom partition to a plan.
-            plan: Dict[str, int | str] = {
-                back_map[node]: part for node, part in assignments.items()
-            }
-            plan_name: str = f"{step:04d}"
-            plans.append({"name": plan_name, "plan": plan})  # No weights.
-        else:
-            pass
+        # Convert the ReCom partition to a plan.
+        plan: Dict[str, int | str] = {
+            back_map[node]: part for node, part in assignments.items()
+        }
+        plan_name: str = f"{step:04d}"
+        plans.append({"name": plan_name, "plan": plan})  # No weights.
 
     return plans
 

@@ -250,7 +250,7 @@ def parse_args():
         "root": "../tradeoffs/root_maps/NC20C_root_map.csv",
         "plans": "temp/NC20C_sa_optimized_plans.json",
         "log": "temp/NC20C_sa_optimized_log.txt",
-        "size": 10,
+        "size": 100,
         "method": "simulated_annealing",
     }
     args = require_args(args, args.debug, debug_defaults)
