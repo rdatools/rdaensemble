@@ -48,16 +48,17 @@ def setup_optimized_markov_chain(
     }
     my_updaters.update(election_updaters)  # type: ignore
 
-    initial_partition = GeographicPartition.from_random_assignment(
-        graph=recom_graph,
-        n_parts=ndistricts,
-        epsilon=roughly_equal / 2,  # 1/2 of what you want to end up with
-        pop_col="TOTAL_POP",
-        updaters=my_updaters,
-    )
-    # initial_partition = GeographicPartition(
-    #     recom_graph, assignment="INITIAL", updaters=my_updaters
+    # TODO - Start with random assignments or an approximate root plan?!?
+    # initial_partition = GeographicPartition.from_random_assignment(
+    #     graph=recom_graph,
+    #     n_parts=ndistricts,
+    #     epsilon=roughly_equal / 2,  # 1/2 of what you want to end up with
+    #     pop_col="TOTAL_POP",
+    #     updaters=my_updaters,
     # )
+    initial_partition = GeographicPartition(
+        recom_graph, assignment="INITIAL", updaters=my_updaters
+    )
 
     ideal_population = sum(initial_partition["population"].values()) / len(
         initial_partition
@@ -141,8 +142,8 @@ def run_optimized_chain(
     *,
     label: str = "Simulated Annealing",
     method: Callable = simulated_annealing,
-    max_steps: int = 1000,
-    stop_after: int = 10,  # TODO
+    max_steps: int = 1000,  # TODO
+    stop_after: int = 100,  # TODO
 ) -> List[Dict[str, str | float | Dict[str, int | str]]]:
     """Run an optimized Markov chain -- Accumulate the plans along the path from a random starting point to the best plan found."""
 
@@ -153,14 +154,17 @@ def run_optimized_chain(
     print("===================")
 
     best_score: float = 0.0
+    searches: int = 0
     for step, partition in enumerate(method(optimizer, max_steps)):
-        print(f"... {step:04d} ...")
+        searches += 1
+        # print(f"... {step:04d} ...")
         if optimizer.best_score > best_score:
+            searches = 0
             best_score = optimizer.best_score
 
-            print(f"... Improves metric to {best_score} ...")
-            print(f"... {step:04d} ...", file=logfile)
-            print(f"... Improves metric to {best_score} ...", file=logfile)
+            print(f"=> Metric improved to {best_score}.")
+            # print(f"... {step:04d} ...", file=logfile)
+            # print(f"... Improves metric to {best_score} ...", file=logfile)
             assert partition is not None
             assignments: Assignment = partition.assignment
 
@@ -170,6 +174,10 @@ def run_optimized_chain(
             }
             plan_name: str = f"{step:04d}"
             plans.append({"name": plan_name, "plan": plan})  # No weights.
+        else:
+            if searches >= stop_after:
+                print(f"=> Stopping after {stop_after} searches.")
+                break
 
     return plans
 
