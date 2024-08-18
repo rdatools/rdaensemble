@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-DEBUG POLSBY-POPPER
+DEBUG POLSBY-POPPER USING SIMPLIFIED SHAPES
 """
 
 from typing import Any, List, Dict, Tuple

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-DEBUG SIMPLIFIED SHAPES
+DEBUG SIMPLIFIED SHAPES - MAKE SURE ARCS ARE SYMMETRIC
 """
 
 from typing import Any, List, Dict, Tuple

@@ -64,9 +64,10 @@ num_cut_edges: Callable = lambda p: len(p["cut_edges"])
 def average_polsby_popper(partition):
     """Estimate the compactness of a partition, using just Polsby-Popper."""
 
-    print(f"Polsby: {partition['polsby-popper']}")
-    print(f"Area: {partition['area']}")
-    print(f"Perimeter: {partition['perimeter']}")  # TODO - These are too big
+    # DEBUG
+    # print(f"Polsby: {partition['polsby-popper']}")
+    # print(f"Area: {partition['area']}")
+    # print(f"Perimeter: {partition['perimeter']}")
 
     measurement: float = sum(partition["polsby-popper"].values()) / len(partition)
 
