@@ -22,8 +22,14 @@ def prep_data(
 ) -> Tuple[Graph, List[Election], Dict[int, str]]:
     """Prepare the data for ReCom."""
 
+    # Canonicalize field names
+    assert "GEOID" in initialplan[0] or "GEOID20" in initialplan[0]
+    assert "DISTRICT" in initialplan[0] or "District" in initialplan[0]
+    geoid_field: str = "GEOID20" if "GEOID20" in initialplan[0] else "GEOID"
+    district_field: str = "District" if "District" in initialplan[0] else "DISTRICT"
+
     initial_assignments: Dict[str, int | str] = {
-        str(a["GEOID"]): a["DISTRICT"] for a in initialplan
+        str(a[geoid_field]): a[district_field] for a in initialplan
     }
 
     assert len(data) == len(graph) - 1  # -1 for OUT_OF_STATE

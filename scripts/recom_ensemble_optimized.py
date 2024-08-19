@@ -7,15 +7,13 @@ USING ONE OF THREE OPTIMIZATION METHODS.
 
 For example:
 
-$ scripts/recom_optimized_ensemble.py \
+$ scripts/recom_ensemble_optimized.py \
 --state NC \
 --size 10000 \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
---root ../tradeoffs/root_maps/NC20C_root_map.csv \
---plans ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_sa_optimized_plans.json \
---log ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_sa_optimized_log.txt \
+--plans ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_plans_compactness_optimized.json \
 --no-debug
 
 $ scripts/recom_ensemble.py
@@ -98,6 +96,14 @@ def main() -> None:
     ]
     dimension: str = "compactness"  # TODO
 
+    plan_dimensions: List[str] = [
+        "proportional",
+        "competitive",
+        "minority",
+        "compact",
+        "splitting",
+    ]
+
     metrics: Dict[str, Any] = {
         "compactness": {"metric": average_polsby_popper, "bigger_is_better": True},
         # TODO - Add other metrics
@@ -106,6 +112,14 @@ def main() -> None:
     metric: Callable = metrics[dimension]["metric"]
     bigger_is_better: bool = metrics[dimension]["bigger_is_better"]
 
+    starting_dir: str = f"../tradeoffs/notable_maps/{args.state}/"
+    starting_plan_paths: List[str] = [
+        f"{args.state}_2022_Congress_{dim.capitalize()}_NOSPLITS.csv"
+        for dim in plan_dimensions
+    ]  # TODO - Parameterize this
+
+    steps: int = round(args.size / len(starting_plan_paths))
+
     # End parameterization
 
     data: Dict[str, Dict[str, int | str]] = load_data(args.data)
@@ -113,24 +127,33 @@ def main() -> None:
     graph: Dict[str, List[str]] = load_graph(args.graph)
     metadata: Dict[str, Any] = load_metadata(args.state, args.data)
 
-    root_plan: List[Dict[str, str | int]] = read_csv(args.root, [str, int])
-
     N: int = int(metadata["D"])
     seed: int = starting_seed(args.state, N)
+    random.seed(seed)
 
     ensemble: Dict[str, Any] = ensemble_metadata(
         xx=args.state,
         ndistricts=N,
-        size=args.size,
-        method="ReCom",
+        size=args.size,  # Update this below
+        method="ReCom-Optimized",
     )
     ensemble["packed"] = False
 
-    # TODO - Iterate until args.size # of plans are generated
-    with open(args.log, "w") as f:
-        random.seed(seed)
+    plans: List[Dict[str, str | float | Dict[str, int | str]]] = []
 
-        recom_graph, elections, back_map = prep_data(root_plan, data, graph, shapes)
+    print()
+    print(f"Optimizing plans for {dimension} using {' '.join(label.split('_'))}.")
+    print()
+
+    for starting_plan_path in starting_plan_paths:
+        print()
+        print(f"Starting plan: {starting_plan_path}")
+        print()
+
+        plan_path: str = starting_dir + starting_plan_path
+
+        starting_plan: List[Dict[str, str | int]] = read_csv(plan_path, [str, int])
+        recom_graph, elections, back_map = prep_data(starting_plan, data, graph, shapes)
 
         chain = setup_optimized_markov_chain(
             recom,
@@ -146,18 +169,26 @@ def main() -> None:
             maximize=bigger_is_better,
         )
 
-        plans: List[Dict[str, str | float | Dict[str, int | str]]] = (
+        more_plans: List[Dict[str, str | float | Dict[str, int | str]]] = (
             run_optimized_chain(
                 chain,
-                # args.size,
+                args.size,
                 back_map,
-                f,
-                label=label,
+                # f,
+                # label=label,
                 method=method,
             )
         )
 
+        plans.extend(more_plans)
+
     ensemble["plans"] = plans
+    ensemble["size"] = len(plans)  # Not every optimization step is kept
+
+    print()
+    print(f"Collected {len(plans)} plans optimized for {dimension}.")
+    print()
+
     if not args.debug:
         write_json(args.plans, ensemble)
 
@@ -190,21 +221,22 @@ def parse_args():
         type=str,
         help="Graph file",
     )
-    parser.add_argument(
-        "--root",
-        type=str,
-        help="Root plan",
-    )
+    # TODO - Give paths to starting plans as a list argument
+    # parser.add_argument(
+    #     "--root",
+    #     type=str,
+    #     help="Root plan",
+    # )
     parser.add_argument(
         "--plans",
         type=str,
         help="Ensemble plans JSON file",
     )
-    parser.add_argument(
-        "--log",
-        type=str,
-        help="Log TXT file",
-    )
+    # parser.add_argument(
+    #     "--log",
+    #     type=str,
+    #     help="Log TXT file",
+    # )
     parser.add_argument(
         "--roughlyequal",
         type=float,
@@ -248,10 +280,11 @@ def parse_args():
         "data": "../rdabase/data/NC/NC_2020_data.csv",
         "shapes": "../rdabase/data/NC/NC_2020_shapes_simplified.json",
         "graph": "../rdabase/data/NC/NC_2020_graph.json",
-        "root": "../tradeoffs/root_maps/NC20C_root_map.csv",
+        # TODO - Give paths to starting plans as a list argument
+        # "root": "../tradeoffs/root_maps/NC20C_root_map.csv",
         "plans": "temp/NC20C_sa_optimized_plans.json",
-        "log": "temp/NC20C_sa_optimized_log.txt",
-        "size": 10,
+        # "log": "temp/NC20C_sa_optimized_log.txt",
+        "size": 100,
         "method": "simulated_annealing",
     }
     args = require_args(args, args.debug, debug_defaults)

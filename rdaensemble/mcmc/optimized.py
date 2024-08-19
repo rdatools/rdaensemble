@@ -136,35 +136,26 @@ def tilted_runs(optimizer, total_steps: int, *, p: float = 0.125) -> Any:
 
 def run_optimized_chain(
     optimizer,
-    # size: int,
+    steps: int,
     back_map: Dict[int, str],
-    logfile,
+    # logfile,
     *,
-    label: str = "Simulated Annealing",
+    # label: str = "Simulated Annealing",
     method: Callable = simulated_annealing,
-    max_steps: int = 1000,  # TODO
-    stop_after: int = 100,  # TODO
+    # max_steps: int = 1000,  # TODO
+    # stop_after: int = 100,  # TODO
 ) -> List[Dict[str, str | float | Dict[str, int | str]]]:
-    """Run an optimized Markov chain -- Accumulate the plans along the path from a random starting point to the best plan found."""
+    """Run an optimized Markov chain -- Accumulate the plans along the path from the starting point to the best plan found."""
 
     plans: List[Dict[str, str | float | Dict[str, int | str]]] = list()
 
-    print()
-    print(f"{label.upper()}")
-    print("===================")
-
     best_score: float = 0.0
-    searches: int = 0
-    for step, partition in enumerate(method(optimizer, max_steps)):
-        searches += 1
-        # print(f"... {step:04d} ...")
+    for step, partition in enumerate(method(optimizer, steps)):
         if optimizer.best_score > best_score:
-            searches = 0
             best_score = optimizer.best_score
 
             print(f"=> Metric improved to {best_score}.")
-            # print(f"... {step:04d} ...", file=logfile)
-            # print(f"... Improves metric to {best_score} ...", file=logfile)
+
             assert partition is not None
             assignments: Assignment = partition.assignment
 
@@ -174,10 +165,6 @@ def run_optimized_chain(
             }
             plan_name: str = f"{step:04d}"
             plans.append({"name": plan_name, "plan": plan})  # No weights.
-        else:
-            if searches >= stop_after:
-                print(f"=> Stopping after {stop_after} searches.")
-                break
 
     return plans
 
