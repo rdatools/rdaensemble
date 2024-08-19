@@ -169,6 +169,10 @@ def main() -> None:
 
         plans.extend(more_plans)
 
+        print()
+        print(f"Collected {len(more_plans)} plans optimized for {dimension}.")
+        print()
+
     ensemble["plans"] = plans
     ensemble["size"] = len(plans)  # Not every optimization step is kept
 
