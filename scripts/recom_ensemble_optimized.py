@@ -62,11 +62,6 @@ num_cut_edges: Callable = lambda p: len(p["cut_edges"])
 def average_polsby_popper(partition):
     """Estimate the compactness of a partition, using just Polsby-Popper."""
 
-    # DEBUG
-    # print(f"Polsby: {partition['polsby-popper']}")
-    # print(f"Area: {partition['area']}")
-    # print(f"Perimeter: {partition['perimeter']}")
-
     measurement: float = sum(partition["polsby-popper"].values()) / len(partition)
 
     return measurement
@@ -85,8 +80,7 @@ def main() -> None:
     label: str = args.method
     method: Callable = methods[label]
 
-    # TODO - PARAMETERIZE THIS
-
+    # TODO - Parameterize this
     dimensions: List[str] = [
         "proportionality",
         "competitiveness",
@@ -94,8 +88,9 @@ def main() -> None:
         "compactness",
         "splitting",
     ]
-    dimension: str = "compactness"  # TODO
+    dimension: str = dimensions[3]  # TODO
 
+    # TODO - Parameterize this
     plan_dimensions: List[str] = [
         "proportional",
         "competitive",
@@ -103,24 +98,22 @@ def main() -> None:
         "compact",
         "splitting",
     ]
+    starting_dir: str = f"../tradeoffs/notable_maps/{args.state}/"
+    starting_plan_paths: List[str] = [
+        f"{args.state}_2022_Congress_{dim.capitalize()}_NOSPLITS.csv"
+        for dim in plan_dimensions
+    ]
+
+    # End parameterization
 
     metrics: Dict[str, Any] = {
         "compactness": {"metric": average_polsby_popper, "bigger_is_better": True},
         # TODO - Add other metrics
     }
-
     metric: Callable = metrics[dimension]["metric"]
     bigger_is_better: bool = metrics[dimension]["bigger_is_better"]
 
-    starting_dir: str = f"../tradeoffs/notable_maps/{args.state}/"
-    starting_plan_paths: List[str] = [
-        f"{args.state}_2022_Congress_{dim.capitalize()}_NOSPLITS.csv"
-        for dim in plan_dimensions
-    ]  # TODO - Parameterize this
-
     steps: int = round(args.size / len(starting_plan_paths))
-
-    # End parameterization
 
     data: Dict[str, Dict[str, int | str]] = load_data(args.data)
     shapes: Dict[str, Any] = load_shapes(args.shapes)
@@ -157,14 +150,10 @@ def main() -> None:
 
         chain = setup_optimized_markov_chain(
             recom,
-            # args.size,
             recom_graph,
             elections,
             roughly_equal=args.roughlyequal,
-            # elasticity=args.elasticity,
-            # countyweight=args.countyweight,
             node_repeats=1,
-            ndistricts=N,
             metric=metric,
             maximize=bigger_is_better,
         )
@@ -172,10 +161,8 @@ def main() -> None:
         more_plans: List[Dict[str, str | float | Dict[str, int | str]]] = (
             run_optimized_chain(
                 chain,
-                args.size,
+                steps,
                 back_map,
-                # f,
-                # label=label,
                 method=method,
             )
         )
@@ -221,39 +208,16 @@ def parse_args():
         type=str,
         help="Graph file",
     )
-    # TODO - Give paths to starting plans as a list argument
-    # parser.add_argument(
-    #     "--root",
-    #     type=str,
-    #     help="Root plan",
-    # )
     parser.add_argument(
         "--plans",
         type=str,
         help="Ensemble plans JSON file",
     )
-    # parser.add_argument(
-    #     "--log",
-    #     type=str,
-    #     help="Log TXT file",
-    # )
     parser.add_argument(
         "--roughlyequal",
         type=float,
         default=0.01,
         help="'Roughly equal' population threshold",
-    )
-    parser.add_argument(
-        "--elasticity",
-        type=float,
-        default=2.0,
-        help="Allowable district boundary stretch factor",
-    )
-    parser.add_argument(
-        "--countyweight",
-        type=float,
-        default=0.75,
-        help="County weights",
     )
     parser.add_argument(
         "--method",
@@ -280,10 +244,7 @@ def parse_args():
         "data": "../rdabase/data/NC/NC_2020_data.csv",
         "shapes": "../rdabase/data/NC/NC_2020_shapes_simplified.json",
         "graph": "../rdabase/data/NC/NC_2020_graph.json",
-        # TODO - Give paths to starting plans as a list argument
-        # "root": "../tradeoffs/root_maps/NC20C_root_map.csv",
         "plans": "temp/NC20C_sa_optimized_plans.json",
-        # "log": "temp/NC20C_sa_optimized_log.txt",
         "size": 100,
         "method": "simulated_annealing",
     }

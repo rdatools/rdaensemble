@@ -1,7 +1,5 @@
 """
 GENERATE AN OPTIMIZED ENSEMBLE OF PLANS using RECOM and its SingleMetricOptimizer feature.
-
-TODO - Remove dead code.
 """
 
 from typing import Any, List, Dict, Optional, Callable
@@ -28,11 +26,8 @@ def setup_optimized_markov_chain(
     recom_graph: Graph,
     elections: List[Election],
     roughly_equal: float,
-    # elasticity: float,
-    # countyweight: float,
     node_repeats: int,
     *,
-    ndistricts: int,
     metric: Callable,
     maximize: bool = True,
 ) -> Any:
@@ -48,14 +43,6 @@ def setup_optimized_markov_chain(
     }
     my_updaters.update(election_updaters)  # type: ignore
 
-    # TODO - Start with random assignments or an approximate root plan?!?
-    # initial_partition = GeographicPartition.from_random_assignment(
-    #     graph=recom_graph,
-    #     n_parts=ndistricts,
-    #     epsilon=roughly_equal / 2,  # 1/2 of what you want to end up with
-    #     pop_col="TOTAL_POP",
-    #     updaters=my_updaters,
-    # )
     initial_partition = GeographicPartition(
         recom_graph, assignment="INITIAL", updaters=my_updaters
     )
@@ -66,7 +53,6 @@ def setup_optimized_markov_chain(
 
     my_proposal: Callable
     my_constraints: List
-    # my_weights = {"COUNTY": countyweight}
 
     method = partial(bipartition_tree, max_attempts=100, allow_pair_reselection=True)
 
@@ -75,15 +61,9 @@ def setup_optimized_markov_chain(
         pop_col="TOTAL_POP",
         pop_target=ideal_population,
         epsilon=roughly_equal / 2,  # 1/2 of what you want to end up with
-        # region_surcharge=my_weights,  # was: weight_dict=my_weights in 0.3.0
         node_repeats=node_repeats,
         method=method,
     )
-
-    # compactness_bound = constraints.UpperBound(
-    #     lambda p: len(p["cut_edges"]),
-    #     elasticity * len(initial_partition["cut_edges"]),
-    # )  # Per Moon Duchin, not strictly necessary.
 
     pop_constraint = constraints.within_percent_of_ideal_population(
         initial_partition, roughly_equal
@@ -138,12 +118,8 @@ def run_optimized_chain(
     optimizer,
     steps: int,
     back_map: Dict[int, str],
-    # logfile,
     *,
-    # label: str = "Simulated Annealing",
     method: Callable = simulated_annealing,
-    # max_steps: int = 1000,  # TODO
-    # stop_after: int = 100,  # TODO
 ) -> List[Dict[str, str | float | Dict[str, int | str]]]:
     """Run an optimized Markov chain -- Accumulate the plans along the path from the starting point to the best plan found."""
 
