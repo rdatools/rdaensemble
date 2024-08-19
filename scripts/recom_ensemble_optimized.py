@@ -81,14 +81,14 @@ def main() -> None:
     method: Callable = methods[label]
 
     # TODO - Parameterize this
-    dimensions: List[str] = [
+    optimize_options: List[str] = [
         "proportionality",
         "competitiveness",
         "minority",
         "compactness",
         "splitting",
     ]
-    dimension: str = dimensions[3]  # TODO
+    optimize_for: str = optimize_options[3]  # TODO
 
     # TODO - Parameterize this
     plan_dimensions: List[str] = [
@@ -110,8 +110,8 @@ def main() -> None:
         "compactness": {"metric": average_polsby_popper, "bigger_is_better": True},
         # TODO - Add other metrics
     }
-    metric: Callable = metrics[dimension]["metric"]
-    bigger_is_better: bool = metrics[dimension]["bigger_is_better"]
+    metric: Callable = metrics[optimize_for]["metric"]
+    bigger_is_better: bool = metrics[optimize_for]["bigger_is_better"]
 
     steps: int = round(args.size / len(starting_plan_paths))
 
@@ -135,13 +135,17 @@ def main() -> None:
     plans: List[Dict[str, str | float | Dict[str, int | str]]] = []
 
     print()
-    print(f"Optimizing plans for {dimension} using {' '.join(label.split('_'))}.")
+    print(f"Optimizing plans for {optimize_for} using {' '.join(label.split('_'))}.")
     print()
 
-    for starting_plan_path in starting_plan_paths:
+    for j, starting_plan_path in enumerate(starting_plan_paths):
         print()
         print(f"Starting plan: {starting_plan_path}")
         print()
+
+        prefix: str = (
+            f"{list(methods.keys()).index(args.method) + 1}{optimize_options.index(optimize_for) + 1}{j + 1}"
+        )
 
         plan_path: str = starting_dir + starting_plan_path
 
@@ -163,6 +167,7 @@ def main() -> None:
                 chain,
                 steps,
                 back_map,
+                prefix,
                 method=method,
             )
         )
@@ -170,14 +175,14 @@ def main() -> None:
         plans.extend(more_plans)
 
         print()
-        print(f"Collected {len(more_plans)} plans optimized for {dimension}.")
+        print(f"Collected {len(more_plans)} plans optimized for {optimize_for}.")
         print()
 
     ensemble["plans"] = plans
     ensemble["size"] = len(plans)  # Not every optimization step is kept
 
     print()
-    print(f"Collected {len(plans)} plans optimized for {dimension}.")
+    print(f"Collected {len(plans)} plans optimized for {optimize_for}.")
     print()
 
     if not args.debug:

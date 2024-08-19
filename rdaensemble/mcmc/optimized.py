@@ -118,6 +118,7 @@ def run_optimized_chain(
     optimizer,
     steps: int,
     back_map: Dict[int, str],
+    prefix: str,
     *,
     method: Callable = simulated_annealing,
 ) -> List[Dict[str, str | float | Dict[str, int | str]]]:
@@ -139,7 +140,7 @@ def run_optimized_chain(
             plan: Dict[str, int | str] = {
                 back_map[node]: part for node, part in assignments.items()
             }
-            plan_name: str = f"{step:04d}"
+            plan_name: str = f"{prefix}-{step:04d}"
             plans.append({"name": plan_name, "plan": plan})  # No weights.
 
     return plans
