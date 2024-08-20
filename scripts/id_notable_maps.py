@@ -7,7 +7,7 @@ For example:
 
 $ scripts/id_notable_maps.py \
 --scores ../../iCloud/fileout/ensembles/NC20C_scores_augmented.csv \
---metadata ../../iCloud/fileout/ensembles/NC20C_scores_metadata.json \
+--metadata ../../iCloud/fileout/ensembles/NC20C_scores_augmented_metadata.json \
 --notables ../../iCloud/fileout/ensembles/NC20C_notable_maps.json \
 --no-debug
 
