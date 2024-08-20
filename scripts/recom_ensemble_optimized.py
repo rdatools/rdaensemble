@@ -72,15 +72,15 @@ def main() -> None:
 
     args: argparse.Namespace = parse_args()
 
-    methods: Dict[str, Callable] = {
+    optimize_methods: Dict[str, Callable] = {
         "simulated_annealing": simulated_annealing,
         "short_bursts": short_bursts,
         "tilted_runs": tilted_runs,
     }
-    label: str = args.method
-    method: Callable = methods[label]
+    method_label: str = args.method
+    assert method_label in optimize_methods, f"Method '{method_label}' not found."
+    method: Callable = optimize_methods[method_label]
 
-    # TODO - Parameterize this
     optimize_options: List[str] = [
         "proportionality",
         "competitiveness",
@@ -88,9 +88,12 @@ def main() -> None:
         "compactness",
         "splitting",
     ]
-    optimize_for: str = optimize_options[3]  # TODO
+    option: str = args.optimize
+    assert option in optimize_options, f"Optimize dimensionn '{option}' not found."
+    assert option in ["compactness"], f"Optimize dimension '{option}' not implemented."
+    optimize_for: str = option
 
-    # TODO - Parameterize this
+    # TODO - Hard-coded to Notable Map CSV files. Parameterize this.
     plan_dimensions: List[str] = [
         "proportional",
         "competitive",
@@ -135,7 +138,9 @@ def main() -> None:
     plans: List[Dict[str, str | float | Dict[str, int | str]]] = []
 
     print()
-    print(f"Optimizing plans for {optimize_for} using {' '.join(label.split('_'))}.")
+    print(
+        f"Optimizing plans for {optimize_for} using {' '.join(method_label.split('_'))}."
+    )
     print()
 
     for j, starting_plan_path in enumerate(starting_plan_paths):
@@ -144,7 +149,7 @@ def main() -> None:
         print()
 
         prefix: str = (
-            f"{list(methods.keys()).index(args.method) + 1}{optimize_options.index(optimize_for) + 1}{j + 1}"
+            f"{list(optimize_methods.keys()).index(args.method) + 1}{optimize_options.index(optimize_for) + 1}{j + 1}"
         )
 
         plan_path: str = starting_dir + starting_plan_path
@@ -231,8 +236,13 @@ def parse_args():
     parser.add_argument(
         "--method",
         type=str,
-        default="simulated_annealing",
+        default="short_bursts",
         help="A ReCom SingleMetricOptimizer optimization method",
+    )
+    parser.add_argument(
+        "--optimize",
+        type=str,
+        help="The ratings dimension on which to optimize",
     )
 
     parser.add_argument(
@@ -256,6 +266,7 @@ def parse_args():
         "plans": "temp/NC20C_sa_optimized_plans.json",
         "size": 100,
         "method": "simulated_annealing",
+        "optimize": "compactness",
     }
     args = require_args(args, args.debug, debug_defaults)
 
