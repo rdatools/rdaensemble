@@ -25,7 +25,7 @@ import warnings
 
 warnings.warn = lambda *args, **kwargs: None
 
-import csv
+import os, csv
 
 from rdabase import (
     require_args,
@@ -52,6 +52,7 @@ def main() -> None:
     ]
 
     output: Dict[str, Any] = metadata
+    output["plans"] = os.path.basename(args.scores)
     notable_maps: Dict[str, Any] = id_notable_maps(scores, filters)
     output.update(notable_maps)
 
