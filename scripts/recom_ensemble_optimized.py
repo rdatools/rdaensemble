@@ -36,6 +36,8 @@ warnings.warn = lambda *args, **kwargs: None
 
 from gerrychain.proposals import recom
 
+import rdapy as rda
+
 from rdabase import (
     require_args,
     starting_seed,
@@ -67,14 +69,22 @@ def average_polsby_popper(partition):
     return measurement
 
 
-def EG(partition):
-    """Estimate the efficiency gap of a partition."""
+def proportionality_proxy(partition):
+    """Use the EG of a partition as a proxy for disproportionality."""
 
     eg: float = abs(partition["election_composite"].efficiency_gap())
 
-    # print(f"Efficiency Gap: {eg}") # TODO - Debugging
-
     return eg
+
+
+def competitiveness(partition):
+    """Estimate the competitiveness of a partition."""
+
+    Vf_array: List[float] = partition["election_composite"].percents("Democratic")
+
+    cD: float = rda.est_competitive_districts(Vf_array)
+
+    return cD
 
 
 def main() -> None:
@@ -101,8 +111,9 @@ def main() -> None:
     option: str = args.optimize
     assert option in optimize_options, f"Optimize dimensionn '{option}' not found."
     assert option in [
-        "compactness",
         "proportionality",
+        "competitiveness",
+        "compactness",
     ], f"Optimize dimension '{option}' not implemented."
     optimize_for: str = option
 
@@ -123,8 +134,9 @@ def main() -> None:
     # End parameterization
 
     metrics: Dict[str, Any] = {
+        "proportionality": {"metric": proportionality_proxy, "bigger_is_better": False},
+        "competitiveness": {"metric": competitiveness, "bigger_is_better": True},
         "compactness": {"metric": average_polsby_popper, "bigger_is_better": True},
-        "proportionality": {"metric": EG, "bigger_is_better": False},
         # TODO - Add other metrics
     }
     metric: Callable = metrics[optimize_for]["metric"]
@@ -280,8 +292,8 @@ def parse_args():
         "graph": "../rdabase/data/NC/NC_2020_graph.json",
         "plans": "temp/NC20C_sa_optimized_plans.json",
         "size": 100,
-        "method": "simulated_annealing",
-        "optimize": "proportionality",
+        "method": "short_bursts",
+        "optimize": "competitiveness",
     }
     args = require_args(args, args.debug, debug_defaults)
 
