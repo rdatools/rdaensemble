@@ -35,6 +35,7 @@ import warnings
 warnings.warn = lambda *args, **kwargs: None
 
 from gerrychain.proposals import recom
+from gerrychain.updaters import CountySplit
 
 import rdapy as rda
 
@@ -61,14 +62,6 @@ from rdaensemble import (
 num_cut_edges: Callable = lambda p: len(p["cut_edges"])
 
 
-def average_polsby_popper(partition):
-    """Estimate the compactness of a partition, using just Polsby-Popper."""
-
-    measurement: float = sum(partition["polsby-popper"].values()) / len(partition)
-
-    return measurement
-
-
 def proportionality_proxy(partition):
     """Use the EG of a partition as a proxy for disproportionality."""
 
@@ -77,7 +70,7 @@ def proportionality_proxy(partition):
     return eg
 
 
-def competitiveness(partition):
+def competitiveness_proxy(partition):
     """Estimate the competitiveness of a partition."""
 
     Vf_array: List[float] = partition["election_composite"].percents("Democratic")
@@ -85,6 +78,27 @@ def competitiveness(partition):
     cD: float = rda.est_competitive_districts(Vf_array)
 
     return cD
+
+
+def compactness_proxy(partition):
+    """Estimate the compactness of a partition, using just Polsby-Popper."""
+
+    measurement: float = sum(partition["polsby-popper"].values()) / len(partition)
+
+    return measurement
+
+
+def splitting_proxy(partition):
+    """Count the number of counties split by a partition."""
+
+    counties = partition["split_counties"]
+
+    nsplits: int = 0
+    for _, info in counties.items():
+        if info.split != CountySplit.NOT_SPLIT:
+            nsplits += 1
+
+    return nsplits
 
 
 def main() -> None:
@@ -110,10 +124,12 @@ def main() -> None:
     ]
     option: str = args.optimize
     assert option in optimize_options, f"Optimize dimensionn '{option}' not found."
+    # TODO - DELETE
     assert option in [
         "proportionality",
         "competitiveness",
         "compactness",
+        "splitting",
     ], f"Optimize dimension '{option}' not implemented."
     optimize_for: str = option
 
@@ -135,8 +151,9 @@ def main() -> None:
 
     metrics: Dict[str, Any] = {
         "proportionality": {"metric": proportionality_proxy, "bigger_is_better": False},
-        "competitiveness": {"metric": competitiveness, "bigger_is_better": True},
-        "compactness": {"metric": average_polsby_popper, "bigger_is_better": True},
+        "competitiveness": {"metric": competitiveness_proxy, "bigger_is_better": True},
+        "compactness": {"metric": compactness_proxy, "bigger_is_better": True},
+        "splitting": {"metric": splitting_proxy, "bigger_is_better": False},
         # TODO - Add other metrics
     }
     metric: Callable = metrics[optimize_for]["metric"]
@@ -293,7 +310,7 @@ def parse_args():
         "plans": "temp/NC20C_sa_optimized_plans.json",
         "size": 100,
         "method": "short_bursts",
-        "optimize": "competitiveness",
+        "optimize": "splitting",
     }
     args = require_args(args, args.debug, debug_defaults)
 

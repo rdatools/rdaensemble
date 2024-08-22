@@ -38,6 +38,9 @@ def setup_optimized_markov_chain(
         "cut_edges": updaters.cut_edges,
         "population": updaters.Tally("TOTAL_POP", alias="population"),
         "polsby-popper": polsby_popper,
+        "split_counties": updaters.county_splits("split_counties", "COUNTY"),
+        "total_vap": updaters.Tally("TOTAL_VAP"),
+        "minority_vap": updaters.Tally("MINORITY_VAP"),
     }
     election_updaters: dict[str, Election] = {
         election.name: election for election in elections
