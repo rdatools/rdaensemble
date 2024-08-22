@@ -80,6 +80,12 @@ def competitiveness_proxy(partition):
     return cD
 
 
+def minority_dummy(partition):
+    """A dummy function for minority representation."""
+
+    assert False, "Minority optimization is built into Gingelator."
+
+
 def compactness_proxy(partition):
     """Estimate the compactness of a partition, using just Polsby-Popper."""
 
@@ -124,16 +130,9 @@ def main() -> None:
     ]
     option: str = args.optimize
     assert option in optimize_options, f"Optimize dimensionn '{option}' not found."
-    # TODO - DELETE
-    assert option in [
-        "proportionality",
-        "competitiveness",
-        "compactness",
-        "splitting",
-    ], f"Optimize dimension '{option}' not implemented."
     optimize_for: str = option
 
-    # TODO - Hard-coded to Notable Map CSV files. Parameterize this.
+    # TODO - Hard-coded to file names for Notable Map files. Can we parameterize this?
     plan_dimensions: List[str] = [
         "proportional",
         "competitive",
@@ -152,9 +151,9 @@ def main() -> None:
     metrics: Dict[str, Any] = {
         "proportionality": {"metric": proportionality_proxy, "bigger_is_better": False},
         "competitiveness": {"metric": competitiveness_proxy, "bigger_is_better": True},
+        "minority": {"metric": minority_dummy, "bigger_is_better": True},
         "compactness": {"metric": compactness_proxy, "bigger_is_better": True},
         "splitting": {"metric": splitting_proxy, "bigger_is_better": False},
-        # TODO - Add other metrics
     }
     metric: Callable = metrics[optimize_for]["metric"]
     bigger_is_better: bool = metrics[optimize_for]["bigger_is_better"]
@@ -206,6 +205,7 @@ def main() -> None:
             elections,
             roughly_equal=args.roughlyequal,
             node_repeats=1,
+            dimension=optimize_for,
             metric=metric,
             maximize=bigger_is_better,
         )
@@ -310,7 +310,7 @@ def parse_args():
         "plans": "temp/NC20C_sa_optimized_plans.json",
         "size": 100,
         "method": "short_bursts",
-        "optimize": "splitting",
+        "optimize": "proportionality",
     }
     args = require_args(args, args.debug, debug_defaults)
 

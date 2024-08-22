@@ -16,7 +16,7 @@ from gerrychain import (
 )
 from gerrychain.tree import bipartition_tree
 from gerrychain.constraints import contiguous
-from gerrychain.optimization import SingleMetricOptimizer  # TODO - Add Gingleator
+from gerrychain.optimization import SingleMetricOptimizer, Gingleator
 from gerrychain.metrics.compactness import polsby_popper
 
 from gerrychain.partition.assignment import Assignment
@@ -29,6 +29,7 @@ def setup_optimized_markov_chain(
     roughly_equal: float,
     node_repeats: int,
     *,
+    dimension: str,
     metric: Callable,
     maximize: bool,
 ) -> Any:
@@ -39,8 +40,8 @@ def setup_optimized_markov_chain(
         "population": updaters.Tally("TOTAL_POP", alias="population"),
         "polsby-popper": polsby_popper,
         "split_counties": updaters.county_splits("split_counties", "COUNTY"),
-        "total_vap": updaters.Tally("TOTAL_VAP"),
-        "minority_vap": updaters.Tally("MINORITY_VAP"),
+        "TOTAL_VAP": updaters.Tally("TOTAL_VAP"),
+        "MINORITY_VAP": updaters.Tally("MINORITY_VAP"),
     }
     election_updaters: dict[str, Election] = {
         election.name: election for election in elections
@@ -74,13 +75,24 @@ def setup_optimized_markov_chain(
     )
     my_constraints = [contiguous, pop_constraint]
 
-    chain: Any = SingleMetricOptimizer(
-        proposal=my_proposal,
-        constraints=my_constraints,
-        initial_state=initial_partition,
-        optimization_metric=metric,
-        maximize=maximize,
-    )
+    chain: Any
+    if dimension == "minority":
+        chain = Gingleator(
+            proposal=my_proposal,
+            constraints=my_constraints,
+            initial_state=initial_partition,
+            minority_pop_col="MINORITY_VAP",
+            total_pop_col="TOTAL_VAP",
+            score_function=Gingleator.reward_partial_dist,
+        )
+    else:
+        chain = SingleMetricOptimizer(
+            proposal=my_proposal,
+            constraints=my_constraints,
+            initial_state=initial_partition,
+            optimization_metric=metric,
+            maximize=maximize,
+        )
 
     return chain
 
