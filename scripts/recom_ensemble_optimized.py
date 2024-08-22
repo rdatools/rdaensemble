@@ -67,6 +67,16 @@ def average_polsby_popper(partition):
     return measurement
 
 
+def EG(partition):
+    """Estimate the efficiency gap of a partition."""
+
+    eg: float = abs(partition["election_composite"].efficiency_gap())
+
+    # print(f"Efficiency Gap: {eg}") # TODO - Debugging
+
+    return eg
+
+
 def main() -> None:
     """Generate an ensemble of maps using MCMC/ReCom."""
 
@@ -90,7 +100,10 @@ def main() -> None:
     ]
     option: str = args.optimize
     assert option in optimize_options, f"Optimize dimensionn '{option}' not found."
-    assert option in ["compactness"], f"Optimize dimension '{option}' not implemented."
+    assert option in [
+        "compactness",
+        "proportionality",
+    ], f"Optimize dimension '{option}' not implemented."
     optimize_for: str = option
 
     # TODO - Hard-coded to Notable Map CSV files. Parameterize this.
@@ -111,6 +124,7 @@ def main() -> None:
 
     metrics: Dict[str, Any] = {
         "compactness": {"metric": average_polsby_popper, "bigger_is_better": True},
+        "proportionality": {"metric": EG, "bigger_is_better": False},
         # TODO - Add other metrics
     }
     metric: Callable = metrics[optimize_for]["metric"]
@@ -173,6 +187,7 @@ def main() -> None:
                 steps,
                 back_map,
                 prefix,
+                bigger_is_better=bigger_is_better,
                 method=method,
             )
         )
@@ -266,7 +281,7 @@ def parse_args():
         "plans": "temp/NC20C_sa_optimized_plans.json",
         "size": 100,
         "method": "simulated_annealing",
-        "optimize": "compactness",
+        "optimize": "proportionality",
     }
     args = require_args(args, args.debug, debug_defaults)
 

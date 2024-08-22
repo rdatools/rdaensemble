@@ -99,7 +99,9 @@ def prep_data(
         recom_graph.add_edges_from(edges)
 
     elections: List[Election] = [
-        Election("composite", {"Democratic": "DEM_VOTES", "Republican": "REP_VOTES"}),
+        Election(
+            "election_composite", {"Democratic": "DEM_VOTES", "Republican": "REP_VOTES"}
+        ),
     ]
 
     return recom_graph, elections, back_map

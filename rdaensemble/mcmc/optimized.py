@@ -4,6 +4,7 @@ GENERATE AN OPTIMIZED ENSEMBLE OF PLANS using RECOM and its SingleMetricOptimize
 
 from typing import Any, List, Dict, Optional, Callable
 
+import sys
 from functools import partial
 
 from gerrychain import (
@@ -29,7 +30,7 @@ def setup_optimized_markov_chain(
     node_repeats: int,
     *,
     metric: Callable,
-    maximize: bool = True,
+    maximize: bool,
 ) -> Any:
     """Set up the Markov chain."""
 
@@ -120,15 +121,18 @@ def run_optimized_chain(
     back_map: Dict[int, str],
     prefix: str,
     *,
-    method: Callable = simulated_annealing,
+    bigger_is_better: bool,
+    method: Callable = short_bursts,
 ) -> List[Dict[str, str | float | Dict[str, int | str]]]:
     """Run an optimized Markov chain -- Accumulate the plans along the path from the starting point to the best plan found."""
 
     plans: List[Dict[str, str | float | Dict[str, int | str]]] = list()
 
-    best_score: float = 0.0
+    best_score: float = sys.float_info.min if bigger_is_better else sys.float_info.max
     for step, partition in enumerate(method(optimizer, steps)):
-        if optimizer.best_score > best_score:
+        if (bigger_is_better and optimizer.best_score > best_score) or (
+            not bigger_is_better and optimizer.best_score < best_score
+        ):
             best_score = optimizer.best_score
 
             print(f"=> Metric improved to {best_score}.")
