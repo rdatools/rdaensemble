@@ -38,6 +38,7 @@ from gerrychain.proposals import recom
 from rdabase import (
     require_args,
     starting_seed,
+    DISTRICTS_BY_STATE,
     read_csv,
     write_json,
     load_data,
@@ -63,7 +64,8 @@ def main() -> None:
 
     root_plan: List[Dict[str, str | int]] = read_csv(args.root, [str, int])
 
-    N: int = int(metadata["D"])
+    N: int = DISTRICTS_BY_STATE[args.state][args.type]
+    # N: int = int(metadata["D"]) <= Generalized for state houses
     seed: int = starting_seed(args.state, N)
 
     ensemble: Dict[str, Any] = ensemble_metadata(
@@ -111,6 +113,12 @@ def parse_args():
         "--state",
         help="The two-character state code (e.g., NC)",
         type=str,
+    )
+    parser.add_argument(
+        "--type",
+        type=str,
+        default="congress",
+        help="The type of districts (congress, upper, lower)",
     )
     parser.add_argument(
         "--size", type=int, default=10, help="Number of maps to generate"
@@ -180,6 +188,7 @@ def parse_args():
     # Default values for args in debug mode
     debug_defaults: Dict[str, Any] = {
         "state": "NC",
+        "type": "congress",
         "data": "../rdabase/data/NC/NC_2020_data.csv",
         "graph": "../rdabase/data/NC/NC_2020_graph.json",
         "root": "../tradeoffs/root_maps/NC20C_root_map.csv",
