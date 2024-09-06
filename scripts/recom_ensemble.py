@@ -60,11 +60,11 @@ def main() -> None:
 
     data: Dict[str, Dict[str, int | str]] = load_data(args.data)
     graph: Dict[str, List[str]] = load_graph(args.graph)
-    metadata: Dict[str, Any] = load_metadata(args.state, args.data)
+    # metadata: Dict[str, Any] = load_metadata(args.state, args.data)
 
     root_plan: List[Dict[str, str | int]] = read_csv(args.root, [str, int])
 
-    N: int = DISTRICTS_BY_STATE[args.state][args.type]
+    N: int = DISTRICTS_BY_STATE[args.state][args.plantype]
     # N: int = int(metadata["D"]) <= Generalized for state houses
     seed: int = starting_seed(args.state, N)
 
@@ -115,7 +115,7 @@ def parse_args():
         type=str,
     )
     parser.add_argument(
-        "--type",
+        "--plantype",
         type=str,
         default="congress",
         help="The type of districts (congress, upper, lower)",
@@ -188,7 +188,7 @@ def parse_args():
     # Default values for args in debug mode
     debug_defaults: Dict[str, Any] = {
         "state": "NC",
-        "type": "congress",
+        "plantype": "congress",
         "data": "../rdabase/data/NC/NC_2020_data.csv",
         "graph": "../rdabase/data/NC/NC_2020_graph.json",
         "root": "../tradeoffs/root_maps/NC20C_root_map.csv",
