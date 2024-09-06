@@ -61,6 +61,8 @@ def main() -> None:
         size=args.size,
         method="Random maps from random spanning trees (RMfRSP)",
     )
+    # Update the type of plan (e.g., "congress", "upper", "lower"), based on the plantype arg
+    ensemble["plan_type"] = args.plantype.title()
     ensemble["packed"] = False
 
     with open(args.log, "w") as f:
