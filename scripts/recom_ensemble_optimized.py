@@ -42,6 +42,7 @@ import rdapy as rda
 from rdabase import (
     require_args,
     starting_seed,
+    DISTRICTS_BY_STATE,
     read_csv,
     write_json,
     load_data,
@@ -163,9 +164,10 @@ def main() -> None:
     data: Dict[str, Dict[str, int | str]] = load_data(args.data)
     shapes: Dict[str, Any] = load_shapes(args.shapes)
     graph: Dict[str, List[str]] = load_graph(args.graph)
-    metadata: Dict[str, Any] = load_metadata(args.state, args.data)
+    # metadata: Dict[str, Any] = load_metadata(args.state, args.data)
 
-    N: int = int(metadata["D"])
+    N: int = DISTRICTS_BY_STATE[args.state][args.plantype]
+    # N: int = int(metadata["D"]) <= Generalized for state houses
     seed: int = starting_seed(args.state, N)
     random.seed(seed)
 
@@ -249,6 +251,12 @@ def parse_args():
         type=str,
     )
     parser.add_argument(
+        "--plantype",
+        type=str,
+        default="congress",
+        help="The type of districts (congress, upper, lower)",
+    )
+    parser.add_argument(
         "--size", type=int, default=10, help="Number of maps to generate"
     )
     parser.add_argument(
@@ -304,6 +312,7 @@ def parse_args():
     # Default values for args in debug mode
     debug_defaults: Dict[str, Any] = {
         "state": "NC",
+        "plantype": "congress",
         "data": "../rdabase/data/NC/NC_2020_data.csv",
         "shapes": "../rdabase/data/NC/NC_2020_shapes_simplified.json",
         "graph": "../rdabase/data/NC/NC_2020_graph.json",
