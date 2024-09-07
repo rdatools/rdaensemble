@@ -4,6 +4,8 @@ SCORE AN ENSEMBLE OF PLANS
 
 from typing import List, Dict, Tuple, Any
 
+from collections import defaultdict
+
 from rdabase import (
     mkPoints,
     Point,
@@ -51,7 +53,14 @@ def score_ensemble(
                 assignments, indexed_geoids, pop_by_geoid
             )
 
+            # Verify that all districts have some population
+            pop_by_district: Dict[int, float] = defaultdict(float)
+            for a in indexed_assignments:
+                pop_by_district[a.site] += a.pop
+
+            print("Before calculating energy ...")
             energy: float = calc_energy(indexed_assignments, indexed_points)
+            print("After calculating energy ...")
 
             record: Dict[str, Any] = dict()
             record["map"] = plan_name

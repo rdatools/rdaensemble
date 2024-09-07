@@ -80,7 +80,7 @@ def random_map(
             random_i = random.randint(0, 20)
             if random_i >= len(ranked):
                 continue
-            cut: Tree = ranked[random_i]
+            cut: Tree = ranked[0]  # was ranked[random_i]
 
             # If the deviation of the district would be too large, try again.
             deviation = abs(cut.subtree_weight - target_population) / target_population

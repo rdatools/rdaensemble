@@ -47,7 +47,7 @@ def main() -> None:
     data: Dict[str, Dict[str, int | str]] = load_data(args.data)
     shapes: Dict[str, Any] = load_shapes(args.shapes)
     graph: Dict[str, List[str]] = load_graph(args.graph)
-    metadata: Dict[str, Any] = load_metadata(args.state, args.data)
+    metadata: Dict[str, Any] = load_metadata(args.state, args.data, args.plantype)
 
     # TYPE HINT
     ensemble: Dict[str, Any] = read_json(args.plans)
@@ -79,6 +79,12 @@ def parse_args():
         "--state",
         help="The two-character state code (e.g., NC)",
         type=str,
+    )
+    parser.add_argument(
+        "--plantype",
+        type=str,
+        default="congress",
+        help="The type of districts (congress, upper, lower)",
     )
     parser.add_argument(
         "--plans",
@@ -128,11 +134,15 @@ def parse_args():
     # Default values for args in debug mode
     debug_defaults: Dict[str, Any] = {
         "state": "NC",
-        "plans": "../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_plans.json",
+        # "plantype": "congress",
+        "plantype": "upper",
+        # "plans": "../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_plans.json",
+        "plans": "../../iCloud/fileout/tradeoffs/NC/ensembles-upper/NC20U_plans.json",
         "data": "../rdabase/data/NC/NC_2020_data.csv",
         "shapes": "../rdabase/data/NC/NC_2020_shapes_simplified.json",
         "graph": "../rdabase/data/NC/NC_2020_graph.json",
-        "scores": "temp/NC20C_scores_alt.csv",
+        # "scores": "temp/NC20C_scores.csv",
+        "scores": "temp/NC20U_plans.json",
     }
     args = require_args(args, args.debug, debug_defaults)
 

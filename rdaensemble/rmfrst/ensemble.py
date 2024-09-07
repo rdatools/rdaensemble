@@ -25,6 +25,7 @@ def gen_rmfrst_ensemble(
     logfile,
     *,
     roughly_equal: float = 0.02,
+    verbose: bool = False,
 ) -> List[Dict[str, str | float | Dict[str, int | str]]]:
     """Generate an ensemble of random maps from random spanning trees."""
 
@@ -47,6 +48,7 @@ def gen_rmfrst_ensemble(
         plan_name: str = f"{conforming_count:03d}_{seed}"
 
         try:
+            print("Calling random_map...")
             assignments: List[Assignment] = random_map(
                 pairs,
                 pop_by_geoid,
@@ -54,9 +56,12 @@ def gen_rmfrst_ensemble(
                 seed,
             )  # Generate a random contiguous & 'roughly' equal population partitioning of the state.
 
+            print("... random_map done.")
             popdev: float = calc_population_deviation(
                 assignments, pop_by_geoid, total_pop, N
             )
+
+            print(f"Population deviation: {popdev}")
 
             if popdev > roughly_equal:
                 continue
@@ -70,7 +75,13 @@ def gen_rmfrst_ensemble(
 
         except Exception as e:
             print(f"Failure: {e}", file=logfile)
-            pass
+            if verbose:
+                print(f"Failure: {e}")
+
+        except:
+            print("Unknown error.", file=logfile)
+            if verbose:
+                print("Unknown error.")
 
         finally:
             seed += 1

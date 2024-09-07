@@ -66,7 +66,14 @@ def main() -> None:
     with open(args.log, "w") as f:
         plans: List[Dict[str, str | float | Dict[str, int | str]]] = (
             gen_rmfrst_ensemble(
-                args.size, seed, data, graph, N, f, roughly_equal=args.roughlyequal
+                args.size,
+                seed,
+                data,
+                graph,
+                N,
+                f,
+                roughly_equal=args.roughlyequal,
+                verbose=args.verbose,
             )
         )
 
@@ -146,13 +153,18 @@ def parse_args():
     # Default values for args in debug mode
     debug_defaults: Dict[str, Any] = {
         "state": "NC",
-        "plantype": "congress",
+        # "plantype": "congress",
+        "plantype": "lower",
+        "roughlyequal": 0.10,
         "data": "../rdabase/data/NC/NC_2020_data.csv",
         "shapes": "../rdabase/data/NC/NC_2020_shapes_simplified.json",
         "graph": "../rdabase/data/NC/NC_2020_graph.json",
-        "plans": "../../iCloud/fileout/ensembles/NC20C_plans.json",
-        "log": "../../iCloud/fileout/ensembles/NC20C_log.txt",
-        "size": 10,
+        # "plans": "temp/NC20C_plans.json",
+        # "log": "temp/NC20C_log.txt",
+        "plans": "temp/NC20L_RMfRST_100_plans.json",
+        "log": "temp/NC20L_RMfRST_100_log.txt",
+        "size": 100,
+        "verbose": True,
     }
     args = require_args(args, args.debug, debug_defaults)
 
