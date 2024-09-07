@@ -58,9 +58,7 @@ def score_ensemble(
             for a in indexed_assignments:
                 pop_by_district[a.site] += a.pop
 
-            print("Before calculating energy ...")
             energy: float = calc_energy(indexed_assignments, indexed_points)
-            print("After calculating energy ...")
 
             record: Dict[str, Any] = dict()
             record["map"] = plan_name
