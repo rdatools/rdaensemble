@@ -2,9 +2,9 @@
 SCORE AN ENSEMBLE OF PLANS
 """
 
-from typing import List, Dict, Tuple, Any
+from typing import List, Dict, Set, Any
 
-from collections import defaultdict
+import sys
 
 from rdabase import (
     mkPoints,
@@ -53,10 +53,13 @@ def score_ensemble(
                 assignments, indexed_geoids, pop_by_geoid
             )
 
-            # Verify that all districts have some population
-            pop_by_district: Dict[int, float] = defaultdict(float)
-            for a in indexed_assignments:
-                pop_by_district[a.site] += a.pop
+            # Make sure districts are indexed [0, 1, 2, ...]
+            district_ids: Set[int | str] = set()
+            for a in assignments:
+                district_ids.add(a.district)
+            if min(district_ids) != 0:
+                print("Districts must be indexed [0, 1, 2, ...]")
+                sys.exit(1)
 
             energy: float = calc_energy(indexed_assignments, indexed_points)
 
