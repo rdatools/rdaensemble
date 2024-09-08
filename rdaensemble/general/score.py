@@ -53,12 +53,12 @@ def score_ensemble(
                 assignments, indexed_geoids, pop_by_geoid
             )
 
-            # Make sure districts are indexed [0, 1, 2, ...]
+            # Make sure districts are indexed [1, 2, 3, ...]
             district_ids: Set[int | str] = set()
             for a in assignments:
                 district_ids.add(a.district)
-            if min(district_ids) != 0:
-                print("Districts must be indexed [0, 1, 2, ...]")
+            if min(district_ids) != 1:
+                print("Districts must be indexed [1, 2, 3, ...]")
                 sys.exit(1)
 
             energy: float = calc_energy(indexed_assignments, indexed_points)
