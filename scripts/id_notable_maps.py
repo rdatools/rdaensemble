@@ -43,13 +43,18 @@ def main() -> None:
     scores: List[Dict[str, Any]] = read_scores(args.scores)
     metadata: Dict[str, Any] = read_json(args.metadata)
 
-    filters: List[int] = [
-        args.proportional,
-        args.competitive,
-        args.minority,
-        args.compact,
-        args.splitting,
-    ]
+    filter: bool = not args.nofilter
+    filters: List[int] = (
+        [
+            20,  # proportional
+            10,  # competitive
+            0,  # minority
+            20,  # compact
+            20,  # splitting,\
+        ]
+        if filter
+        else [0, 0, 0, 0, 0]
+    )
 
     output: Dict[str, Any] = metadata
     output["plans"] = os.path.basename(args.scores)
@@ -95,34 +100,7 @@ def parse_args():
         help="Notable maps JSON file",
     )
     parser.add_argument(
-        "--proportional",
-        type=int,
-        default=20,
-        help="Proportionality filter",
-    )
-    parser.add_argument(
-        "--competitive",
-        type=int,
-        default=10,
-        help="Competitiveness filter",
-    )
-    parser.add_argument(
-        "--minority",
-        type=int,
-        default=0,
-        help="Minority opportunity filter",
-    )
-    parser.add_argument(
-        "--compact",
-        type=int,
-        default=20,
-        help="Compactness filter",
-    )
-    parser.add_argument(
-        "--splitting",
-        type=int,
-        default=20,
-        help="County-district splitting filter",
+        "--nofilter", dest="nofilter", action="store_true", help="Don't filter plans"
     )
 
     parser.add_argument(
@@ -142,7 +120,6 @@ def parse_args():
         "scores": "../../iCloud/fileout/ensembles/NC20C_scores.csv",
         "metadata": "../../iCloud/fileout/ensembles/NC20C_scores_metadata.json",
         "notables": "../../iCloud/fileout/ensembles/NC20C_notable_maps.json",
-        "splitting": 0,
     }
     args = require_args(args, args.debug, debug_defaults)
 
