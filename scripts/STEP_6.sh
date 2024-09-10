@@ -52,6 +52,7 @@ fi
 # Combine the unbiased and optimized ratings, and find the new pairwise ratings frontiers.
 # Finally, identify the notable maps in the augmented ensemble.
 
+echo "Optimizing for proportionality ..."
 scripts/recom_ensemble_optimized.py \
 --state $STATE \
 --size 10000 \
@@ -63,6 +64,7 @@ scripts/recom_ensemble_optimized.py \
 --plans ../../iCloud/fileout/tradeoffs/$STATE/$ENSEMBLES_DIR/${PREFIX}_plans_optimized_proportionality.json \
 --no-debug
 
+echo "Optimizing for competitiveness ..."
 scripts/recom_ensemble_optimized.py \
 --state $STATE \
 --size 10000 \
@@ -74,6 +76,7 @@ scripts/recom_ensemble_optimized.py \
 --plans ../../iCloud/fileout/tradeoffs/$STATE/$ENSEMBLES_DIR/${PREFIX}_plans_optimized_competitiveness.json \
 --no-debug
 
+echo "Optimizing for minority representation ..."
 scripts/recom_ensemble_optimized.py \
 --state $STATE \
 --size 10000 \
@@ -85,6 +88,7 @@ scripts/recom_ensemble_optimized.py \
 --plans ../../iCloud/fileout/tradeoffs/$STATE/$ENSEMBLES_DIR/${PREFIX}_plans_optimized_minority.json \
 --no-debug
 
+echo "Optimizing for compactness ..."
 scripts/recom_ensemble_optimized.py \
 --state $STATE \
 --size 10000 \
@@ -96,6 +100,7 @@ scripts/recom_ensemble_optimized.py \
 --plans ../../iCloud/fileout/tradeoffs/$STATE/$ENSEMBLES_DIR/${PREFIX}_plans_optimized_compactness.json \
 --no-debug
 
+echo "Optimizing for splitting ..."
 scripts/recom_ensemble_optimized.py \
 --state $STATE \
 --size 10000 \
@@ -107,6 +112,7 @@ scripts/recom_ensemble_optimized.py \
 --plans ../../iCloud/fileout/tradeoffs/$STATE/$ENSEMBLES_DIR/${PREFIX}_plans_optimized_splitting.json \
 --no-debug
 
+echo "Combining the optimized ensembles ..."
 scripts/combine_ensembles.py \
 --ensembles ../../iCloud/fileout/tradeoffs/$STATE/$ENSEMBLES_DIR/${PREFIX}_plans_optimized_proportionality.json \
             ../../iCloud/fileout/tradeoffs/$STATE/$ENSEMBLES_DIR/${PREFIX}_plans_optimized_competitiveness.json \
@@ -116,6 +122,7 @@ scripts/combine_ensembles.py \
 --output ../../iCloud/fileout/tradeoffs/$STATE/$ENSEMBLES_DIR/${PREFIX}_plans_optimized.json \
 --no-debug
 
+echo "Scoring the optimized ensemble ..."
 scripts/score_ensemble.py \
 --state $STATE \
 --plans ../../iCloud/fileout/tradeoffs/$STATE/$ENSEMBLES_DIR/${PREFIX}_plans_optimized.json \
@@ -125,8 +132,10 @@ scripts/score_ensemble.py \
 --scores ../../iCloud/fileout/tradeoffs/$STATE/$ENSEMBLES_DIR/${PREFIX}_scores_optimized.csv \
 --no-debug
 
+echo "Combining the scores ..."
 scripts/COMBINE_SCORES.sh $STATE U -${PLAN_TYPE}
 
+echo "Finding the notable maps in the augmented ensemble ..."
 scripts/id_notable_maps.py \
 --scores ../../iCloud/fileout/tradeoffs/$STATE/$ENSEMBLES_DIR/${PREFIX}_scores_augmented.csv \
 --metadata ../../iCloud/fileout/tradeoffs/$STATE/$ENSEMBLES_DIR/${PREFIX}_scores_metadata.json \

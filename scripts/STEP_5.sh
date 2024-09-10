@@ -50,6 +50,7 @@ fi
 # From 'rdaensemble'
 # Generate an unbiased ensemble, score it, and find the pairwise ratings frontiers.
 
+echo "Generating an unbiased ensemble ..."
 scripts/recom_ensemble.py \
 --state $STATE \
 --size 10000 \
@@ -61,6 +62,7 @@ scripts/recom_ensemble.py \
 --log ../../iCloud/fileout/tradeoffs/$STATE/$ENSEMBLES_DIR/${PREFIX}_log.txt \
 --no-debug
 
+echo "Scoring the unbiased ensemble ..."
 scripts/score_ensemble.py \
 --state $STATE \
 --plantype upper \
