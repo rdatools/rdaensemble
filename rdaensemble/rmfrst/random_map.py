@@ -19,11 +19,9 @@ def random_map(
     populations: Dict[str, int],
     N: int,
     seed: int,
-    # initial_csv: str,
     *,
     roughly_equal: float = 0.01,
     attempts_per_seed: int = 1000,
-    # verbose: bool = False,
 ) -> List[Assignment]:
     """Generate a random map with N contiguous, 'roughly equal' population districts."""
 
@@ -31,15 +29,11 @@ def random_map(
 
     total_population: int = sum(populations.values())
     target_population: int = int(total_population / N)
-    # root: Node
 
     remainder: Graph = mkGraph(adjacencies, populations)
 
-    # tbc: Set[str] = set(populations.keys())
-
     assignments: Dict[str, int] = {}
     district: int = 1
-    # tree_pops: Dict[str, int]
 
     while True:
         counter: int = 0
@@ -60,27 +54,33 @@ def random_map(
             spanning.compute_weight()
             cuts: list[Tree] = spanning.all_subtrees()
 
-            # Sort the cuts by their deviation from the target population, and
-            # then filter out the ones that wouldn't yield 'roughly equal' population.
-            ranked: List[Tree] = sorted(
-                cuts,
-                key=lambda x: abs(x.subtree_weight - target_population)
-                / target_population,
-            )
-            ranked = [
-                n
-                for n in ranked
-                if abs(n.subtree_weight - target_population) / target_population
-                < roughly_equal
-            ]
-            if not ranked:
-                continue
+            # # Sort the cuts by their deviation from the target population, and
+            # # then filter out the ones that wouldn't yield 'roughly equal' population.
+            # ranked: List[Tree] = sorted(
+            #     cuts,
+            #     key=lambda x: abs(x.subtree_weight - target_population)
+            #     / target_population,
+            # )
+            # ranked = [
+            #     n
+            #     for n in ranked
+            #     if abs(n.subtree_weight - target_population) / target_population
+            #     < roughly_equal
+            # ]
+            # if not ranked:
+            #     continue
 
-            # Choose one of the candidate cuts at random.
-            random_i = random.randint(0, 20)
-            if random_i >= len(ranked):
-                continue
-            cut: Tree = ranked[0]  # was ranked[random_i]
+            # # Choose one of the candidate cuts at random.
+            # random_i = random.randint(0, 20)
+            # if random_i >= len(ranked):
+            #     continue
+            # cut: Tree = ranked[0]  # was ranked[random_i]
+            #### New code starts here ####
+            current_target_total = target_population * district
+            assigned_so_far = total_population - remaining_population
+            this_target = current_target_total - assigned_so_far
+            cut = min(cuts, key=lambda x: abs(x.subtree_weight - this_target))
+            #### New code ends here ####
 
             # If the deviation of the district would be too large, try again.
             deviation = abs(cut.subtree_weight - target_population) / target_population
@@ -108,9 +108,16 @@ def random_map(
             _, remainder = partition(spanning, cut)
 
         # Must handle the last district, which may have a bad size.
-        assert (
-            abs(remaining_population - target_population)
-        ) / target_population < roughly_equal
+
+        # Converted assert to an exception, so it can be caught.
+        # assert (
+        #     abs(remaining_population - target_population)
+        # ) / target_population < roughly_equal
+        deviation = abs(remaining_population - target_population) / target_population
+        if not deviation < roughly_equal:
+            raise Exception(
+                "The population deviation of the last district ({deviation}) would be too big."
+            )
         cut: Tree = RandomTree(remainder)
         assign_district(cut, district, assignments)
         break

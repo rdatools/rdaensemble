@@ -48,22 +48,21 @@ def gen_rmfrst_ensemble(
         plan_name: str = f"{conforming_count:03d}_{seed}"
 
         try:
-            print("Calling random_map...")
             assignments: List[Assignment] = random_map(
                 pairs,
                 pop_by_geoid,
                 N,
                 seed,
+                roughly_equal=roughly_equal,
             )  # Generate a random contiguous & 'roughly' equal population partitioning of the state.
 
-            print("... random_map done.")
             popdev: float = calc_population_deviation(
                 assignments, pop_by_geoid, total_pop, N
             )
 
-            print(f"Population deviation: {popdev}")
-
             if popdev > roughly_equal:
+                if verbose:
+                    print(f"Population deviation too: {popdev}")
                 continue
 
             conforming_count += 1
