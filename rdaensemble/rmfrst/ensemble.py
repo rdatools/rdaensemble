@@ -53,7 +53,8 @@ def gen_rmfrst_ensemble(
                 pop_by_geoid,
                 N,
                 seed,
-                roughly_equal=roughly_equal,
+                roughly_equal=roughly_equal
+                / 2,  # Different definitions of 'roughly equal'
             )  # Generate a random contiguous & 'roughly' equal population partitioning of the state.
 
             popdev: float = calc_population_deviation(
