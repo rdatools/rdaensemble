@@ -2,16 +2,44 @@
 
 Redistricting ensembles
 
-## Methods
+## Installation
 
-The code in this repository supports several methods for generating ensembles of redistricting plans (maps):
+To clone the repository:
 
-- Random maps from random spanning trees (RMfRST)
-- Random maps from random starting points (RMfRSP)
-- Ensemble of maps using MCMC/ReCom (ReCom)
-- Ensemble of maps using Sequential Monte Carlo (SMC) <<< TODO
+```bash
+$ git clone https://github.com/alecramsay/rdaensemble
+$ cd rdaensemble
+```
 
-## Input Files
+To run the scripts, install the dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+To install the package in another project:
+
+```bash
+$ pip install rdaensemble
+```
+
+## Usage
+
+To generate an ensemble of plans, use one of the `*_ensemble.py` scripts:
+
+* `rmfrst_ensemble.py` for Random Maps from Random Spanning Trees (RMfRST)
+* `rmfrsp_ensemble.py` for Random Maps from Random Starting Points (RMfRSP)
+* `recom_ensemble.py` for ReCom
+
+There are example calls in each file.
+Note: The resulting ensemble JSON files can be quite large--bigger than GitHub's 100 MB file size limit--
+so we recommend that you write them to a directory which is not under source control.
+
+To score the plans in an ensemble, use the `score_ensemble.py` script.
+
+The other scripts are specific to our "trade-offs in redistricting" project and are not generally useful.
+
+## Notes
 
 The inputs for generating &amp; scoring ensembles are:
 
@@ -33,8 +61,6 @@ for example.
 Theoretically, these inputs can come from any source, but for simplicity, reproducibility, and apples-to-apples comparisons,
 it's best to use the input files in `rdabase`.
   
-## Output Files
-
 Ensembles are saved as JSON files.
 A file contains metadata about the ensemble, including the method used to generate it,
 and then a `plans` key with a list of plans:
@@ -55,56 +81,3 @@ except they also include the energy of the plan.
 The metric names are descriptive.
 
 When a scores CSV file is produced, a companion JSON file with metadata about the scoring is also generated.
-
-## Naming Conventions
-
-You can name ensemble and score files anything you want.
-To facilitate understanding the contents of these files without having to open them, 
-we recommend the following the convention:
-
-- Ensemble example: `NC20C_plans.json`
-- Scores example: `NC20C_scores.csv`
-
-where "NC" is the state code, "20" stands for the 2020 census cycle, 
-"C" abbreviates "Congress" (as opposed to state upper or lower house), 
-"RMfRST" is the method, 1000 is the number of plans in the ensemble, and 
-"plans" and "scores" distinguish between the two types of files.
-
-Note: The scores metadata file will be named the same as the scores file,
-except it will end `_metadata.json` instead of `.csv`, 
-for example, `NC20C_scores_metadata.json`.
-
-## Usage
-
-To generate an ensemble of 1,000 plans using the random maps from random spanning trees method (RMfRST), run:
-
-```bash
-scripts/rmfrst_ensemble.py \
---state NC \
---data ../rdabase/data/NC/NC_2020_data.csv \
---shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
---graph ../rdabase/data/NC/NC_2020_graph.json \
---size 1000 \
---plans ../../iCloud/fileout/ensembles/NC20C_plans.json \
---log ../../iCloud/fileout/ensembles/NC20C_log.txt \
---no-debug
-```
-
-To score the resulting ensemble, run:
-
-```bash
-scripts/score_ensemble.py \
---state NC \
---plans ../../iCloud/fileout/ensembles/NC20C_plans.json \
---data ../rdabase/data/NC/NC_2020_data.csv \
---shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
---graph ../rdabase/data/NC/NC_2020_graph.json \
---scores ../../iCloud/fileout/ensembles/NC20C_scores.csv \
---no-debug
-```
-
-To generate random maps from random starting points (RMfRSP) instead, use the `rmfrst_ensemble.py` script.
-For ReCom, use the `recom_ensemble.py` script.
-
-Note: Ensemble JSON files can be quite large, bigger than GitHub's 100 MB file size limit,
-so we recommend that you write them to the `ensembles` directory, which is ignored by Git.
