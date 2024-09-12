@@ -7,7 +7,7 @@ Redistricting ensembles
 To clone the repository:
 
 ```bash
-$ git clone https://github.com/alecramsay/rdaensemble
+$ git clone https://github.com/rdatools/rdaensemble
 $ cd rdaensemble
 ```
 
