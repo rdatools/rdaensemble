@@ -143,7 +143,8 @@ def parse_args():
         "shapes": "../rdabase/data/NC/NC_2020_shapes_simplified.json",
         "graph": "../rdabase/data/NC/NC_2020_graph.json",
         # "scores": "temp/NC20C_scores.csv",
-        "scores": "temp/NC20U_plans_alt.json",
+        "scores": "temp/NC20C_plans_alt.json",
+        # "scores": "temp/NC20U_plans.json",
     }
     args = require_args(args, args.debug, debug_defaults)
 
