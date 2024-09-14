@@ -92,6 +92,8 @@ def main() -> None:
             elasticity=args.elasticity,
             countyweight=args.countyweight,
             node_repeats=1,
+            n_districts=N,
+            random_start=args.random_start,
         )
 
         plans: List[Dict[str, str | float | Dict[str, int | str]]] = run_unbiased_chain(
@@ -173,6 +175,12 @@ def parse_args():
         type=int,
         default=1,
         help="How many different choices of root to use before drawing a new spanning tree.",
+    )
+    parser.add_argument(
+        "--randomstart",
+        dest="random_start",
+        action="store_true",
+        help="Start with random assignments",
     )
 
     parser.add_argument(

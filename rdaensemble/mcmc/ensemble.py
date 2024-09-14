@@ -30,6 +30,9 @@ def setup_unbiased_markov_chain(
     elasticity: float,
     countyweight: float,
     node_repeats: int,
+    *,
+    n_districts: int,
+    random_start: bool = False,
 ) -> Any:
     """Set up an unbiased (not optimized) Markov chain."""
 
@@ -42,8 +45,18 @@ def setup_unbiased_markov_chain(
     }
     my_updaters.update(election_updaters)  # type: ignore
 
-    initial_partition = GeographicPartition(
-        recom_graph, assignment="INITIAL", updaters=my_updaters
+    initial_partition = (
+        GeographicPartition.from_random_assignment(
+            graph=recom_graph,
+            n_parts=n_districts,
+            epsilon=0.01,
+            pop_col="TOTAL_POP",
+            updaters=my_updaters,
+        )
+        if random_start
+        else GeographicPartition(
+            recom_graph, assignment="INITIAL", updaters=my_updaters
+        )
     )
 
     ideal_population = sum(initial_partition["population"].values()) / len(
