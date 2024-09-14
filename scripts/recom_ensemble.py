@@ -101,6 +101,7 @@ def main() -> None:
             # args.size,
             back_map,
             f,
+            random_start=args.random_start,
         )
 
     ensemble["plans"] = plans

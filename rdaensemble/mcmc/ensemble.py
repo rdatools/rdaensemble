@@ -103,10 +103,13 @@ def run_unbiased_chain(
     chain,
     back_map: Dict[int, str],
     logfile,
+    *,
+    random_start: bool = False,
 ) -> List[Dict[str, str | float | Dict[str, int | str]]]:
     """Run a Markov chain."""
 
     plans: List[Dict[str, str | float | Dict[str, int | str]]] = list()
+    district_offset: int = 1 if random_start else 0
 
     for step, partition in enumerate(chain):
         print(f"... {step:04d} ...")
@@ -116,7 +119,7 @@ def run_unbiased_chain(
 
         # Convert the ReCom partition to a plan.
         plan: Dict[str, int | str] = {
-            back_map[node]: part for node, part in assignments.items()
+            back_map[node]: part + district_offset for node, part in assignments.items()
         }
         plan_name: str = f"{step:04d}"
         plans.append({"name": plan_name, "plan": plan})  # No weights.
