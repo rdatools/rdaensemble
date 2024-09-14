@@ -6,9 +6,9 @@ WRITE A PLAN IN AN ENSEMBLE TO A CSV
 For example:
 
 $ scripts/pull_ensemble_plan.py \
---plans ../../iCloud/fileout/ensembles/NC20C_plans.json \
---id 000_518
---output ../../iCloud/fileout/ensembles/NC20C_plan_000_518.csv \
+--plans ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_plans.json \
+--id 0000 \
+--output temp/NC20C_plan_000.csv \
 --no-debug
 
 For documentation, type:
@@ -20,6 +20,10 @@ $ scripts/pull_ensemble_plan.py -h
 import argparse
 from argparse import ArgumentParser, Namespace
 from typing import Any, List, Dict
+
+import warnings
+
+warnings.warn = lambda *args, **kwargs: None
 
 from rdabase import (
     require_args,
