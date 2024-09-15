@@ -65,7 +65,7 @@ scripts/recom_ensemble.py \
 echo "Scoring the unbiased ensemble ..."
 scripts/score_ensemble.py \
 --state $STATE \
---plantype upper \
+--plantype $PLAN_TYPE \
 --plans ../../iCloud/fileout/tradeoffs/$STATE/$ENSEMBLES_DIR/${PREFIX}_plans.json \
 --data ../rdabase/data/$STATE/${STATE}_2020_data.csv \
 --shapes ../rdabase/data/$STATE/${STATE}_2020_shapes_simplified.json \
