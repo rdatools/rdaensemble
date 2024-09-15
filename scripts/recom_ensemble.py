@@ -10,9 +10,9 @@ $ scripts/recom_ensemble.py \
 --size 1000 \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
---root ../tradeoffs/root_maps/NC20C_root_map.csv \
 --plans ../../iCloud/fileout/ensembles/NC20C_plans.json \
 --log ../../iCloud/fileout/ensembles/NC20C_log.txt \
+--randomstart \
 --no-debug
 
 $ scripts/recom_ensemble.py
@@ -57,12 +57,18 @@ def main() -> None:
     """Generate an ensemble of maps using MCMC/ReCom."""
 
     args: argparse.Namespace = parse_args()
+    assert args.random_start or args.root, "Must specify either --randomstart or --root"
+    assert not (
+        args.random_start and args.root
+    ), "Cannot specify both --randomstart and --root"
+
+    root_plan: List[Dict[str, str | int]] = []
+    if args.root:
+        root_plan = read_csv(args.root, [str, int])
 
     data: Dict[str, Dict[str, int | str]] = load_data(args.data)
     graph: Dict[str, List[str]] = load_graph(args.graph)
     # metadata: Dict[str, Any] = load_metadata(args.state, args.data)
-
-    root_plan: List[Dict[str, str | int]] = read_csv(args.root, [str, int])
 
     N: int = DISTRICTS_BY_STATE[args.state][args.plantype]
     # N: int = int(metadata["D"]) <= Generalized for state houses
@@ -81,7 +87,13 @@ def main() -> None:
     with open(args.log, "w") as f:
         random.seed(seed)
 
-        recom_graph, elections, back_map = prep_data(root_plan, data, graph)
+        recom_graph, elections, back_map = None, None, None
+        if args.random_start:
+            recom_graph, elections, back_map = prep_data(data, graph)
+        else:
+            recom_graph, elections, back_map = prep_data(
+                data, graph, initial_plan=root_plan
+            )
 
         chain = setup_unbiased_markov_chain(
             recom,
@@ -202,9 +214,10 @@ def parse_args():
         "plantype": "congress",
         "data": "../rdabase/data/NC/NC_2020_data.csv",
         "graph": "../rdabase/data/NC/NC_2020_graph.json",
-        "root": "../tradeoffs/root_maps/NC20C_root_map.csv",
+        # "root": "../tradeoffs/root_maps/NC20C_root_map.csv",
         "plans": "temp/NC20C_plans.json",
         "log": "temp/NC20C_log.txt",
+        "random_start": True,
         "size": 10,
     }
     args = require_args(args, args.debug, debug_defaults)

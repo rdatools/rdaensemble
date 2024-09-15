@@ -57,9 +57,10 @@ scripts/recom_ensemble.py \
 --roughlyequal $ROUGHLY_EQUAL \
 --data ../rdabase/data/$STATE/${STATE}_2020_data.csv \
 --graph ../rdabase/data/$STATE/${STATE}_2020_graph.json \
---root ../tradeoffs/root_maps/${PREFIX}_root_map.csv \
+# --root ../tradeoffs/root_maps/${PREFIX}_root_map.csv \
 --plans ../../iCloud/fileout/tradeoffs/$STATE/$ENSEMBLES_DIR/${PREFIX}_plans.json \
 --log ../../iCloud/fileout/tradeoffs/$STATE/$ENSEMBLES_DIR/${PREFIX}_log.txt \
+--randomstart \
 --no-debug
 
 echo "Scoring the unbiased ensemble ..."

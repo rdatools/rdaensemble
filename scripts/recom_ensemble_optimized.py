@@ -199,7 +199,9 @@ def main() -> None:
         plan_path: str = starting_dir + starting_plan_path
 
         starting_plan: List[Dict[str, str | int]] = read_csv(plan_path, [str, int])
-        recom_graph, elections, back_map = prep_data(starting_plan, data, graph, shapes)
+        recom_graph, elections, back_map = prep_data(
+            data, graph, shapes, initial_plan=starting_plan
+        )
 
         chain = setup_optimized_markov_chain(
             recom,

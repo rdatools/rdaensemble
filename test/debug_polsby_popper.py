@@ -65,7 +65,9 @@ def main() -> None:
 
     random.seed(seed)
 
-    recom_graph, elections, back_map = prep_data(plan_rows, data, graph, shapes)
+    recom_graph, elections, back_map = prep_data(
+        data, graph, shapes, initial_plan=plan_rows
+    )
     node_index: Dict[str, int] = {v: k for k, v in back_map.items()}
 
     ## Compare the arc/edge lengths in the recom_graph to the original graph ##

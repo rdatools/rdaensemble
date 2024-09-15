@@ -15,22 +15,26 @@ from rdabase import Graph as RDAGraph, mkAdjacencies, GeoID
 
 
 def prep_data(
-    initialplan: List[Dict[str, str | int]],
     data: Dict[str, Dict[str, int | str]],
     graph: Dict[str, List[str]],
     shapes: Optional[Dict[str, Any]] = None,
+    *,
+    initial_plan: List[Dict[str, str | int]] = [],
 ) -> Tuple[Graph, List[Election], Dict[int, str]]:
     """Prepare the data for ReCom."""
 
-    # Canonicalize field names
-    assert "GEOID" in initialplan[0] or "GEOID20" in initialplan[0]
-    assert "DISTRICT" in initialplan[0] or "District" in initialplan[0]
-    geoid_field: str = "GEOID20" if "GEOID20" in initialplan[0] else "GEOID"
-    district_field: str = "District" if "District" in initialplan[0] else "DISTRICT"
+    initial_assignments: Dict[str, int | str] = {}
+    if initial_plan:
+        assert "GEOID" in initial_plan[0] or "GEOID20" in initial_plan[0]
+        assert "DISTRICT" in initial_plan[0] or "District" in initial_plan[0]
+        geoid_field: str = "GEOID20" if "GEOID20" in initial_plan[0] else "GEOID"
+        district_field: str = (
+            "District" if "District" in initial_plan[0] else "DISTRICT"
+        )
 
-    initial_assignments: Dict[str, int | str] = {
-        str(a[geoid_field]): a[district_field] for a in initialplan
-    }
+        initial_assignments: Dict[str, int | str] = {
+            str(a[geoid_field]): a[district_field] for a in initial_plan
+        }
 
     assert len(data) == len(graph) - 1  # -1 for OUT_OF_STATE
     if shapes:
@@ -47,8 +51,10 @@ def prep_data(
             + int(data[geoid]["HISPANIC_VAP"]),  # A proxy
             "REP_VOTES": data[geoid]["REP_VOTES"],
             "DEM_VOTES": data[geoid]["DEM_VOTES"],
-            "INITIAL": initial_assignments[geoid],
+            # "INITIAL": initial_assignments[geoid],
         }
+        if initial_assignments:
+            attrs["INITIAL"] = initial_assignments[geoid]
 
         if shapes:  # is not None:
             simplified_poly = shapes[geoid]
