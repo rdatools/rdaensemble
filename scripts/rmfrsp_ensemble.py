@@ -137,7 +137,7 @@ def parse_args():
     parser.add_argument(
         "--roughlyequal",
         type=float,
-        default=0.02,
+        default=0.01,
         help="'Roughly equal' population threshold",
     )
 

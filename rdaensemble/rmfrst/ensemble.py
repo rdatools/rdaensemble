@@ -24,7 +24,7 @@ def gen_rmfrst_ensemble(
     N: int,  # Number of districts
     logfile,
     *,
-    roughly_equal: float = 0.02,
+    roughly_equal: float = 0.01,
     verbose: bool = False,
 ) -> List[Dict[str, str | float | Dict[str, int | str]]]:
     """Generate an ensemble of random maps from random spanning trees."""
@@ -54,7 +54,7 @@ def gen_rmfrst_ensemble(
                 N,
                 seed,
                 roughly_equal=roughly_equal
-                / 2,  # Different definitions of 'roughly equal'
+                / 2,  # Note: a different definitions of 'roughly equal'
             )  # Generate a random contiguous & 'roughly' equal population partitioning of the state.
 
             popdev: float = calc_population_deviation(

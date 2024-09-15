@@ -55,7 +55,7 @@ def gen_rmfrsp_ensemble(
     N: int,  # Number of districts
     logfile,
     *,
-    roughly_equal: float = 0.02,
+    roughly_equal: float = 0.01,
     verbose: bool = False,
 ) -> List[Dict[str, str | float | Dict[str, int | str]]]:
     """Generate an ensemble of random maps from random starting points."""
