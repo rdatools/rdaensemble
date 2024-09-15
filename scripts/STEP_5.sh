@@ -3,7 +3,6 @@
 # Default values
 STATE=""
 PLAN_TYPE=""
-ROUGHLY_EQUAL=""
 
 # Function to print usage
 usage() {

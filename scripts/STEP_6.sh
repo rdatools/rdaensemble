@@ -3,7 +3,6 @@
 # Default values
 STATE=""
 PLAN_TYPE=""
-ROUGHLY_EQUAL=""
 
 # Function to print usage
 usage() {
@@ -41,10 +40,8 @@ SUFFIX=`echo "${LETTER}" | tr '[a-z]' '[A-Z]'`
 PREFIX="${STATE}20${SUFFIX}"
 
 ROUGHLY_EQUAL=0.01
-ROUGHLY_EQUAL_HALF=0.01
 if [ "$PLAN_TYPE" = "upper" ] || [ "$PLAN_TYPE" = "lower" ]; then
-    ROUGHLY_EQUAL=$ROUGHLY_EQUAL
-    ROUGHLY_EQUAL_HALF=0.05
+    ROUGHLY_EQUAL=0.10
 fi
 
 # From 'rdaensemble'
