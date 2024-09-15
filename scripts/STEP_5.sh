@@ -41,10 +41,8 @@ SUFFIX=`echo "${LETTER}" | tr '[a-z]' '[A-Z]'`
 PREFIX="${STATE}20${SUFFIX}"
 
 ROUGHLY_EQUAL=0.01
-ROUGHLY_EQUAL_HALF=0.01
 if [ "$PLAN_TYPE" = "upper" ] || [ "$PLAN_TYPE" = "lower" ]; then
     ROUGHLY_EQUAL=0.10
-    ROUGHLY_EQUAL_HALF=0.05
 fi
 
 # From 'rdaensemble'
