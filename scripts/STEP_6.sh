@@ -33,6 +33,7 @@ fi
 ENSEMBLES_DIR="ensembles-${PLAN_TYPE}"
 if [ "$PLAN_TYPE" = "congress" ]; then
     ENSEMBLES_DIR="ensembles"
+    PLAN_TYPE=""
 fi
 
 LETTER="${PLAN_TYPE:0:1}"
@@ -130,7 +131,7 @@ scripts/score_ensemble.py \
 --no-debug
 
 echo "Combining the scores ..."
-scripts/COMBINE_SCORES.sh $STATE U -${PLAN_TYPE}
+scripts/COMBINE_SCORES.sh $STATE $SUFFIX $PLAN_TYPE
 
 echo "Finding the notable maps in the augmented ensemble ..."
 scripts/id_notable_maps.py \
