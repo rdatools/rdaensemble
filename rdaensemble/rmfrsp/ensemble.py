@@ -54,6 +54,7 @@ def gen_rmfrsp_ensemble(
     graph: Dict[str, List[str]],
     N: int,  # Number of districts
     logfile,
+    epsilon: float = 0.01,
     *,
     roughly_equal: float = 0.01,
     verbose: bool = False,
@@ -72,8 +73,11 @@ def gen_rmfrsp_ensemble(
     index_points_file(points, dccvt_points, verbose=verbose)
     index_pairs_file(points, pairs, dccvt_adjacencies, verbose=verbose)
 
-    pop_by_geoid: Dict[str, int] = populations(data)
-    total_pop: int = total_population(pop_by_geoid)
+    ipop_by_geoid: Dict[str, int] = populations(data)
+    fpop_by_geoid: Dict[str, float] = {
+        k: float(max(epsilon, v)) for k, v in ipop_by_geoid.items()
+    }
+    total_pop: int = total_population(ipop_by_geoid)
 
     conforming_count: int = 0
 
@@ -120,7 +124,7 @@ def gen_rmfrsp_ensemble(
             postprocess(dccvt_complete, temp_points, dccvt_output, verbose=verbose)
 
             popdev: float = calc_population_deviation_file(
-                dccvt_output, pop_by_geoid, total_pop, N
+                dccvt_output, ipop_by_geoid, total_pop, N
             )
 
             if popdev > roughly_equal:
