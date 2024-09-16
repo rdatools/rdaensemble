@@ -50,6 +50,7 @@ fi
 echo "Generating an unbiased ensemble ..."
 scripts/recom_ensemble.py \
 --state $STATE \
+--plantype $PLAN_TYPE \
 --size 10000 \
 --roughlyequal $ROUGHLY_EQUAL \
 --data ../rdabase/data/$STATE/${STATE}_2020_data.csv \

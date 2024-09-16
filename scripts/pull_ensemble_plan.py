@@ -8,7 +8,7 @@ For example:
 $ scripts/pull_ensemble_plan.py \
 --plans ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_plans.json \
 --id 0000 \
---output temp/NC20C_plan_000.csv \
+--output temp/NC20C_plan_0000.csv \
 --no-debug
 
 For documentation, type:
