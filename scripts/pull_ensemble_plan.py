@@ -43,15 +43,7 @@ def main() -> None:
     if "packed" in ensemble and ensemble["packed"] == True:
         raise Exception(f"Ensemble ({args.plans}) is packed. Unpack it first.")
 
-    # TYPE HINT
-    plan_item: Dict[str, str | float | Dict[str, int | str]] = plan_from_ensemble(
-        args.id, ensemble
-    )
-    plan_dict: Dict[str, int | str] = plan_item["plan"]  # type: ignore
-    assignments: List[Assignment] = make_plan(plan_dict)
-    plan: List[Dict[str, str | int]] = [
-        {"GEOID": a.geoid, "DISTRICT": a.district} for a in assignments
-    ]
+    plan: List[Dict[str, str | int]] = plan_from_ensemble(args.id, ensemble)
 
     write_csv(args.output, plan, ["GEOID", "DISTRICT"])
 
