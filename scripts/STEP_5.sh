@@ -53,7 +53,7 @@ scripts/recom_ensemble.py \
 --plantype $PLAN_TYPE \
 --size 10000 \
 --roughlyequal $ROUGHLY_EQUAL \
---root random_maps/{$PREFIX}_random_plan.csv \
+--root random_maps/${PREFIX}_random_plan.csv \
 --data ../rdabase/data/$STATE/${STATE}_2020_data.csv \
 --graph ../rdabase/data/$STATE/${STATE}_2020_graph.json \
 --plans ../../iCloud/fileout/tradeoffs/$STATE/$ENSEMBLES_DIR/${PREFIX}_plans.json \
