@@ -45,20 +45,20 @@ if [ "$PLAN_TYPE" = "upper" ] || [ "$PLAN_TYPE" = "lower" ]; then
 fi
 
 # From 'rdaensemble'
-# Generate an unbiased ensemble, score it, and find the pairwise ratings frontiers.
+# Score an ensemble that has already been generated.
 
-echo "Generating an unbiased ensemble ..."
-scripts/recom_ensemble.py \
---state $STATE \
---plantype $PLAN_TYPE \
---size 10000 \
---roughlyequal $ROUGHLY_EQUAL \
---root random_maps/${PREFIX}_random_plan.csv \
---data ../rdabase/data/$STATE/${STATE}_2020_data.csv \
---graph ../rdabase/data/$STATE/${STATE}_2020_graph.json \
---plans ../../iCloud/fileout/tradeoffs/$STATE/$ENSEMBLES_DIR/${PREFIX}_plans.json \
---log ../../iCloud/fileout/tradeoffs/$STATE/$ENSEMBLES_DIR/${PREFIX}_log.txt \
---no-debug
+# echo "Generating an unbiased ensemble ..."
+# scripts/recom_ensemble.py \
+# --state $STATE \
+# --plantype $PLAN_TYPE \
+# --size 10000 \
+# --roughlyequal $ROUGHLY_EQUAL \
+# --root random_maps/${PREFIX}_random_plan.csv \
+# --data ../rdabase/data/$STATE/${STATE}_2020_data.csv \
+# --graph ../rdabase/data/$STATE/${STATE}_2020_graph.json \
+# --plans ../../iCloud/fileout/tradeoffs/$STATE/$ENSEMBLES_DIR/${PREFIX}_plans.json \
+# --log ../../iCloud/fileout/tradeoffs/$STATE/$ENSEMBLES_DIR/${PREFIX}_log.txt \
+# --no-debug
 
 echo "Scoring the unbiased ensemble ..."
 scripts/score_ensemble.py \
