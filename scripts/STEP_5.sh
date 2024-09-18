@@ -53,11 +53,11 @@ scripts/recom_ensemble.py \
 --plantype $PLAN_TYPE \
 --size 10000 \
 --roughlyequal $ROUGHLY_EQUAL \
+--root random_maps/{$PREFIX}_random_plan.csv \
 --data ../rdabase/data/$STATE/${STATE}_2020_data.csv \
 --graph ../rdabase/data/$STATE/${STATE}_2020_graph.json \
 --plans ../../iCloud/fileout/tradeoffs/$STATE/$ENSEMBLES_DIR/${PREFIX}_plans.json \
 --log ../../iCloud/fileout/tradeoffs/$STATE/$ENSEMBLES_DIR/${PREFIX}_log.txt \
---randomstart \
 --no-debug
 
 echo "Scoring the unbiased ensemble ..."
@@ -68,7 +68,7 @@ scripts/score_ensemble.py \
 --data ../rdabase/data/$STATE/${STATE}_2020_data.csv \
 --shapes ../rdabase/data/$STATE/${STATE}_2020_shapes_simplified.json \
 --graph ../rdabase/data/$STATE/${STATE}_2020_graph.json \
---scores ../../iCloud/fileout/tradeoffs/$STATE/$ENSEMBLES_DIR/${PREFIX}_scores.csv \
+--scores ../tradeoffs-dropbox/scores/${PREFIX}_scores.csv \
 --no-debug
 
 ### END ###
