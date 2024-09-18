@@ -30,6 +30,7 @@ def score_ensemble(
     graph: Dict[str, List[str]],
     metadata: Dict[str, Any],
     alt_minority: bool = False,
+    epsilon: float = 0.01,
 ) -> List[Dict]:
     """Score an ensemble of maps."""
 
@@ -38,7 +39,10 @@ def score_ensemble(
     indexed_geoids: Dict[str, int] = index_geoids(points)
     indexed_points: List[IndexedPoint] = index_points(points)
 
-    pop_by_geoid: Dict[str, int] = populations(data)
+    ipop_by_geoid: Dict[str, int] = populations(data)
+    fpop_by_geoid: Dict[str, float] = {
+        k: float(max(epsilon, v)) for k, v in ipop_by_geoid.items()
+    }
 
     scores: List[Dict] = list()
 
@@ -50,7 +54,7 @@ def score_ensemble(
             plan_dict: Dict[str, int | str] = p["plan"]  # type: ignore
             assignments: List[Assignment] = make_plan(plan_dict)
             indexed_assignments: List[IndexedWeightedAssignment] = index_assignments(
-                assignments, indexed_geoids, pop_by_geoid
+                assignments, indexed_geoids, fpop_by_geoid
             )
 
             # Make sure districts are indexed [1, 2, 3, ...]

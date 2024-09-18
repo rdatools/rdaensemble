@@ -13,9 +13,6 @@ from rdabase import (
     Point,
     Assignment,
     load_plan,
-    IndexedWeightedAssignment,
-    index_geoids,
-    index_assignments,
 )
 from rdadccvt import (
     # file_list,
