@@ -112,8 +112,8 @@ def run_unbiased_chain(
     district_offset: int = 1 if random_start else 0
 
     for step, partition in enumerate(chain):
-        print(f"... {step:04d} ...")
-        print(f"... {step:04d} ...", file=logfile)
+        print(f"Partition {step:04d} ...")
+        print(f"Partition {step:04d} ...", file=logfile)
         assert partition is not None
         assignments: Assignment = partition.assignment
 

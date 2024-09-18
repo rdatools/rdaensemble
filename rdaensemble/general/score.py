@@ -44,7 +44,7 @@ def score_ensemble(
 
     for i, p in enumerate(plans):
         plan_name: str = str(p["name"])
-        print(f"... {i}: {plan_name} ...")
+        print(f"Scoring {i}: {plan_name} ...")
 
         try:
             plan_dict: Dict[str, int | str] = p["plan"]  # type: ignore
