@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 
 """
-'PUSH' A POINT ON THE UNBIASED FRONTIER IN BOTH X & Y DIRECTIONS.
-
-For example, see the workflows directory.
+'PUSH' A POINT ON THE UNBIASED FRONTIER IN BOTH THE X & Y DIRECTIONS.
 
 For documentation, type:
 
@@ -38,19 +36,26 @@ def main() -> None:
     data: Dict[str, Any] = read_json(args.frontier)
     frontiers: Dict[str, Any] = data["frontiers"]
 
-    y_metric: str = args.ymetric
-    x_metric: str = args.xmetric
-    assert y_metric in ratings_dimensions and x_metric in ratings_dimensions
+    y_dim: str = args.ydim
+    x_dim: str = args.xdim
+    assert y_dim in ratings_dimensions and x_dim in ratings_dimensions
 
     index: int = args.index
 
     #
 
-    pair: str = f"{y_metric}_{x_metric}"
+    pair: str = f"{y_dim}_{x_dim}"
     frontier: List[Dict[str, Any]] = frontiers[pair]
     plan_name: str = frontier[index]["map"]
 
-    plan: List[Dict[str, str | int]] = plan_from_ensemble(plan_name, ensemble)
+    starting_plan: List[Dict[str, str | int]] = plan_from_ensemble(plan_name, ensemble)
+
+    #
+
+    print(f"Pushing {plan_name} on the unbiased frontier in the {y_dim} dimension ...")
+    print(f"Pushing {plan_name} on the unbiased frontier in the {x_dim} dimension ...")
+
+    print(f"Writing the pushed plans to {args.output} ...")
 
     pass  # TODO
 
@@ -71,12 +76,12 @@ def parse_args():
         help="Unbiased frontier (JSON)",
     )
     parser.add_argument(
-        "--ymetric",
+        "--ydim",
         type=str,
         help="The y-axis dimension of the trade-off frontier (e.g., 'proportionality')",
     )
     parser.add_argument(
-        "--xmetric",
+        "--xdim",
         type=str,
         help="The x-axis dimension of the trade-off frontier ' (e.g., 'compactness')",
     )
@@ -108,10 +113,10 @@ def parse_args():
     debug_defaults: Dict[str, Any] = {
         "plans": "../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_plans.json",
         "frontier": "../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_frontiers.json",
-        "ymetric": "proportionality",
-        "xmetric": "competitiveness",
+        "ydim": "proportionality",
+        "xdim": "competitiveness",
         "index": 5,
-        "output": "intermediate/NC20C_plans_proportionality_competitiveness_0.json",
+        "output": "intermediate/NC20C_plans_proportionality_competitiveness_5.json",
         "verbose": True,
     }
     args = require_args(args, args.debug, debug_defaults)
