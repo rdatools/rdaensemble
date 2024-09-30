@@ -1,29 +1,11 @@
 #!/usr/bin/env python3
 
 """
-MAKE A 'RANDOM' MAP FOR EACH STATE & PLAN TYPE COMBINATION
+MAKE A SCRIPT TO GENERATE A 'RANDOM' (SEED) MAP FOR EACH STATE & PLAN TYPE COMBINATION
 
 To run:
 
 $ scripts/make_random_maps.py
-
-scripts/rmfrst_ensemble.py \
-    --data ../rdabase/data/NC/NC_2020_data.csv \
-    --shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
-    --graph ../rdabase/data/NC/NC_2020_graph.json \
-    --log temp/NC20C_100_log.txt \
-    --no-debug
-
-scripts/random_map.py \
---state NC \
---plantype lower \
---roughlyequal 0.10 \
---data ../rdabase/data/NC/NC_2020_data.csv \
---shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
---graph ../rdabase/data/NC/NC_2020_graph.json \
---output temp/NC20L_random_plan.csv \
---log temp/NC20L_random_log.txt \
---no-debug
 
 """
 
@@ -34,6 +16,32 @@ import os
 from rdabase import DISTRICTS_BY_STATE
 
 states_with_data: List[str] = [
+    "AL",
+    "AZ",
+    "CA",
+    "CO",
+    "FL",
+    "GA",
+    "IL",
+    "IN",
+    "MD",
+    "MA",
+    "MI",
+    "MN",
+    "MO",
+    "NJ",
+    "NY",
+    "NC",
+    "OH",
+    "PA",
+    "SC",
+    "TN",
+    "TX",
+    "VA",
+    "WA",
+    "WI",
+]
+exclude: List[str] = [
     "AL",
     "AZ",
     "FL",
@@ -55,8 +63,14 @@ states_with_data: List[str] = [
 
 mmd: Dict[str, List[str]] = {"MD": ["lower"]}
 
+print("#!/bin/bash")
+
 for xx, districts_by_type in DISTRICTS_BY_STATE.items():
-    comment: str = "" if xx in states_with_data else "# "
+    if xx not in states_with_data:
+        continue
+
+    comment: str = "# " if xx in exclude else ""
+
     for plan_type, ndistricts in districts_by_type.items():
         if ndistricts is None or ndistricts == 1:
             continue
@@ -67,7 +81,7 @@ for xx, districts_by_type in DISTRICTS_BY_STATE.items():
         roughly_equal: float = 0.01 if plan_type == "congress" else 0.10
         prefix: str = f"{xx}20{plan_type[0].upper()}"
 
-        command: str = f"echo 'Running {xx} {plan_type} {ndistricts} ...'"
+        command: str = f"{comment}echo 'Running {xx} {plan_type} {ndistricts} ...'"
         print(command)
 
         command: str = (
