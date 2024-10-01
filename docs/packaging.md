@@ -19,4 +19,4 @@ $ python3 -m twine upload --repository pypi dist/rdaensemble-x.y.z*.*
 
 where x.y.z is the version number. For example:
 
-$ python3 -m twine upload --repository pypi dist/rdaensemble-1.6.0*.*
+$ python3 -m twine upload --repository pypi dist/rdaensemble-1.7.0*.*
