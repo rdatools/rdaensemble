@@ -68,7 +68,7 @@ scripts/score_ensemble.py \
 --data ../rdabase/data/$STATE/${STATE}_2020_data.csv \
 --shapes ../rdabase/data/$STATE/${STATE}_2020_shapes_simplified.json \
 --graph ../rdabase/data/$STATE/${STATE}_2020_graph.json \
---scores ../tradeoffs-dropbox/scores/${PREFIX}_scores.csv \
+--scores ../../iCloud/fileout/tradeoffs/$STATE/$ENSEMBLES_DIR/${PREFIX}_scores.csv \
 --no-debug
 
 ### END ###
