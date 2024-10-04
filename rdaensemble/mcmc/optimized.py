@@ -35,12 +35,19 @@ def setup_optimized_markov_chain(
 ) -> Any:
     """Set up the Markov chain."""
 
+    # TODO - HERE
     my_updaters: dict[str, Any] = {
         "cut_edges": updaters.cut_edges,
         "population": updaters.Tally("TOTAL_POP", alias="population"),
         "polsby-popper": polsby_popper,
         "splits_by_county": updaters.county_splits("splits_by_county", "COUNTY"),
         "TOTAL_VAP": updaters.Tally("TOTAL_VAP"),
+        "WHITE_VAP": updaters.Tally("WHITE_VAP"),
+        "HISPANIC_VAP": updaters.Tally("HISPANIC_VAP"),
+        "BLACK_VAP": updaters.Tally("BLACK_VAP"),
+        "NATIVE_VAP": updaters.Tally("NATIVE_VAP"),
+        "ASIAN_VAP": updaters.Tally("ASIAN_VAP"),
+        "PACIFIC_VAP": updaters.Tally("PACIFIC_VAP"),
         "MINORITY_VAP": updaters.Tally("MINORITY_VAP"),
     }
     election_updaters: dict[str, Election] = {

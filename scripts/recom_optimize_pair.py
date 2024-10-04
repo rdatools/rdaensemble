@@ -106,8 +106,6 @@ def splitting_proxy(partition):
         if info.split != CountySplit.NOT_SPLIT:
             nsplits += 1
 
-    n_counties: int = len(splits_by_county)
-
     return nsplits
 
 
@@ -326,8 +324,8 @@ def parse_args():
         "plans": "temp/NC20C_sa_optimized_plans.json",
         "size": 100,
         "method": "short_bursts",
-        # "optimize": "proportionality",
-        "optimize": "splitting",
+        "optimize": "proportionality",
+        # "optimize": "minority",
     }
     args = require_args(args, args.debug, debug_defaults)
 

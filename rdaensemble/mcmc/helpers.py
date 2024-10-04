@@ -47,6 +47,12 @@ def prep_data(
             "COUNTY": GeoID(geoid).county[2:],
             "TOTAL_POP": data[geoid]["TOTAL_POP"],
             "TOTAL_VAP": data[geoid]["TOTAL_VAP"],
+            "WHITE_VAP": data[geoid]["WHITE_VAP"],
+            "HISPANIC_VAP": data[geoid]["HISPANIC_VAP"],
+            "BLACK_VAP": data[geoid]["BLACK_VAP"],
+            "NATIVE_VAP": data[geoid]["NATIVE_VAP"],
+            "ASIAN_VAP": data[geoid]["ASIAN_VAP"],
+            "PACIFIC_VAP": data[geoid]["PACIFIC_VAP"],
             "MINORITY_VAP": data[geoid]["MINORITY_VAP"],
             # "MINORITY_VAP": int(data[geoid]["BLACK_VAP"])
             # + int(data[geoid]["HISPANIC_VAP"]),  # Not sure why I used this proxy originally ...
