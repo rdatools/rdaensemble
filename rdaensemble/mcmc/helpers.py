@@ -47,8 +47,9 @@ def prep_data(
             "COUNTY": GeoID(geoid).county[2:],
             "TOTAL_POP": data[geoid]["TOTAL_POP"],
             "TOTAL_VAP": data[geoid]["TOTAL_VAP"],
-            "MINORITY_VAP": int(data[geoid]["BLACK_VAP"])
-            + int(data[geoid]["HISPANIC_VAP"]),  # A proxy
+            "MINORITY_VAP": data[geoid]["MINORITY_VAP"],
+            # "MINORITY_VAP": int(data[geoid]["BLACK_VAP"])
+            # + int(data[geoid]["HISPANIC_VAP"]),  # Not sure why I used this proxy originally ...
             "REP_VOTES": data[geoid]["REP_VOTES"],
             "DEM_VOTES": data[geoid]["DEM_VOTES"],
             # "INITIAL": initial_assignments[geoid],

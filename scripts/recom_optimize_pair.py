@@ -239,8 +239,10 @@ def main() -> None:
     print(f"Collected {len(plans)} plans optimized for {optimize_for}.")
     print()
 
-    if not args.debug:
-        write_json(args.plans, ensemble)
+    # if not args.debug:
+    #     write_json(args.plans, ensemble)
+
+    pass  # For debugging
 
 
 def parse_args():
