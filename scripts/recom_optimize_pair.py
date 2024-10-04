@@ -6,8 +6,9 @@ OPTIMIZING for ONE RATINGS DIMENSION
 USING ONE OF THREE OPTIMIZATION METHODS.
 
 For example:
+TODO - Update this example
 
-$ scripts/recom_ensemble_optimized.py \
+$ scripts/recom_optimize_pair.py \
 --state NC \
 --size 10000 \
 --data ../rdabase/data/NC/NC_2020_data.csv \
@@ -16,11 +17,11 @@ $ scripts/recom_ensemble_optimized.py \
 --plans ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_plans_compactness_optimized.json \
 --no-debug
 
-$ scripts/recom_ensemble_optimized.py
+$ scripts/recom_optimize_pair.py
 
 For documentation, type:
 
-$ scripts/recom_ensemble_optimized.py -h
+$ scripts/recom_optimize_pair.py -h
 
 """
 
