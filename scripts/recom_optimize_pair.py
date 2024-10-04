@@ -99,12 +99,14 @@ def compactness_proxy(partition):
 def splitting_proxy(partition):
     """Count the number of counties split by a partition."""
 
-    counties = partition["split_counties"]
+    splits_by_county = partition["splits_by_county"]
 
     nsplits: int = 0
-    for _, info in counties.items():
+    for _, info in splits_by_county.items():
         if info.split != CountySplit.NOT_SPLIT:
             nsplits += 1
+
+    n_counties: int = len(splits_by_county)
 
     return nsplits
 
@@ -324,7 +326,8 @@ def parse_args():
         "plans": "temp/NC20C_sa_optimized_plans.json",
         "size": 100,
         "method": "short_bursts",
-        "optimize": "proportionality",
+        # "optimize": "proportionality",
+        "optimize": "splitting",
     }
     args = require_args(args, args.debug, debug_defaults)
 

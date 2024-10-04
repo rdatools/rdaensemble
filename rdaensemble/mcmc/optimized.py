@@ -39,7 +39,7 @@ def setup_optimized_markov_chain(
         "cut_edges": updaters.cut_edges,
         "population": updaters.Tally("TOTAL_POP", alias="population"),
         "polsby-popper": polsby_popper,
-        "split_counties": updaters.county_splits("split_counties", "COUNTY"),
+        "splits_by_county": updaters.county_splits("splits_by_county", "COUNTY"),
         "TOTAL_VAP": updaters.Tally("TOTAL_VAP"),
         "MINORITY_VAP": updaters.Tally("MINORITY_VAP"),
     }

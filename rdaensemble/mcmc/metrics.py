@@ -57,15 +57,17 @@ def compactness_proxy(partition: Dict[str, Any]) -> float:
 
 
 def splitting_proxy(partition: Dict[str, Any]) -> float:
-    """Count the number of counties split by a partition. Return the percentage of counties that are split."""
+    """Count the number of counties split by a partition. Return the percentage of counties split."""
 
-    counties = partition["split_counties"]
+    splits_by_county = partition["splits_by_county"]
 
     nsplits: int = 0
-    for _, info in counties.items():
+    for _, info in splits_by_county.items():
         if info.split != CountySplit.NOT_SPLIT:
             nsplits += 1
-    split_pct: float = nsplits / len(counties)
+
+    n_counties: int = len(splits_by_county)
+    split_pct: float = nsplits / n_counties
 
     return split_pct
 

@@ -98,7 +98,7 @@ def compactness_proxy(partition):
 def splitting_proxy(partition):
     """Count the number of counties split by a partition."""
 
-    counties = partition["split_counties"]
+    counties = partition["splits_by_county"]
 
     nsplits: int = 0
     for _, info in counties.items():
