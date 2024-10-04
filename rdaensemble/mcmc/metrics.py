@@ -2,7 +2,7 @@
 METRICS FOR OPTIMIZING TRADE-OFF FRONTIERS USING RECOM
 """
 
-from typing import Any, List, Dict, Optional, Callable
+from typing import Any, List, Dict, Callable
 
 import warnings
 
@@ -11,6 +11,8 @@ warnings.warn = lambda *args, **kwargs: None
 from gerrychain.updaters import CountySplit
 
 import rdapy as rda
+
+num_cut_edges: Callable = lambda p: len(p["cut_edges"])
 
 
 def proportionality_proxy(partition: Dict[str, Any]) -> float:
@@ -33,6 +35,12 @@ def competitiveness_proxy(partition: Dict[str, Any]) -> float:
     cDf: float = cD / len(partition)
 
     return cDf
+
+
+def minority_dummy(partition):
+    """A dummy function for minority representation."""
+
+    assert False, "Minority optimization is built into Gingelator."
 
 
 def minority_proxy(partition: Dict[str, Any]) -> float:

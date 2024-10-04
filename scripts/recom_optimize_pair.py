@@ -59,54 +59,61 @@ from rdaensemble import (
     simulated_annealing,
     short_bursts,
     tilted_runs,
+    proportionality_proxy,
+    competitiveness_proxy,
+    minority_dummy,
+    minority_proxy,
+    compactness_proxy,
+    splitting_proxy,
 )
 
-num_cut_edges: Callable = lambda p: len(p["cut_edges"])
+# TODO - DELETE
+# num_cut_edges: Callable = lambda p: len(p["cut_edges"])
 
 
-def proportionality_proxy(partition):
-    """Use the EG of a partition as a proxy for disproportionality."""
+# def proportionality_proxy(partition):
+#     """Use the EG of a partition as a proxy for disproportionality."""
 
-    eg: float = abs(partition["election_composite"].efficiency_gap())
+#     eg: float = abs(partition["election_composite"].efficiency_gap())
 
-    return eg
-
-
-def competitiveness_proxy(partition):
-    """Estimate the competitiveness of a partition."""
-
-    Vf_array: List[float] = partition["election_composite"].percents("Democratic")
-
-    cD: float = rda.est_competitive_districts(Vf_array)
-
-    return cD
+#     return eg
 
 
-def minority_dummy(partition):
-    """A dummy function for minority representation."""
+# def competitiveness_proxy(partition):
+#     """Estimate the competitiveness of a partition."""
 
-    assert False, "Minority optimization is built into Gingelator."
+#     Vf_array: List[float] = partition["election_composite"].percents("Democratic")
 
+#     cD: float = rda.est_competitive_districts(Vf_array)
 
-def compactness_proxy(partition):
-    """Estimate the compactness of a partition, using just Polsby-Popper."""
-
-    measurement: float = sum(partition["polsby-popper"].values()) / len(partition)
-
-    return measurement
+#     return cD
 
 
-def splitting_proxy(partition):
-    """Count the number of counties split by a partition."""
+# def minority_dummy(partition):
+#     """A dummy function for minority representation."""
 
-    splits_by_county = partition["splits_by_county"]
+#     assert False, "Minority optimization is built into Gingelator."
 
-    nsplits: int = 0
-    for _, info in splits_by_county.items():
-        if info.split != CountySplit.NOT_SPLIT:
-            nsplits += 1
 
-    return nsplits
+# def compactness_proxy(partition):
+#     """Estimate the compactness of a partition, using just Polsby-Popper."""
+
+#     measurement: float = sum(partition["polsby-popper"].values()) / len(partition)
+
+#     return measurement
+
+
+# def splitting_proxy(partition):
+#     """Count the number of counties split by a partition."""
+
+#     splits_by_county = partition["splits_by_county"]
+
+#     nsplits: int = 0
+#     for _, info in splits_by_county.items():
+#         if info.split != CountySplit.NOT_SPLIT:
+#             nsplits += 1
+
+#     return nsplits
 
 
 def main() -> None:
