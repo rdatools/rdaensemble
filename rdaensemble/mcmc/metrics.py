@@ -15,6 +15,8 @@ from gerrychain.updaters import CountySplit
 
 import rdapy as rda
 
+from rdabase import census_fields
+
 from .optimized import (
     simulated_annealing,
     short_bursts,
@@ -137,33 +139,41 @@ def minority_dummy(partition):
 def make_minority_proxy(statewide_demos: Dict[str, float]) -> Callable[..., float]:
 
     def minority_proxy(partition: Dict[str, Any]) -> float:
-        """Estimate the opportunity for minority representation.
+        """Estimate the opportunity for minority representation."""
 
-        "TOTAL_VAP": data[geoid]["TOTAL_VAP"],
-        "MINORITY_VAP": data[geoid]["MINORITY_VAP"],
-        "REP_VOTES": data[geoid]["REP_VOTES"],
-        "DEM_VOTES": data[geoid]["DEM_VOTES"],
+        # total_vap: Dict[int, int] = partition["TOTAL_VAP"]
+        white_vap: Dict[int, int] = partition["WHITE_VAP"]
+        minority_vap: Dict[int, int] = partition["MINORITY_VAP"]
+        black_vap: Dict[int, int] = partition["BLACK_VAP"]
+        hispanic_vap: Dict[int, int] = partition["HISPANIC_VAP"]
+        native_vap: Dict[int, int] = partition["NATIVE_VAP"]
+        asian_vap: Dict[int, int] = partition["ASIAN_VAP"]
+        pacific_vap: Dict[int, int] = partition["PACIFIC_VAP"]
 
-        """
+        n_districts: int = len(partition)
 
-        total_vap = partition["TOTAL_VAP"]
-        white_vap = partition["WHITE_VAP"]
-        minority_vap = partition["MINORITY_VAP"]
-        black_vap = partition["BLACK_VAP"]
-        hispanic_vap = partition["HISPANIC_VAP"]
-        native_vap = partition["NATIVE_VAP"]
-        asian_vap = partition["ASIAN_VAP"]
-        pacific_vap = partition["PACIFIC_VAP"]
+        demos_by_district: List[Dict[str, float]] = [
+            defaultdict(float) for _ in range(n_districts + 1)
+        ]
 
-        # results: dict[str, float] = calc_alt_minority_opportunity(
-        #     statewide_demos, partition["demos_by_district"]
-        # )
-        # oppty_pct: float = (
-        #     results["opportunity_districts"] / results["proportional_opportunities"]
-        # )
+        for i in range(1, n_districts + 1):  # NOTE - Generalize for str districts
+            # demos_by_district[i]["TOTAL_VAP"] = total_vap[i]
+            demos_by_district[i]["WHITE_VAP"] = white_vap[i]
+            demos_by_district[i]["MINORITY_VAP"] = minority_vap[i]
+            demos_by_district[i]["BLACK_VAP"] = black_vap[i]
+            demos_by_district[i]["HISPANIC_VAP"] = hispanic_vap[i]
+            demos_by_district[i]["NATIVE_VAP"] = native_vap[i]
+            demos_by_district[i]["ASIAN_VAP"] = asian_vap[i]
+            demos_by_district[i]["PACIFIC_VAP"] = pacific_vap[i]
 
-        # return oppty_pct
-        return 0.0
+        results: dict[str, float] = calc_alt_minority_opportunity(
+            statewide_demos, demos_by_district
+        )
+        oppty_pct: float = (
+            results["opportunity_districts"] / results["proportional_opportunities"]
+        )
+
+        return oppty_pct
 
     return minority_proxy
 
