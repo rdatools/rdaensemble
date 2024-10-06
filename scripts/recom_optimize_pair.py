@@ -61,12 +61,8 @@ from rdaensemble import (
     run_optimized_chain,
     optimize_methods,
     ratings_dimensions,
-    proportionality_proxy,
-    competitiveness_proxy,
-    minority_dummy,
-    minority_proxy,
-    compactness_proxy,
-    splitting_proxy,
+    make_minority_proxy,
+    optimization_metrics,
 )
 
 
@@ -99,7 +95,7 @@ def main() -> None:
     graph: Dict[str, List[str]] = load_graph(args.graph)
     metadata: Dict[str, Any] = load_metadata(args.state, args.data, args.plantype)
 
-    # Aggregate statewide demographics
+    # Aggregate statewide demographics for minority metric
 
     N: int = int(metadata["D"])
     n_districts: int = metadata["D"]
@@ -126,18 +122,11 @@ def main() -> None:
 
     # TODO - Make the metric optimization functions
 
-    metric: Callable
-    bigger_is_better: bool = True
+    minority_proxy_fn: Callable[..., float] = make_minority_proxy(statewide_demos)
+    optimization_metrics["minority"] = minority_proxy_fn
 
-    # metrics: Dict[str, Any] = {
-    #     "proportionality": {"metric": proportionality_proxy, "bigger_is_better": False},
-    #     "competitiveness": {"metric": competitiveness_proxy, "bigger_is_better": True},
-    #     "minority": {"metric": minority_dummy, "bigger_is_better": True},
-    #     "compactness": {"metric": compactness_proxy, "bigger_is_better": True},
-    #     "splitting": {"metric": splitting_proxy, "bigger_is_better": False},
-    # }
-    # metric: Callable = metrics[optimize_for]["metric"]
-    # bigger_is_better: bool = metrics[optimize_for]["bigger_is_better"]
+    metric: Callable  # TODO - HERE
+    bigger_is_better: bool = True
 
     #
 
@@ -285,8 +274,8 @@ def parse_args():
 
     # Default values for args in debug mode
     debug_defaults: Dict[str, Any] = {
-        "root": "../../iCloud/fileout/tradeoffs/NC/plans/NC20C_plan_9417.csv",
-        "optimize": "proportionality_compactness",
+        "root": "../../iCloud/fileout/tradeoffs/NC/plans/NC20C_9417.csv",
+        "optimize": "proportionality_minority",
         "state": "NC",
         "plantype": "congress",
         "size": 100,

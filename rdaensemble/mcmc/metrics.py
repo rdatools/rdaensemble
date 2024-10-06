@@ -4,7 +4,8 @@ TODO - PAIRWISE OPTIMIZATION
 METRICS FOR OPTIMIZING TRADE-OFF FRONTIERS USING RECOM
 """
 
-from typing import Any, List, Dict, Callable
+from typing import Any, List, Dict, Callable, Optional
+from collections import defaultdict
 
 import warnings
 
@@ -19,6 +20,87 @@ from .optimized import (
     short_bursts,
     tilted_runs,
 )
+
+
+### TODO - IMPORT THESE FROM RDASCORE ###
+
+
+def calc_alt_minority_opportunity(
+    statewide_demos: dict[str, float], demos_by_district: list[dict[str, float]]
+) -> dict[str, float]:
+    """Estimate ALTERNATE minority opportunity (everything except the table which is used in DRA)."""
+
+    n_districts: int = len(demos_by_district)
+
+    # Determine statewide proportional minority districts by single demographics (ignoring'White')
+    districts_by_demo: dict[str, int] = {
+        x: rda.calc_proportional_districts(statewide_demos[x], n_districts)
+        for x in rda.DEMOGRAPHICS[1:]
+    }
+
+    # Sum the statewide proportional districts for each single demographic
+    total_proportional: int = sum(
+        [v for k, v in districts_by_demo.items() if k not in ["white", "minority"]]
+    )
+
+    # Sum the opportunities for minority represention in each district
+    oppty_by_demo: dict[str, float] = defaultdict(float)
+    for district in demos_by_district:
+        for d in rda.DEMOGRAPHICS[1:]:  # Ignore 'white'
+            # NOTE - Use the est_alt_minority_opportunity above, instead of est_minority_opportunity in rdapy.
+            oppty_by_demo[d] += est_alt_minority_opportunity(district[d], d)
+
+    # The # of opportunity districts for each separate demographic and all minorities
+    od: float = sum(
+        [v for k, v in oppty_by_demo.items() if k not in ["white", "minority"]]
+    )
+    cd: float = oppty_by_demo["minority"]
+
+    # The # of proportional districts for each separate demographic and all minorities
+    pod: float = total_proportional
+    pcd: float = districts_by_demo["minority"]
+
+    results: dict[str, float] = {
+        # "pivot_by_demographic": table, # For this, use dra-analytics instead
+        "opportunity_districts": od,
+        "proportional_opportunities": pod,
+        "coalition_districts": cd,
+        "proportional_coalitions": pcd,
+        # "details": {} # None
+    }
+
+    return results
+
+
+def est_alt_minority_opportunity(mf: float, demo: Optional[str] = None) -> float:
+    """Estimate the ALTERNATE opportunity for a minority representation.
+
+    NOTE - Shift minority proportions up, so 37% minority scores like 52% share,
+      but use the uncompressed seat probability distribution. This makes a 37%
+      district have a ~70% chance of winning, and a 50% district have a >99% chance.
+      Below 37 % has no chance.
+    NOTE - Sam Wang suggest 90% probability for a 37% district. That seems a little
+      too abrupt and all or nothing, so I backed off to the ~70%.
+    """
+
+    assert mf >= 0.0
+
+    range: list[float] = [0.37, 0.50]
+
+    shift: float = 0.15  # For Black VAP % (and Minority)
+    dilution: float = 0.50  # For other demos, dilute the Black shift by half
+    if demo and (demo not in ["black", "minority"]):
+        shift *= dilution
+
+    wip_num: float = mf + shift
+    oppty: float = (
+        # NOTE - This is the one-line change from est_minority_opportunity in rdapy,
+        # i.e., don't clip VAP % below 37%.
+        max(min(rda.est_seat_probability(wip_num), 1.0), 0.0)
+        # 0.0 if (mf < range[0]) else min(rda.est_seat_probability(wip_num), 1.0)
+    )
+
+    return oppty
 
 
 ### METRICS FOR INDIVIDUAL DIMENSIONS ###
@@ -52,17 +134,38 @@ def minority_dummy(partition):
     assert False, "Minority optimization is built into Gingelator."
 
 
-def minority_proxy(partition: Dict[str, Any]) -> float:
-    """Estimate the opportunity for minority representation.
+def make_minority_proxy(statewide_demos: Dict[str, float]) -> Callable[..., float]:
 
-    "TOTAL_VAP": data[geoid]["TOTAL_VAP"],
-    "MINORITY_VAP": data[geoid]["MINORITY_VAP"],
-    "REP_VOTES": data[geoid]["REP_VOTES"],
-    "DEM_VOTES": data[geoid]["DEM_VOTES"],
+    def minority_proxy(partition: Dict[str, Any]) -> float:
+        """Estimate the opportunity for minority representation.
 
-    """
+        "TOTAL_VAP": data[geoid]["TOTAL_VAP"],
+        "MINORITY_VAP": data[geoid]["MINORITY_VAP"],
+        "REP_VOTES": data[geoid]["REP_VOTES"],
+        "DEM_VOTES": data[geoid]["DEM_VOTES"],
 
-    return 0.0  # TODO: Implement this function
+        """
+
+        total_vap = partition["TOTAL_VAP"]
+        white_vap = partition["WHITE_VAP"]
+        minority_vap = partition["MINORITY_VAP"]
+        black_vap = partition["BLACK_VAP"]
+        hispanic_vap = partition["HISPANIC_VAP"]
+        native_vap = partition["NATIVE_VAP"]
+        asian_vap = partition["ASIAN_VAP"]
+        pacific_vap = partition["PACIFIC_VAP"]
+
+        # results: dict[str, float] = calc_alt_minority_opportunity(
+        #     statewide_demos, partition["demos_by_district"]
+        # )
+        # oppty_pct: float = (
+        #     results["opportunity_districts"] / results["proportional_opportunities"]
+        # )
+
+        # return oppty_pct
+        return 0.0
+
+    return minority_proxy
 
 
 def compactness_proxy(partition: Dict[str, Any]) -> float:
@@ -91,16 +194,13 @@ def splitting_proxy(partition: Dict[str, Any]) -> float:
 
 ### METRICS FOR PAIRS OF DIMENSIONS ###
 
-# TODO
-# metrics: Dict[str, Any] = {
-#     "proportionality": {"metric": proportionality_proxy, "bigger_is_better": False},
-#     "competitiveness": {"metric": competitiveness_proxy, "bigger_is_better": True},
-#     "minority": {"metric": minority_dummy, "bigger_is_better": True},
-#     "compactness": {"metric": compactness_proxy, "bigger_is_better": True},
-#     "splitting": {"metric": splitting_proxy, "bigger_is_better": False},
-# }
-# metric: Callable = metrics[optimize_for]["metric"]
-# bigger_is_better: bool = metrics[optimize_for]["bigger_is_better"]
+optimization_metrics: Dict[str, Any] = {
+    "proportionality": proportionality_proxy,
+    "competitiveness": competitiveness_proxy,
+    "minority": minority_dummy,  # Replace this as necessary
+    "compactness": compactness_proxy,
+    "splitting": splitting_proxy,
+}
 
 
 ### MISCELLANEOUS ###

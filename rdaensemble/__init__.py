@@ -15,9 +15,10 @@ from .mcmc import (
     proportionality_proxy,
     competitiveness_proxy,
     minority_dummy,
-    minority_proxy,
+    make_minority_proxy,
     compactness_proxy,
     splitting_proxy,
+    optimization_metrics,
 )
 from .general import (
     cuts_and_boundaries,

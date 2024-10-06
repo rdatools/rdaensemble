@@ -14,9 +14,10 @@ from .metrics import (
     proportionality_proxy,
     competitiveness_proxy,
     minority_dummy,
-    minority_proxy,
+    make_minority_proxy,
     compactness_proxy,
     splitting_proxy,
+    optimization_metrics,
 )
 
 name = "mcmc"
