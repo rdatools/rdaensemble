@@ -29,7 +29,7 @@ import argparse
 from argparse import ArgumentParser, Namespace
 from typing import Any, List, Dict, Callable
 
-import random
+import random, os
 
 import warnings
 
@@ -43,14 +43,17 @@ import rdapy as rda
 from rdabase import (
     require_args,
     starting_seed,
-    DISTRICTS_BY_STATE,
+    census_fields,
+    Assignment,
     read_csv,
     write_json,
     load_data,
     load_shapes,
     load_graph,
     load_metadata,
+    load_plan,
 )
+from rdascore import aggregate_data_by_district
 from rdaensemble import (
     ensemble_metadata,
     prep_data,
@@ -81,35 +84,63 @@ def main() -> None:
     for d in optimize_dimensions:
         assert d in ratings_dimensions, f"Optimize dimensionn '{d}' not found."
 
-    # TODO - HERE - Load the given plan (point) to optimize
+    # Read data in
 
-    starting_dir: str = f"../tradeoffs/notable_maps/{args.state}/"
-    starting_plan_paths: List[str] = [
-        f"{args.state}_2022_Congress_{dim.capitalize()}_NOSPLITS.csv"
-        for dim in ratings_dimensions
-    ]
+    starting_plan: List[Dict[str, str | int]] = read_csv(args.root, [str, int])
+    starting_assignments: List[Assignment] = load_plan(args.root)
+    starting_name = os.path.splitext(os.path.basename(args.root))[0]
 
-    # End parameterization
-
-    metrics: Dict[str, Any] = {
-        "proportionality": {"metric": proportionality_proxy, "bigger_is_better": False},
-        "competitiveness": {"metric": competitiveness_proxy, "bigger_is_better": True},
-        "minority": {"metric": minority_dummy, "bigger_is_better": True},
-        "compactness": {"metric": compactness_proxy, "bigger_is_better": True},
-        "splitting": {"metric": splitting_proxy, "bigger_is_better": False},
-    }
-    metric: Callable = metrics[optimize_for]["metric"]
-    bigger_is_better: bool = metrics[optimize_for]["bigger_is_better"]
-
-    steps: int = round(args.size / len(starting_plan_paths))
+    print()
+    print(f"Optimizing {starting_name} for ({', '.join(optimize_dimensions)}) ...")
+    print()
 
     data: Dict[str, Dict[str, int | str]] = load_data(args.data)
     shapes: Dict[str, Any] = load_shapes(args.shapes)
     graph: Dict[str, List[str]] = load_graph(args.graph)
-    # metadata: Dict[str, Any] = load_metadata(args.state, args.data)
+    metadata: Dict[str, Any] = load_metadata(args.state, args.data, args.plantype)
 
-    N: int = DISTRICTS_BY_STATE[args.state][args.plantype]
-    # N: int = int(metadata["D"]) <= Generalized for state houses
+    # Aggregate statewide demographics
+
+    N: int = int(metadata["D"])
+    n_districts: int = metadata["D"]
+    n_counties: int = metadata["C"]
+    county_to_index: Dict[str, int] = metadata["county_to_index"]
+    district_to_index: Dict[int | str, int] = metadata["district_to_index"]
+
+    aggregates: Dict[str, Any] = aggregate_data_by_district(
+        starting_assignments,
+        data,
+        n_districts,
+        n_counties,
+        county_to_index,
+        district_to_index,
+    )
+    statewide_demos: Dict[str, float] = dict()
+    total_vap_field: str = census_fields[1]
+    for demo in census_fields[2:]:  # Skip total population & total VAP
+        simple_demo: str = demo.split("_")[0].lower()
+        statewide_demos[simple_demo] = (
+            aggregates["demos_totals"][demo]
+            / aggregates["demos_totals"][total_vap_field]
+        )
+
+    # TODO - Make the metric optimization functions
+
+    metric: Callable
+    bigger_is_better: bool = True
+
+    # metrics: Dict[str, Any] = {
+    #     "proportionality": {"metric": proportionality_proxy, "bigger_is_better": False},
+    #     "competitiveness": {"metric": competitiveness_proxy, "bigger_is_better": True},
+    #     "minority": {"metric": minority_dummy, "bigger_is_better": True},
+    #     "compactness": {"metric": compactness_proxy, "bigger_is_better": True},
+    #     "splitting": {"metric": splitting_proxy, "bigger_is_better": False},
+    # }
+    # metric: Callable = metrics[optimize_for]["metric"]
+    # bigger_is_better: bool = metrics[optimize_for]["bigger_is_better"]
+
+    #
+
     seed: int = starting_seed(args.state, N)
     random.seed(seed)
 
@@ -123,63 +154,50 @@ def main() -> None:
 
     plans: List[Dict[str, str | float | Dict[str, int | str]]] = []
 
+    y_dim = ratings_dimensions.index(optimize_dimensions[0]) + 1
+    x_dim = ratings_dimensions.index(optimize_dimensions[1]) + 1
+    prefix: str = f"{starting_name}_{y_dim}{x_dim}"
+
+    # Setup and run the optimization chain
+
+    recom_graph, elections, back_map = prep_data(
+        data, graph, shapes, initial_plan=starting_plan
+    )
+
+    chain = setup_optimized_markov_chain(
+        recom,
+        recom_graph,
+        elections,
+        roughly_equal=args.roughlyequal,
+        node_repeats=1,
+        dimension=optimize_for,
+        metric=metric,
+        maximize=bigger_is_better,
+    )
+
+    more_plans: List[Dict[str, str | float | Dict[str, int | str]]] = (
+        run_optimized_chain(
+            chain,
+            args.size,
+            back_map,
+            prefix,
+            bigger_is_better=bigger_is_better,
+            method=method,
+        )
+    )
+
+    plans.extend(more_plans)
+
     print()
     print(
-        f"Optimizing plans for {optimize_for} using {' '.join(method_label.split('_'))}."
+        f"Collected {len(more_plans)} plans optimized for ({', '.join(optimize_dimensions)})."
     )
     print()
-
-    for j, starting_plan_path in enumerate(starting_plan_paths):
-        print()
-        print(f"Starting plan: {starting_plan_path}")
-        print()
-
-        prefix: str = (
-            f"{list(optimize_methods.keys()).index(args.method) + 1}{ratings_dimensions.index(optimize_for) + 1}{j + 1}"
-        )
-
-        plan_path: str = starting_dir + starting_plan_path
-
-        starting_plan: List[Dict[str, str | int]] = read_csv(plan_path, [str, int])
-        recom_graph, elections, back_map = prep_data(
-            data, graph, shapes, initial_plan=starting_plan
-        )
-
-        chain = setup_optimized_markov_chain(
-            recom,
-            recom_graph,
-            elections,
-            roughly_equal=args.roughlyequal,
-            node_repeats=1,
-            dimension=optimize_for,
-            metric=metric,
-            maximize=bigger_is_better,
-        )
-
-        more_plans: List[Dict[str, str | float | Dict[str, int | str]]] = (
-            run_optimized_chain(
-                chain,
-                steps,
-                back_map,
-                prefix,
-                bigger_is_better=bigger_is_better,
-                method=method,
-            )
-        )
-
-        plans.extend(more_plans)
-
-        print()
-        print(f"Collected {len(more_plans)} plans optimized for {optimize_for}.")
-        print()
 
     ensemble["plans"] = plans
     ensemble["size"] = len(plans)  # Not every optimization step is kept
 
-    print()
-    print(f"Collected {len(plans)} plans optimized for {optimize_for}.")
-    print()
-
+    # TODO - Uncomment this to write the ensemble to a JSON file
     # if not args.debug:
     #     write_json(args.plans, ensemble)
 
@@ -192,7 +210,7 @@ def parse_args():
     )
 
     parser.add_argument(
-        "--plan",
+        "--root",
         type=str,
         help="The plan (point) to optimize",
     )
@@ -267,7 +285,7 @@ def parse_args():
 
     # Default values for args in debug mode
     debug_defaults: Dict[str, Any] = {
-        "plan": "../../iCloud/fileout/tradeoffs/NC/plans/NC20C_plan_9417.csv",
+        "root": "../../iCloud/fileout/tradeoffs/NC/plans/NC20C_plan_9417.csv",
         "optimize": "proportionality_compactness",
         "state": "NC",
         "plantype": "congress",

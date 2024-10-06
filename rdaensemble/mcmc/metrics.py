@@ -21,13 +21,7 @@ from .optimized import (
 )
 
 
-optimize_methods: Dict[str, Callable] = {
-    "simulated_annealing": simulated_annealing,
-    "short_bursts": short_bursts,
-    "tilted_runs": tilted_runs,
-}
-
-num_cut_edges: Callable = lambda p: len(p["cut_edges"])
+### METRICS FOR INDIVIDUAL DIMENSIONS ###
 
 
 def proportionality_proxy(partition: Dict[str, Any]) -> float:
@@ -94,5 +88,29 @@ def splitting_proxy(partition: Dict[str, Any]) -> float:
 
     return split_pct
 
+
+### METRICS FOR PAIRS OF DIMENSIONS ###
+
+# TODO
+# metrics: Dict[str, Any] = {
+#     "proportionality": {"metric": proportionality_proxy, "bigger_is_better": False},
+#     "competitiveness": {"metric": competitiveness_proxy, "bigger_is_better": True},
+#     "minority": {"metric": minority_dummy, "bigger_is_better": True},
+#     "compactness": {"metric": compactness_proxy, "bigger_is_better": True},
+#     "splitting": {"metric": splitting_proxy, "bigger_is_better": False},
+# }
+# metric: Callable = metrics[optimize_for]["metric"]
+# bigger_is_better: bool = metrics[optimize_for]["bigger_is_better"]
+
+
+### MISCELLANEOUS ###
+
+optimize_methods: Dict[str, Callable] = {
+    "simulated_annealing": simulated_annealing,
+    "short_bursts": short_bursts,
+    "tilted_runs": tilted_runs,
+}
+
+num_cut_edges: Callable = lambda p: len(p["cut_edges"])
 
 ### END ###
