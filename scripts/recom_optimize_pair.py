@@ -36,9 +36,6 @@ import warnings
 warnings.warn = lambda *args, **kwargs: None
 
 from gerrychain.proposals import recom
-from gerrychain.updaters import CountySplit
-
-import rdapy as rda
 
 from rdabase import (
     require_args,
@@ -120,13 +117,13 @@ def main() -> None:
             / aggregates["demos_totals"][total_vap_field]
         )
 
-    # TODO - Make the metric optimization functions
+    # Make the metric optimization functions
 
     minority_proxy_fn: Callable[..., float] = make_minority_proxy(statewide_demos)
     optimization_metrics["minority"] = minority_proxy_fn
 
     # TODO - HERE
-    metric: Callable = optimization_metrics["minority"]
+    metric: Callable = optimization_metrics["minority"]  # HACK
     bigger_is_better: bool = True
 
     #

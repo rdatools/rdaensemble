@@ -1,6 +1,4 @@
 """
-TODO - PAIRWISE OPTIMIZATION
-
 METRICS FOR OPTIMIZING TRADE-OFF FRONTIERS USING RECOM
 """
 
@@ -15,94 +13,13 @@ from gerrychain.updaters import CountySplit
 
 import rdapy as rda
 
-from rdabase import census_fields
+from rdascore import calc_alt_minority_opportunity
 
 from .optimized import (
     simulated_annealing,
     short_bursts,
     tilted_runs,
 )
-
-
-### TODO - IMPORT THESE FROM RDASCORE ###
-
-
-def calc_alt_minority_opportunity(
-    statewide_demos: dict[str, float], demos_by_district: list[dict[str, float]]
-) -> dict[str, float]:
-    """Estimate ALTERNATE minority opportunity (everything except the table which is used in DRA)."""
-
-    n_districts: int = len(demos_by_district)
-
-    # Determine statewide proportional minority districts by single demographics (ignoring'White')
-    districts_by_demo: dict[str, int] = {
-        x: rda.calc_proportional_districts(statewide_demos[x], n_districts)
-        for x in rda.DEMOGRAPHICS[1:]
-    }
-
-    # Sum the statewide proportional districts for each single demographic
-    total_proportional: int = sum(
-        [v for k, v in districts_by_demo.items() if k not in ["white", "minority"]]
-    )
-
-    # Sum the opportunities for minority represention in each district
-    oppty_by_demo: dict[str, float] = defaultdict(float)
-    for district in demos_by_district:
-        for d in rda.DEMOGRAPHICS[1:]:  # Ignore 'white'
-            # NOTE - Use the est_alt_minority_opportunity above, instead of est_minority_opportunity in rdapy.
-            oppty_by_demo[d] += est_alt_minority_opportunity(district[d], d)
-
-    # The # of opportunity districts for each separate demographic and all minorities
-    od: float = sum(
-        [v for k, v in oppty_by_demo.items() if k not in ["white", "minority"]]
-    )
-    cd: float = oppty_by_demo["minority"]
-
-    # The # of proportional districts for each separate demographic and all minorities
-    pod: float = total_proportional
-    pcd: float = districts_by_demo["minority"]
-
-    results: dict[str, float] = {
-        # "pivot_by_demographic": table, # For this, use dra-analytics instead
-        "opportunity_districts": od,
-        "proportional_opportunities": pod,
-        "coalition_districts": cd,
-        "proportional_coalitions": pcd,
-        # "details": {} # None
-    }
-
-    return results
-
-
-def est_alt_minority_opportunity(mf: float, demo: Optional[str] = None) -> float:
-    """Estimate the ALTERNATE opportunity for a minority representation.
-
-    NOTE - Shift minority proportions up, so 37% minority scores like 52% share,
-      but use the uncompressed seat probability distribution. This makes a 37%
-      district have a ~70% chance of winning, and a 50% district have a >99% chance.
-      Below 37 % has no chance.
-    NOTE - Sam Wang suggest 90% probability for a 37% district. That seems a little
-      too abrupt and all or nothing, so I backed off to the ~70%.
-    """
-
-    assert mf >= 0.0
-
-    range: list[float] = [0.37, 0.50]
-
-    shift: float = 0.15  # For Black VAP % (and Minority)
-    dilution: float = 0.50  # For other demos, dilute the Black shift by half
-    if demo and (demo not in ["black", "minority"]):
-        shift *= dilution
-
-    wip_num: float = mf + shift
-    oppty: float = (
-        # NOTE - This is the one-line change from est_minority_opportunity in rdapy,
-        # i.e., don't clip VAP % below 37%.
-        max(min(rda.est_seat_probability(wip_num), 1.0), 0.0)
-        # 0.0 if (mf < range[0]) else min(rda.est_seat_probability(wip_num), 1.0)
-    )
-
-    return oppty
 
 
 ### METRICS FOR INDIVIDUAL DIMENSIONS ###
