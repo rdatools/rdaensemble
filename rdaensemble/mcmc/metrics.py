@@ -13,6 +13,7 @@ from gerrychain.updaters import CountySplit
 
 import rdapy as rda
 
+from rdabase import census_fields
 from rdascore import calc_alt_minority_opportunity
 
 from .optimized import (
@@ -33,6 +34,15 @@ def proportionality_proxy(partition: Dict[str, Any]) -> float:
 
     eg: float = abs(partition["election_composite"].efficiency_gap())
 
+    return normalize_proportionality_proxy(eg)
+
+
+def normalize_proportionality_proxy(eg: float) -> float:
+    """Normalize the EG measurement to be between 0 and 1, bigger is better.
+
+    NOTE - This could also narrow the range to give a broader spread, e.g., TODO.
+    """
+
     return 1 - eg
 
 
@@ -43,6 +53,15 @@ def competitiveness_proxy(partition: Dict[str, Any]) -> float:
 
     cD: float = rda.est_competitive_districts(Vf_array)
     cDf: float = cD / len(partition)
+
+    return normalize_competitiveness_proxy(cDf)
+
+
+def normalize_competitiveness_proxy(cDf: float) -> float:
+    """Normalize the competitiveness measurement to be between 0 and 1, bigger is better.
+
+    NOTE - Right now, this is a no-op. This could narrow the range though, e.g., [0.0 - 0.75].
+    """
 
     return cDf
 
@@ -58,30 +77,14 @@ def make_minority_proxy(statewide_demos: Dict[str, float]) -> Callable[..., floa
     def minority_proxy(partition: Dict[str, Any]) -> float:
         """Estimate the opportunity for minority representation."""
 
-        # total_vap: Dict[int, int] = partition["TOTAL_VAP"]
-        white_vap: Dict[int, int] = partition["WHITE_VAP"]
-        minority_vap: Dict[int, int] = partition["MINORITY_VAP"]
-        black_vap: Dict[int, int] = partition["BLACK_VAP"]
-        hispanic_vap: Dict[int, int] = partition["HISPANIC_VAP"]
-        native_vap: Dict[int, int] = partition["NATIVE_VAP"]
-        asian_vap: Dict[int, int] = partition["ASIAN_VAP"]
-        pacific_vap: Dict[int, int] = partition["PACIFIC_VAP"]
-
         n_districts: int = len(partition)
-
         demos_by_district: List[Dict[str, float]] = [
             defaultdict(float) for _ in range(n_districts + 1)
         ]
 
         for i in range(1, n_districts + 1):  # NOTE - Generalize for str districts
-            # demos_by_district[i]["TOTAL_VAP"] = total_vap[i]
-            demos_by_district[i]["WHITE_VAP"] = white_vap[i]
-            demos_by_district[i]["MINORITY_VAP"] = minority_vap[i]
-            demos_by_district[i]["BLACK_VAP"] = black_vap[i]
-            demos_by_district[i]["HISPANIC_VAP"] = hispanic_vap[i]
-            demos_by_district[i]["NATIVE_VAP"] = native_vap[i]
-            demos_by_district[i]["ASIAN_VAP"] = asian_vap[i]
-            demos_by_district[i]["PACIFIC_VAP"] = pacific_vap[i]
+            for demo in census_fields[2:]:  # Skip total population & total VAP
+                demos_by_district[i][demo] = partition[demo][i]
 
         results: dict[str, float] = calc_alt_minority_opportunity(
             statewide_demos, demos_by_district
@@ -100,6 +103,15 @@ def compactness_proxy(partition: Dict[str, Any]) -> float:
 
     measurement: float = sum(partition["polsby-popper"].values()) / len(partition)
 
+    return normalize_compactness_proxy(measurement)
+
+
+def normalize_compactness_proxy(measurement: float) -> float:
+    """Normalize the compactness measurement to be between 0 and 1, bigger is better.
+
+    NOTE - Right now, this is a no-op. This could narrow the range though, e.g., TODO.
+    """
+
     return measurement
 
 
@@ -116,7 +128,16 @@ def splitting_proxy(partition: Dict[str, Any]) -> float:
     n_counties: int = len(splits_by_county)
     split_pct: float = nsplits / n_counties
 
-    return split_pct
+    return normalize_splitting_proxy(split_pct)
+
+
+def normalize_splitting_proxy(pct: float) -> float:
+    """Normalize the percentage of counties split to be between 0 and 1, bigger is better.
+
+    NOTE - This could narrow the range to give a broader spread, e.g., TODO.
+    """
+
+    return 1 - pct
 
 
 ### METRICS FOR PAIRS OF DIMENSIONS ###
