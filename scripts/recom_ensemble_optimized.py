@@ -55,57 +55,14 @@ from rdaensemble import (
     prep_data,
     setup_optimized_markov_chain,
     run_optimized_chain,
-    simulated_annealing,
-    short_bursts,
-    tilted_runs,
+    optimize_methods,
+    ratings_dimensions,
+    proportionality_proxy,
+    competitiveness_proxy,
+    minority_dummy,
+    compactness_proxy,
+    splitting_proxy,
 )
-
-num_cut_edges: Callable = lambda p: len(p["cut_edges"])
-
-
-def proportionality_proxy(partition):
-    """Use the EG of a partition as a proxy for disproportionality."""
-
-    eg: float = abs(partition["election_composite"].efficiency_gap())
-
-    return eg
-
-
-def competitiveness_proxy(partition):
-    """Estimate the competitiveness of a partition."""
-
-    Vf_array: List[float] = partition["election_composite"].percents("Democratic")
-
-    cD: float = rda.est_competitive_districts(Vf_array)
-
-    return cD
-
-
-def minority_dummy(partition):
-    """A dummy function for minority representation."""
-
-    assert False, "Minority optimization is built into Gingelator."
-
-
-def compactness_proxy(partition):
-    """Estimate the compactness of a partition, using just Polsby-Popper."""
-
-    measurement: float = sum(partition["polsby-popper"].values()) / len(partition)
-
-    return measurement
-
-
-def splitting_proxy(partition):
-    """Count the number of counties split by a partition."""
-
-    counties = partition["splits_by_county"]
-
-    nsplits: int = 0
-    for _, info in counties.items():
-        if info.split != CountySplit.NOT_SPLIT:
-            nsplits += 1
-
-    return nsplits
 
 
 def main() -> None:
@@ -113,38 +70,18 @@ def main() -> None:
 
     args: argparse.Namespace = parse_args()
 
-    optimize_methods: Dict[str, Callable] = {
-        "simulated_annealing": simulated_annealing,
-        "short_bursts": short_bursts,
-        "tilted_runs": tilted_runs,
-    }
     method_label: str = args.method
     assert method_label in optimize_methods, f"Method '{method_label}' not found."
     method: Callable = optimize_methods[method_label]
 
-    optimize_options: List[str] = [
-        "proportionality",
-        "competitiveness",
-        "minority",
-        "compactness",
-        "splitting",
-    ]
     option: str = args.optimize
-    assert option in optimize_options, f"Optimize dimensionn '{option}' not found."
+    assert option in ratings_dimensions, f"Optimize dimensionn '{option}' not found."
     optimize_for: str = option
 
-    # TODO - Hard-coded to file names for Notable Map files. Can we parameterize this?
-    plan_dimensions: List[str] = [
-        "proportional",
-        "competitive",
-        "minority",
-        "compact",
-        "splitting",
-    ]
     starting_dir: str = f"../tradeoffs/notable_maps/{args.state}/"
     starting_plan_paths: List[str] = [
         f"{args.state}_2022_Congress_{dim.capitalize()}_NOSPLITS.csv"
-        for dim in plan_dimensions
+        for dim in ratings_dimensions
     ]
 
     # End parameterization
@@ -193,7 +130,7 @@ def main() -> None:
         print()
 
         prefix: str = (
-            f"{list(optimize_methods.keys()).index(args.method) + 1}{optimize_options.index(optimize_for) + 1}{j + 1}"
+            f"{list(optimize_methods.keys()).index(args.method) + 1}{ratings_dimensions.index(optimize_for) + 1}{j + 1}"
         )
 
         plan_path: str = starting_dir + starting_plan_path

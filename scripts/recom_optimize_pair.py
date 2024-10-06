@@ -125,7 +125,8 @@ def main() -> None:
     minority_proxy_fn: Callable[..., float] = make_minority_proxy(statewide_demos)
     optimization_metrics["minority"] = minority_proxy_fn
 
-    metric: Callable  # TODO - HERE
+    # TODO - HERE
+    metric: Callable = optimization_metrics["minority"]
     bigger_is_better: bool = True
 
     #
