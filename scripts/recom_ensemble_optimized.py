@@ -109,7 +109,7 @@ def splitting_proxy(partition):
 
 
 def main() -> None:
-    """Generate an ensemble of maps using MCMC/ReCom."""
+    """Generate an ensemble of maps optimized for a single metric using ReCom/single-metric optimization."""
 
     args: argparse.Namespace = parse_args()
 

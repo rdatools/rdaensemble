@@ -10,6 +10,7 @@ from .optimized import (
     tilted_runs,
 )
 from .metrics import (
+    optimize_methods,
     proportionality_proxy,
     competitiveness_proxy,
     minority_dummy,

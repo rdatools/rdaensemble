@@ -3,9 +3,7 @@
 """
 TODO - PAIRWISE OPTIMIZATION
 
-GENERATE AN ENSEMBLE OF PLANS using RECOM and
-OPTIMIZING for ONE RATINGS DIMENSION
-USING ONE OF THREE OPTIMIZATION METHODS.
+Generate an ensemble of plans optimized for a *pair* of metrics using ReCom/single-metric optimization.
 
 For example:
 TODO - Update this example
@@ -58,9 +56,8 @@ from rdaensemble import (
     prep_data,
     setup_optimized_markov_chain,
     run_optimized_chain,
-    simulated_annealing,
-    short_bursts,
-    tilted_runs,
+    optimize_methods,
+    ratings_dimensions,
     proportionality_proxy,
     competitiveness_proxy,
     minority_dummy,
@@ -69,92 +66,27 @@ from rdaensemble import (
     splitting_proxy,
 )
 
-# TODO - DELETE
-# num_cut_edges: Callable = lambda p: len(p["cut_edges"])
-
-
-# def proportionality_proxy(partition):
-#     """Use the EG of a partition as a proxy for disproportionality."""
-
-#     eg: float = abs(partition["election_composite"].efficiency_gap())
-
-#     return eg
-
-
-# def competitiveness_proxy(partition):
-#     """Estimate the competitiveness of a partition."""
-
-#     Vf_array: List[float] = partition["election_composite"].percents("Democratic")
-
-#     cD: float = rda.est_competitive_districts(Vf_array)
-
-#     return cD
-
-
-# def minority_dummy(partition):
-#     """A dummy function for minority representation."""
-
-#     assert False, "Minority optimization is built into Gingelator."
-
-
-# def compactness_proxy(partition):
-#     """Estimate the compactness of a partition, using just Polsby-Popper."""
-
-#     measurement: float = sum(partition["polsby-popper"].values()) / len(partition)
-
-#     return measurement
-
-
-# def splitting_proxy(partition):
-#     """Count the number of counties split by a partition."""
-
-#     splits_by_county = partition["splits_by_county"]
-
-#     nsplits: int = 0
-#     for _, info in splits_by_county.items():
-#         if info.split != CountySplit.NOT_SPLIT:
-#             nsplits += 1
-
-#     return nsplits
-
 
 def main() -> None:
-    """Generate an ensemble of maps using MCMC/ReCom."""
+    """Generate an ensemble of maps optimized for a *pair* of metrics using ReCom/single-metric optimization."""
 
     args: argparse.Namespace = parse_args()
 
-    optimize_methods: Dict[str, Callable] = {
-        "simulated_annealing": simulated_annealing,
-        "short_bursts": short_bursts,
-        "tilted_runs": tilted_runs,
-    }
     method_label: str = args.method
     assert method_label in optimize_methods, f"Method '{method_label}' not found."
     method: Callable = optimize_methods[method_label]
 
-    optimize_options: List[str] = [
-        "proportionality",
-        "competitiveness",
-        "minority",
-        "compactness",
-        "splitting",
-    ]
-    option: str = args.optimize
-    assert option in optimize_options, f"Optimize dimensionn '{option}' not found."
-    optimize_for: str = option
+    optimize_for: str = args.optimize
+    optimize_dimensions: List[str] = optimize_for.split("_")
+    for d in optimize_dimensions:
+        assert d in ratings_dimensions, f"Optimize dimensionn '{d}' not found."
 
-    # TODO - Hard-coded to file names for Notable Map files. Can we parameterize this?
-    plan_dimensions: List[str] = [
-        "proportional",
-        "competitive",
-        "minority",
-        "compact",
-        "splitting",
-    ]
+    # TODO - HERE - Load the given plan (point) to optimize
+
     starting_dir: str = f"../tradeoffs/notable_maps/{args.state}/"
     starting_plan_paths: List[str] = [
         f"{args.state}_2022_Congress_{dim.capitalize()}_NOSPLITS.csv"
-        for dim in plan_dimensions
+        for dim in ratings_dimensions
     ]
 
     # End parameterization
@@ -203,7 +135,7 @@ def main() -> None:
         print()
 
         prefix: str = (
-            f"{list(optimize_methods.keys()).index(args.method) + 1}{optimize_options.index(optimize_for) + 1}{j + 1}"
+            f"{list(optimize_methods.keys()).index(args.method) + 1}{ratings_dimensions.index(optimize_for) + 1}{j + 1}"
         )
 
         plan_path: str = starting_dir + starting_plan_path
@@ -260,6 +192,17 @@ def parse_args():
     )
 
     parser.add_argument(
+        "--plan",
+        type=str,
+        help="The plan (point) to optimize",
+    )
+    parser.add_argument(
+        "--optimize",
+        type=str,
+        help="The *pair* of ratings dimension on which to optimize it, e.g., 'proportionality_compactness'",
+    )
+
+    parser.add_argument(
         "--state",
         help="The two-character state code (e.g., NC)",
         type=str,
@@ -271,8 +214,17 @@ def parse_args():
         help="The type of districts (congress, upper, lower)",
     )
     parser.add_argument(
-        "--size", type=int, default=10, help="Number of maps to generate"
+        "--size",
+        type=int,
+        default=10,
+        help="The number of optimization steps to perform",
     )
+    parser.add_argument(
+        "--plans",
+        type=str,
+        help="The resulting ensemble JSON file",
+    )
+
     parser.add_argument(
         "--data",
         type=str,
@@ -289,11 +241,6 @@ def parse_args():
         help="Graph file",
     )
     parser.add_argument(
-        "--plans",
-        type=str,
-        help="Ensemble plans JSON file",
-    )
-    parser.add_argument(
         "--roughlyequal",
         type=float,
         default=0.01,
@@ -304,11 +251,6 @@ def parse_args():
         type=str,
         default="short_bursts",
         help="A ReCom SingleMetricOptimizer optimization method",
-    )
-    parser.add_argument(
-        "--optimize",
-        type=str,
-        help="The ratings dimension on which to optimize",
     )
 
     parser.add_argument(
@@ -325,16 +267,16 @@ def parse_args():
 
     # Default values for args in debug mode
     debug_defaults: Dict[str, Any] = {
+        "plan": "../../iCloud/fileout/tradeoffs/NC/plans/NC20C_plan_9417.csv",
+        "optimize": "proportionality_compactness",
         "state": "NC",
         "plantype": "congress",
+        "size": 100,
+        "plans": "temp/NC20C_9417_proportionality_compactness_plans.json",
         "data": "../rdabase/data/NC/NC_2020_data.csv",
         "shapes": "../rdabase/data/NC/NC_2020_shapes_simplified.json",
         "graph": "../rdabase/data/NC/NC_2020_graph.json",
-        "plans": "temp/NC20C_sa_optimized_plans.json",
-        "size": 100,
         "method": "short_bursts",
-        "optimize": "proportionality",
-        # "optimize": "minority",
     }
     args = require_args(args, args.debug, debug_defaults)
 

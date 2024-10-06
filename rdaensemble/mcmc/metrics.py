@@ -14,6 +14,19 @@ from gerrychain.updaters import CountySplit
 
 import rdapy as rda
 
+from .optimized import (
+    simulated_annealing,
+    short_bursts,
+    tilted_runs,
+)
+
+
+optimize_methods: Dict[str, Callable] = {
+    "simulated_annealing": simulated_annealing,
+    "short_bursts": short_bursts,
+    "tilted_runs": tilted_runs,
+}
+
 num_cut_edges: Callable = lambda p: len(p["cut_edges"])
 
 

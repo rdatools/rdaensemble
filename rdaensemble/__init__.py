@@ -8,6 +8,7 @@ from .mcmc import (
     setup_unbiased_markov_chain,
     run_unbiased_chain,
     run_optimized_chain,
+    optimize_methods,
     simulated_annealing,
     short_bursts,
     tilted_runs,

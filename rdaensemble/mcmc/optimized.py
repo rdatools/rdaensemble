@@ -35,7 +35,6 @@ def setup_optimized_markov_chain(
 ) -> Any:
     """Set up the Markov chain."""
 
-    # TODO - HERE - PAIRWISE OPTIMIZATION
     my_updaters: dict[str, Any] = {
         "cut_edges": updaters.cut_edges,
         "population": updaters.Tally("TOTAL_POP", alias="population"),
