@@ -60,6 +60,7 @@ from rdaensemble import (
     ratings_dimensions,
     make_minority_proxy,
     optimization_metrics,
+    make_combined_metric,
 )
 
 
@@ -76,6 +77,8 @@ def main() -> None:
     optimize_dimensions: List[str] = optimize_for.split("_")
     for d in optimize_dimensions:
         assert d in ratings_dimensions, f"Optimize dimensionn '{d}' not found."
+    y_label: str = optimize_dimensions[0]
+    x_label: str = optimize_dimensions[1]
 
     # Read data in
 
@@ -122,8 +125,9 @@ def main() -> None:
     minority_proxy_fn: Callable[..., float] = make_minority_proxy(statewide_demos)
     optimization_metrics["minority"] = minority_proxy_fn
 
-    # TODO - HERE
-    metric: Callable = optimization_metrics["minority"]  # HACK
+    metric: Callable[..., float] = make_combined_metric(
+        optimization_metrics[y_label], optimization_metrics[x_label]
+    )
     bigger_is_better: bool = True
 
     #
@@ -141,8 +145,8 @@ def main() -> None:
 
     plans: List[Dict[str, str | float | Dict[str, int | str]]] = []
 
-    y_dim = ratings_dimensions.index(optimize_dimensions[0]) + 1
-    x_dim = ratings_dimensions.index(optimize_dimensions[1]) + 1
+    y_dim = ratings_dimensions.index(y_label) + 1
+    x_dim = ratings_dimensions.index(x_label) + 1
     prefix: str = f"{starting_name}_{y_dim}{x_dim}"
 
     # Setup and run the optimization chain

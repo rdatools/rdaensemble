@@ -18,6 +18,7 @@ from .metrics import (
     compactness_proxy,
     splitting_proxy,
     optimization_metrics,
+    make_combined_metric,
 )
 
 name = "mcmc"

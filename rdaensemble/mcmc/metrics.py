@@ -140,8 +140,6 @@ def normalize_splitting_proxy(pct: float) -> float:
     return 1 - pct
 
 
-### METRICS FOR PAIRS OF DIMENSIONS ###
-
 optimization_metrics: Dict[str, Any] = {
     "proportionality": proportionality_proxy,
     "competitiveness": competitiveness_proxy,
@@ -149,6 +147,29 @@ optimization_metrics: Dict[str, Any] = {
     "compactness": compactness_proxy,
     "splitting": splitting_proxy,
 }
+
+
+### METRICS FOR PAIRS OF DIMENSIONS ###
+
+
+def make_combined_metric(
+    y_metric: Callable[..., float], x_metric: Callable[..., float]
+) -> Callable[..., float]:
+    """Combine two metrics into a single metric."""
+
+    def optimization_metric(partition: Dict[str, Any]) -> float:
+        """Combine the two metrics into a single metric."""
+
+        y_val: float = y_metric(partition)
+        x_val: float = x_metric(partition)
+
+        distance: float = (y_val**2 + x_val**2) ** 0.5
+
+        # TODO - Add a penalty for not being NE of the starting point
+
+        return distance
+
+    return optimization_metric
 
 
 ### MISCELLANEOUS ###
