@@ -151,6 +151,8 @@ optimization_metrics: Dict[str, Any] = {
 
 ### METRICS FOR PAIRS OF DIMENSIONS ###
 
+starting_values: Dict[str, float] = {"x": -1.0, "y": -1.0}
+
 
 def make_combined_metric(
     y_metric: Callable[..., float], x_metric: Callable[..., float]
@@ -160,12 +162,26 @@ def make_combined_metric(
     def optimization_metric(partition: Dict[str, Any]) -> float:
         """Combine the two metrics into a single metric."""
 
+        global starting_values
+
         y_val: float = y_metric(partition)
         x_val: float = x_metric(partition)
 
         distance: float = (y_val**2 + x_val**2) ** 0.5
 
-        # TODO - Add a penalty for not being NE of the starting point
+        print(f"Starting y: {starting_values['y']}, x: {starting_values['x']}")
+
+        if starting_values["x"] < 0.0 and starting_values["y"] < 0.0:
+            starting_values["x"] = x_val
+            starting_values["y"] = y_val
+            return distance
+
+        # Subtract a penalty from the starting point for not being NE of it
+        if x_val < starting_values["x"] or y_val < starting_values["y"]:
+            penalty: float = 0.10
+            distance = (
+                (starting_values["y"] ** 2 + starting_values["x"] ** 2) ** 0.5
+            ) * (1 - penalty)
 
         return distance
 
