@@ -77,15 +77,9 @@ def make_minority_proxy(statewide_demos: Dict[str, float]) -> Callable[..., floa
     def minority_proxy(partition: Dict[str, Any]) -> float:
         """Estimate the opportunity for minority representation."""
 
-        n_districts: int = len(partition)
-        demos_by_district: List[Dict[str, float]] = [
-            defaultdict(float) for _ in range(n_districts + 1)
-        ]
-
-        for i in range(1, n_districts + 1):  # NOTE - Generalize for str districts
-            for demo in census_fields[2:]:  # Skip total population & total VAP
-                demos_by_district[i][demo] = partition[demo][i]
-
+        demos_by_district: List[Dict[str, float]] = calc_demo_pcts_by_district(
+            partition
+        )
         results: dict[str, float] = calc_alt_minority_opportunity(
             statewide_demos, demos_by_district
         )
@@ -96,6 +90,24 @@ def make_minority_proxy(statewide_demos: Dict[str, float]) -> Callable[..., floa
         return oppty_pct
 
     return minority_proxy
+
+
+def calc_demo_pcts_by_district(partition: Dict[str, Any]) -> List[Dict[str, float]]:
+    """Calculate minority VAP %'s by district."""
+
+    n_districts: int = len(partition)
+    total_vap_field: str = census_fields[1]
+    demos_by_district: List[Dict[str, float]] = [
+        defaultdict(float) for _ in range(n_districts + 1)
+    ]
+
+    for i in range(1, n_districts + 1):  # NOTE - Generalize for str districts
+        for demo in census_fields[2:]:  # Skip total population & total VAP
+            demos_by_district[i][demo] = (
+                partition[demo][i] / partition[total_vap_field][i]
+            )
+
+    return demos_by_district
 
 
 def compactness_proxy(partition: Dict[str, Any]) -> float:
