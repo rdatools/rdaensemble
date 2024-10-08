@@ -88,6 +88,7 @@ def main() -> None:
     starting_plan: List[Dict[str, str | int]] = read_csv(args.root, [str, int])
     starting_assignments: List[Assignment] = load_plan(args.root)
     starting_name = os.path.splitext(os.path.basename(args.root))[0]
+    starting_name = starting_name.replace("_", "-")
 
     print()
     print(f"Optimizing {starting_name} for ({', '.join(optimize_dimensions)}) ...")
@@ -150,7 +151,7 @@ def main() -> None:
 
     y_dim = ratings_dimensions.index(y_label) + 1
     x_dim = ratings_dimensions.index(x_label) + 1
-    prefix: str = f"{starting_name}_{y_dim}{x_dim}"
+    prefix: str = f"{starting_name}-{y_dim}{x_dim}"
 
     # Setup and run the optimization chain
 
