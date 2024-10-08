@@ -5,15 +5,15 @@ WRITE A PLAN IN AN ENSEMBLE TO A CSV
 
 For example:
 
-$ scripts/pull_ensemble_plan.py \
+$ scripts/add_plan_to_ensemble.py \
+--plan ../tradeoffs/official_maps/NC_2022_Congress_Official_Proxy.csv \
 --plans ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_plans.json \
---id 0000 \
---output temp/NC20C_plan_0000.csv \
+--name official-proxy \
 --no-debug
 
 For documentation, type:
 
-$ scripts/pull_ensemble_plan.py -h
+$ scripts/pull_plan_from_ensemble.py -h
 
 """
 
@@ -27,9 +27,9 @@ warnings.warn = lambda *args, **kwargs: None
 
 from rdabase import (
     require_args,
-    Assignment,
+    read_csv,
     read_json,
-    write_csv,
+    write_json,
 )
 
 from rdaensemble import plan_from_ensemble, make_plan
@@ -38,14 +38,28 @@ from rdaensemble import plan_from_ensemble, make_plan
 def main() -> None:
     args: argparse.Namespace = parse_args()
 
+    #
+
     ensemble: Dict[str, Any] = read_json(args.plans)
 
     if "packed" in ensemble and ensemble["packed"] == True:
         raise Exception(f"Ensemble ({args.plans}) is packed. Unpack it first.")
 
-    plan: List[Dict[str, str | int]] = plan_from_ensemble(args.id, ensemble)
+    input_plan: List[Dict[str, Any]] = read_csv(args.plan, [str, int])
+    assert "GEOID" in input_plan[0] or "GEOID20" in input_plan[0]
+    assert "DISTRICT" in input_plan[0] or "District" in input_plan[0]
+    geoid_field: str = "GEOID20" if "GEOID20" in input_plan[0] else "GEOID"
+    district_field: str = "District" if "District" in input_plan[0] else "DISTRICT"
+    assignments: Dict[str, int | str] = {
+        str(row[geoid_field]): row[district_field] for row in input_plan
+    }
+    plan: Dict[str, Any] = {"name": args.name, "plan": assignments}
 
-    write_csv(args.output, plan, ["GEOID", "DISTRICT"])
+    ensemble["plans"] = [plan] + ensemble["plans"]
+    ensemble["size"] += 1
+
+    if not args.debug:
+        write_json(args.plans, ensemble)
 
 
 def parse_args():
@@ -54,19 +68,19 @@ def parse_args():
     )
 
     parser.add_argument(
+        "--plan",
+        type=str,
+        help="The path to the plan to add",
+    )
+    parser.add_argument(
         "--plans",
         type=str,
-        help="Ensemble of plans",
+        help="The ensemble of plans to add it to",
     )
     parser.add_argument(
-        "--id",
+        "--name",
         type=str,
-        help="The identifier of the plan to pull",
-    )
-    parser.add_argument(
-        "--output",
-        type=str,
-        help="The CSV file to write the plan to",
+        help="The name to give the plan in the ensemble",
     )
 
     parser.add_argument(
@@ -83,9 +97,9 @@ def parse_args():
 
     # Default values for args in debug mode
     debug_defaults: Dict[str, Any] = {
-        "plans": "../../iCloud/fileout/tradeoffs/NC-alt/ensembles/NC20C_plans.json",
-        "id": "1634",
-        "output": "temp/NC20C_plan_1634.csv",
+        "plan": "../tradeoffs/official_maps/NC_2022_Congress_Official_Proxy.csv",
+        "plans": "temp/NC20C_plans.json",
+        "name": "official-proxy",
     }
     args = require_args(args, args.debug, debug_defaults)
 
