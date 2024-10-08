@@ -24,6 +24,8 @@ from .mcmc import (
 from .general import (
     cuts_and_boundaries,
     score_ensemble,
+    is_defined_opportunity_district,
+    count_defined_opportunity_districts,
     id_notable_maps,
     ratings_dimensions,
     ratings_indexes,

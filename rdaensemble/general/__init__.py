@@ -1,7 +1,11 @@
 # rdaensemble/general/__init__.py
 
 from .compactness import cuts_and_boundaries
-from .score import score_ensemble
+from .score import (
+    score_ensemble,
+    is_defined_opportunity_district,
+    count_defined_opportunity_districts,
+)
 from .notable_maps import (
     id_notable_maps,
     ratings_dimensions,

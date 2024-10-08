@@ -99,4 +99,50 @@ def score_ensemble(
     return scores
 
 
+def is_defined_opportunity_district(
+    dem_votes: int,
+    rep_votes: int,
+    group_dem_votes: int,
+    group_rep_votes: int,
+    white_dem_votes: int,
+    white_rep_votes: int,
+) -> bool:
+    """Is a district a defined minority opportunity district?
+
+    Parameters:
+    dem_votes: int - Democratic votes in the district
+    rep_votes: int - Republican votes in the district
+    group_dem_votes: int - Democratic votes in the minority group (e.g., Black or Hispanic) in the district
+    group_rep_votes: int - Republican votes in the minority group in the district
+    white_dem_votes: int - Democratic votes in the white + other group in the district
+    white_rep_votes: int - Republican votes in the white + other group in the district
+
+    Returns:
+    bool - True if the district is defined as a minority opportunity district, False otherwise
+
+    """
+
+    # The minority-preferred candidate is one who received a majority of the minority group's votes
+    minority_preferred_candidate_is_dem: bool = group_dem_votes > group_rep_votes
+
+    # Two conditions must be met for a district to be a defined minority opportunity district:
+    # 1 - The minority preferred candidate must win the district
+    minority_preferred_candidate_won: bool = (
+        minority_preferred_candidate_is_dem and dem_votes > rep_votes
+    ) or (not minority_preferred_candidate_is_dem and rep_votes > dem_votes)
+
+    # 2 - The minority group votes for the preferred candidate must outnumber the white+other votes for the preferred candidate
+    minority_votes_outnumber_white_votes: bool = (
+        minority_preferred_candidate_is_dem and group_dem_votes > white_dem_votes
+    ) or (not minority_preferred_candidate_is_dem and group_rep_votes > white_rep_votes)
+
+    return minority_preferred_candidate_won and minority_votes_outnumber_white_votes
+
+
+def count_defined_opportunity_districts() -> int:
+    """Count the number of defined Black & Hispanic opportunity districts in a plan."""
+
+    return 42
+
+
 ### END ###
