@@ -1,20 +1,23 @@
 #!/usr/bin/env python3
 
 """
-TODO - PAIRWISE OPTIMIZATION
+PAIRWISE METRIC OPTIMIZATION
 
 Generate an ensemble of plans optimized for a *pair* of metrics using ReCom/single-metric optimization.
 
 For example:
-TODO - Update this example
 
 $ scripts/recom_optimize_pair.py \
+--root ../../iCloud/fileout/tradeoffs/NC/plans/NC20C_9417.csv \
 --state NC \
---size 10000 \
+--plantype congress \
+--optimize proportionality_minority \
+--roughlyequal 0.01 \
+--size 1000 \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
---plans ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_plans_compactness_optimized.json \
+--plans temp/NC20C_9417_proportionality_minority_plans.json \
 --no-debug
 
 $ scripts/recom_optimize_pair.py
@@ -188,9 +191,8 @@ def main() -> None:
     ensemble["plans"] = plans
     ensemble["size"] = len(plans)  # Not every optimization step is kept
 
-    # TODO - Uncomment this to write the ensemble to a JSON file
-    # if not args.debug:
-    #     write_json(args.plans, ensemble)
+    if not args.debug:
+        write_json(args.plans, ensemble)
 
     pass  # For debugging
 
@@ -281,7 +283,7 @@ def parse_args():
         "state": "NC",
         "plantype": "congress",
         "size": 100,
-        "plans": "temp/NC20C_9417_proportionality_compactness_plans.json",
+        "plans": "temp/NC20C_9417_proportionality_minority_plans.json",
         "data": "../rdabase/data/NC/NC_2020_data.csv",
         "shapes": "../rdabase/data/NC/NC_2020_shapes_simplified.json",
         "graph": "../rdabase/data/NC/NC_2020_graph.json",

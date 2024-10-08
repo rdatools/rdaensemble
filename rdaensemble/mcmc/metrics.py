@@ -98,12 +98,14 @@ def calc_demo_pcts_by_district(partition: Dict[str, Any]) -> List[Dict[str, floa
     n_districts: int = len(partition)
     total_vap_field: str = census_fields[1]
     demos_by_district: List[Dict[str, float]] = [
-        defaultdict(float) for _ in range(n_districts + 1)
+        defaultdict(float) for _ in range(n_districts)
     ]
 
     for i in range(1, n_districts + 1):  # NOTE - Generalize for str districts
+        j: int = i - 1
         for demo in census_fields[2:]:  # Skip total population & total VAP
-            demos_by_district[i][demo] = (
+            simple_demo: str = demo.split("_")[0].lower()
+            demos_by_district[j][simple_demo] = (
                 partition[demo][i] / partition[total_vap_field][i]
             )
 
@@ -181,11 +183,10 @@ def make_combined_metric(
 
         distance: float = (y_val**2 + x_val**2) ** 0.5
 
-        print(f"Starting y: {starting_values['y']}, x: {starting_values['x']}")
-
         if starting_values["x"] < 0.0 and starting_values["y"] < 0.0:
             starting_values["x"] = x_val
             starting_values["y"] = y_val
+            # print(f"Starting y: {starting_values['y']}, x: {starting_values['x']}")
             return distance
 
         # Subtract a penalty from the starting point for not being NE of it
@@ -194,6 +195,8 @@ def make_combined_metric(
             distance = (
                 (starting_values["y"] ** 2 + starting_values["x"] ** 2) ** 0.5
             ) * (1 - penalty)
+
+        # print(f"Current y: {y_val}, x: {x_val}, distance: {distance}")
 
         return distance
 
