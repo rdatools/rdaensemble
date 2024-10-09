@@ -2,7 +2,7 @@
 SCORE AN ENSEMBLE OF PLANS
 """
 
-from typing import List, Dict, Set, Any
+from typing import List, Dict, Set, NamedTuple, Any
 
 import sys
 
@@ -99,13 +99,29 @@ def score_ensemble(
     return scores
 
 
+### MINORITY OPPORTUNITY DISTRICTS (FORMALLY) ###
+
+
+class InferredVotes(NamedTuple):
+    """Votes inferred from the total votes and the votes of a group."""
+
+    dem_votes: int
+    rep_votes: int
+    black_dem_votes: int
+    black_rep_votes: int
+    hispanic_dem_votes: int
+    hispanic_rep_votes: int
+    other_dem_votes: int
+    other_rep_votes: int
+
+
 def is_defined_opportunity_district(
     dem_votes: int,
     rep_votes: int,
     group_dem_votes: int,
     group_rep_votes: int,
-    white_dem_votes: int,
-    white_rep_votes: int,
+    other_dem_votes: int,
+    other_rep_votes: int,
 ) -> bool:
     """Is a district a defined minority opportunity district?
 
@@ -114,8 +130,8 @@ def is_defined_opportunity_district(
     rep_votes: int - Republican votes in the district
     group_dem_votes: int - Democratic votes in the minority group (e.g., Black or Hispanic) in the district
     group_rep_votes: int - Republican votes in the minority group in the district
-    white_dem_votes: int - Democratic votes in the white + other group in the district
-    white_rep_votes: int - Republican votes in the white + other group in the district
+    other_dem_votes: int - Democratic votes in the white + other group in the district
+    other_rep_votes: int - Republican votes in the white + other group in the district
 
     Returns:
     bool - True if the district is defined as a minority opportunity district, False otherwise
@@ -132,17 +148,36 @@ def is_defined_opportunity_district(
     ) or (not minority_preferred_candidate_is_dem and rep_votes > dem_votes)
 
     # 2 - The minority group votes for the preferred candidate must outnumber the white+other votes for the preferred candidate
-    minority_votes_outnumber_white_votes: bool = (
-        minority_preferred_candidate_is_dem and group_dem_votes > white_dem_votes
-    ) or (not minority_preferred_candidate_is_dem and group_rep_votes > white_rep_votes)
+    minority_votes_outnumber_other_votes: bool = (
+        minority_preferred_candidate_is_dem and group_dem_votes > other_dem_votes
+    ) or (not minority_preferred_candidate_is_dem and group_rep_votes > other_rep_votes)
 
-    return minority_preferred_candidate_won and minority_votes_outnumber_white_votes
+    return minority_preferred_candidate_won and minority_votes_outnumber_other_votes
 
 
-def count_defined_opportunity_districts() -> int:
-    """Count the number of defined Black & Hispanic opportunity districts in a plan."""
+def count_defined_opportunity_districts(votes_by_district: List[InferredVotes]) -> int:
+    """Count the number of defined Black & Hispanic opportunity districts in a set of districts."""
 
-    return 42
+    count: int = 0
+    for votes in votes_by_district:
+        if is_defined_opportunity_district(
+            votes.dem_votes,
+            votes.rep_votes,
+            votes.black_dem_votes,
+            votes.black_rep_votes,
+            votes.other_dem_votes,
+            votes.other_rep_votes,
+        ) or is_defined_opportunity_district(
+            votes.dem_votes,
+            votes.rep_votes,
+            votes.hispanic_dem_votes,
+            votes.hispanic_rep_votes,
+            votes.other_dem_votes,
+            votes.other_rep_votes,
+        ):
+            count += 1
+
+    return count
 
 
 ### END ###

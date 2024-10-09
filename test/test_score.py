@@ -4,9 +4,11 @@
 TEST CALCULATION OF MINORITY OPPORTUNITY DISTRICTS
 """
 
-import random
-
-from rdaensemble.general import is_defined_opportunity_district
+from rdaensemble.general import (
+    is_defined_opportunity_district,
+    InferredVotes,
+    count_defined_opportunity_districts,
+)
 
 
 class TestMinorityOpportunity:
@@ -35,8 +37,8 @@ class TestMinorityOpportunity:
             rep_votes=rep_votes,
             group_dem_votes=group_dem_votes,
             group_rep_votes=group_rep_votes,
-            white_dem_votes=white_dem_votes,
-            white_rep_votes=white_rep_votes,
+            other_dem_votes=white_dem_votes,
+            other_rep_votes=white_rep_votes,
         )
 
         # The district is a minority opportunity district
@@ -62,8 +64,8 @@ class TestMinorityOpportunity:
             rep_votes=rep_votes,
             group_dem_votes=group_dem_votes,
             group_rep_votes=group_rep_votes,
-            white_dem_votes=white_dem_votes,
-            white_rep_votes=white_rep_votes,
+            other_dem_votes=white_dem_votes,
+            other_rep_votes=white_rep_votes,
         )
 
         # The district is a minority opportunity district
@@ -89,8 +91,8 @@ class TestMinorityOpportunity:
             rep_votes=rep_votes,
             group_dem_votes=group_dem_votes,
             group_rep_votes=group_rep_votes,
-            white_dem_votes=white_dem_votes,
-            white_rep_votes=white_rep_votes,
+            other_dem_votes=white_dem_votes,
+            other_rep_votes=white_rep_votes,
         )
 
         # The district is NOT a minority opportunity district
@@ -116,8 +118,8 @@ class TestMinorityOpportunity:
             rep_votes=rep_votes,
             group_dem_votes=group_dem_votes,
             group_rep_votes=group_rep_votes,
-            white_dem_votes=white_dem_votes,
-            white_rep_votes=white_rep_votes,
+            other_dem_votes=white_dem_votes,
+            other_rep_votes=white_rep_votes,
         )
 
         # The district is NOT a minority opportunity district
@@ -143,8 +145,8 @@ class TestMinorityOpportunity:
             rep_votes=rep_votes,
             group_dem_votes=group_dem_votes,
             group_rep_votes=group_rep_votes,
-            white_dem_votes=white_dem_votes,
-            white_rep_votes=white_rep_votes,
+            other_dem_votes=white_dem_votes,
+            other_rep_votes=white_rep_votes,
         )
 
         # The district is NOT a minority opportunity district
@@ -170,12 +172,62 @@ class TestMinorityOpportunity:
             rep_votes=rep_votes,
             group_dem_votes=group_dem_votes,
             group_rep_votes=group_rep_votes,
-            white_dem_votes=white_dem_votes,
-            white_rep_votes=white_rep_votes,
+            other_dem_votes=white_dem_votes,
+            other_rep_votes=white_rep_votes,
         )
 
         # The district is NOT a minority opportunity district
         assert result is False
+
+    def test_count_defined_opportunity_districts(self) -> None:
+
+        districts_EI: list[InferredVotes] = [
+            InferredVotes(
+                dem_votes=135,
+                rep_votes=65,
+                black_dem_votes=45,
+                black_rep_votes=5,
+                hispanic_dem_votes=35,
+                hispanic_rep_votes=15,
+                other_dem_votes=40,
+                other_rep_votes=60,
+            ),  # Black opportunity district
+            InferredVotes(
+                dem_votes=135,
+                rep_votes=65,
+                black_dem_votes=35,
+                black_rep_votes=15,
+                hispanic_dem_votes=45,
+                hispanic_rep_votes=5,
+                other_dem_votes=40,
+                other_rep_votes=60,
+            ),  # Hispanic opportunity district
+            InferredVotes(
+                dem_votes=70,
+                rep_votes=80,
+                black_dem_votes=45,
+                black_rep_votes=5,
+                hispanic_dem_votes=0,
+                hispanic_rep_votes=0,
+                other_dem_votes=25,
+                other_rep_votes=75,
+            ),  # D's didn't win the district
+            InferredVotes(
+                dem_votes=50,
+                rep_votes=100,
+                black_dem_votes=0,
+                black_rep_votes=0,
+                hispanic_dem_votes=10,
+                hispanic_rep_votes=40,
+                other_dem_votes=40,
+                other_rep_votes=60,
+            ),  # Hispanic votes don't outnumber white+other votes
+        ]
+        actual: int = count_defined_opportunity_districts(districts_EI)
+        expected: int = 2
+        assert actual == expected
+
+        assert True
 
 
 ### END ###
