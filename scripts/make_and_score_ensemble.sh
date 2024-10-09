@@ -60,6 +60,12 @@ scripts/recom_ensemble.py \
 --log ../../iCloud/fileout/tradeoffs/$STATE/$ENSEMBLES_DIR/${PREFIX}_log.txt \
 --no-debug
 
+echo "Adding the official proxy to the ensemble ..."
+scripts/add_plan_to_ensemble.py \
+--plan ../tradeoffs/official_maps/${STATE}_2022_${PLAN_TYPE}_Official_Proxy.csv \
+--plans ../../iCloud/fileout/tradeoffs/$STATE/ensembles/${PREFIX}_plans.json \
+--no-debug
+
 echo "Scoring the unbiased ensemble ..."
 scripts/score_ensemble.py \
 --state $STATE \

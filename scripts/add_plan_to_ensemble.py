@@ -80,6 +80,7 @@ def parse_args():
     parser.add_argument(
         "--name",
         type=str,
+        default="official-proxy",
         help="The name to give the plan in the ensemble",
     )
 
