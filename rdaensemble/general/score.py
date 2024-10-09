@@ -91,6 +91,8 @@ def score_ensemble(
                 scorecard["minority"] = scorecard["minority_alt"]
                 scorecard.pop("minority_alt")
 
+            # TODO - Add # of defined minority opportunity districts
+
             record.update(scorecard)
             scores.append(record)
             pass  # for break point
