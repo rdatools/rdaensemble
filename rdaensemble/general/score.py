@@ -44,6 +44,8 @@ def score_ensemble(
         k: float(max(epsilon, v)) for k, v in ipop_by_geoid.items()
     }
 
+    N: int = int(metadata["D"])
+
     scores: List[Dict] = list()
 
     for i, p in enumerate(plans):
@@ -68,6 +70,7 @@ def score_ensemble(
             energy: float = calc_energy(indexed_assignments, indexed_points)
 
             record: Dict[str, Any] = dict()
+            record["ndistricts"] = N
             record["map"] = plan_name
             record["energy"] = energy
 
