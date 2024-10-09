@@ -112,68 +112,68 @@ class TestMinorityOpportunity:
 
         districts_EI: list[InferredVotes] = [
             InferredVotes(
-                dem_votes=135,
-                rep_votes=65,
-                black_dem_votes=45,
-                black_rep_votes=5,
-                hispanic_dem_votes=35,
-                hispanic_rep_votes=15,
-                other_dem_votes=40,
-                other_rep_votes=60,
-            ),  # Black opportunity district
-            InferredVotes(
-                dem_votes=135,
-                rep_votes=65,
+                dem_votes=65,
+                rep_votes=55,
                 black_dem_votes=35,
-                black_rep_votes=15,
-                hispanic_dem_votes=45,
-                hispanic_rep_votes=5,
-                other_dem_votes=40,
-                other_rep_votes=60,
-            ),  # Hispanic opportunity district
-            InferredVotes(
-                dem_votes=70,
-                rep_votes=80,
-                black_dem_votes=45,
-                black_rep_votes=5,
-                hispanic_dem_votes=0,
-                hispanic_rep_votes=0,
-                other_dem_votes=25,
-                other_rep_votes=75,
-            ),  # D's didn't win the district
-            InferredVotes(
-                dem_votes=50,
-                rep_votes=100,
-                black_dem_votes=0,
-                black_rep_votes=0,
-                hispanic_dem_votes=10,
-                hispanic_rep_votes=40,
-                other_dem_votes=40,
-                other_rep_votes=60,
-            ),  # Hispanic votes don't outnumber white+other votes
-            InferredVotes(
-                dem_votes=100,
-                rep_votes=50,
-                black_dem_votes=30,
-                black_rep_votes=5,
-                hispanic_dem_votes=10,
-                hispanic_rep_votes=5,
-                other_dem_votes=40,
-                other_rep_votes=60,
-            ),  # Joint opportunity district
-            InferredVotes(
-                dem_votes=100,
-                rep_votes=50,
-                black_dem_votes=30,
                 black_rep_votes=5,
                 hispanic_dem_votes=5,
+                hispanic_rep_votes=20,
+                other_dem_votes=25,
+                other_rep_votes=30,
+            ),  # Black opportunity district
+            InferredVotes(
+                dem_votes=65,
+                rep_votes=55,
+                black_dem_votes=5,
+                black_rep_votes=20,
+                hispanic_dem_votes=35,
+                hispanic_rep_votes=5,
+                other_dem_votes=25,
+                other_rep_votes=30,
+            ),  # Hispanic opportunity district
+            InferredVotes(
+                dem_votes=55,
+                rep_votes=65,
+                black_dem_votes=35,
+                black_rep_votes=5,
+                hispanic_dem_votes=5,
+                hispanic_rep_votes=20,
+                other_dem_votes=15,
+                other_rep_votes=40,
+            ),  # D's didn't win the district
+            InferredVotes(
+                dem_votes=65,
+                rep_votes=55,
+                black_dem_votes=30,
+                black_rep_votes=5,
+                hispanic_dem_votes=0,
+                hispanic_rep_votes=20,
+                other_dem_votes=35,
+                other_rep_votes=30,
+            ),  # Black votes don't outnumber white+other votes
+            InferredVotes(
+                dem_votes=65,
+                rep_votes=55,
+                black_dem_votes=25,
+                black_rep_votes=5,
+                hispanic_dem_votes=15,
                 hispanic_rep_votes=10,
-                other_dem_votes=40,
-                other_rep_votes=60,
-            ),  # Not a joint opportunity district
+                other_dem_votes=25,
+                other_rep_votes=40,
+            ),  # Coalition opportunity district
+            InferredVotes(
+                dem_votes=65,
+                rep_votes=55,
+                black_dem_votes=15,
+                black_rep_votes=5,
+                hispanic_dem_votes=15,
+                hispanic_rep_votes=10,
+                other_dem_votes=35,
+                other_rep_votes=40,
+            ),  # Not a Coalition opportunity district
         ]
         actual: int = count_defined_opportunity_districts(districts_EI)
-        expected: int = 2
+        expected: int = 3
         assert actual == expected
 
         assert True
