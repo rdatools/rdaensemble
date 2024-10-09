@@ -4,6 +4,7 @@ from .compactness import cuts_and_boundaries
 from .score import (
     score_ensemble,
     InferredVotes,
+    is_same_candidate_preferred,
     is_defined_opportunity_district,
     count_defined_opportunity_districts,
 )

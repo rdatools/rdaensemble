@@ -120,6 +120,25 @@ class InferredVotes(NamedTuple):
     other_rep_votes: int
 
 
+def is_same_candidate_preferred(
+    black_dem_votes: int,
+    black_rep_votes: int,
+    hispanic_dem_votes: int,
+    hispanic_rep_votes: int,
+) -> bool:
+    """Do Blacks and Hispanic prefer the same candidate?"""
+
+    return (
+        (black_dem_votes > black_rep_votes)
+        and (hispanic_dem_votes > hispanic_rep_votes)
+    ) or (
+        (black_dem_votes < black_rep_votes)
+        and (hispanic_dem_votes < hispanic_rep_votes)
+    )
+
+    return True
+
+
 def is_defined_opportunity_district(
     dem_votes: int,
     rep_votes: int,
@@ -165,20 +184,39 @@ def count_defined_opportunity_districts(votes_by_district: List[InferredVotes]) 
 
     count: int = 0
     for votes in votes_by_district:
-        if is_defined_opportunity_district(
-            votes.dem_votes,
-            votes.rep_votes,
-            votes.black_dem_votes,
-            votes.black_rep_votes,
-            votes.other_dem_votes,
-            votes.other_rep_votes,
-        ) or is_defined_opportunity_district(
-            votes.dem_votes,
-            votes.rep_votes,
-            votes.hispanic_dem_votes,
-            votes.hispanic_rep_votes,
-            votes.other_dem_votes,
-            votes.other_rep_votes,
+        if (
+            is_defined_opportunity_district(
+                votes.dem_votes,
+                votes.rep_votes,
+                votes.black_dem_votes,
+                votes.black_rep_votes,
+                votes.other_dem_votes,
+                votes.other_rep_votes,
+            )
+            or is_defined_opportunity_district(
+                votes.dem_votes,
+                votes.rep_votes,
+                votes.hispanic_dem_votes,
+                votes.hispanic_rep_votes,
+                votes.other_dem_votes,
+                votes.other_rep_votes,
+            )
+            or (
+                is_same_candidate_preferred(
+                    votes.black_dem_votes,
+                    votes.black_rep_votes,
+                    votes.hispanic_dem_votes,
+                    votes.hispanic_rep_votes,
+                )
+                and is_defined_opportunity_district(
+                    votes.dem_votes,
+                    votes.rep_votes,
+                    votes.black_dem_votes + votes.hispanic_dem_votes,
+                    votes.black_rep_votes + votes.hispanic_rep_votes,
+                    votes.other_dem_votes,
+                    votes.other_rep_votes,
+                )
+            )
         ):
             count += 1
 

@@ -25,6 +25,7 @@ from .general import (
     cuts_and_boundaries,
     score_ensemble,
     InferredVotes,
+    is_same_candidate_preferred,
     is_defined_opportunity_district,
     count_defined_opportunity_districts,
     id_notable_maps,
