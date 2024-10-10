@@ -6,9 +6,9 @@ PLAN_TYPE=""
 
 # Function to print usage
 usage() {
-    echo "Usage: $0 --state <STATE> --plan-type <PLAN_TYPE>"
+    echo "Usage: $0 --state <STATE> --plantype <PLAN_TYPE>"
     echo "  --state     : State abbreviation (e.g., $STATE)"
-    echo "  --plan-type : Plan type (e.g., congress, upper, lower)"
+    echo "  --plantype : Plan type (e.g., congress, upper, lower)"
     exit 1
 }
 
@@ -16,7 +16,7 @@ usage() {
 while [[ "$#" -gt 0 ]]; do
     case $1 in
         --state) STATE="$2"; shift ;;
-        --plan-type) PLAN_TYPE="$2"; shift ;;
+        --plantype) PLAN_TYPE="$2"; shift ;;
         *) echo "Unknown parameter: $1"; usage ;;
     esac
     shift
