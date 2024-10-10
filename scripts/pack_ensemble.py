@@ -7,7 +7,7 @@ For example:
 
 $ scripts/pack_ensemble.py \
 --input ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_plans.json \
---output ~/Downloads/NC20C_plans_packed.json \
+--output temp/NC20C_plans_packed.json \
 --no-debug
 
 For documentation, type:
@@ -109,8 +109,8 @@ def parse_args():
 
     # Default values for args in debug mode
     debug_defaults: Dict[str, Any] = {
-        "input": "../../iCloud/fileout/ensembles/NC20C_plans.json",
-        "output": "~/Downloads/NC20C_plans_packed.json",
+        "input": "../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_plans.json",
+        "output": "temp/NC20C_plans_packed.json",
         "verbose": True,
     }
     args = require_args(args, args.debug, debug_defaults)
