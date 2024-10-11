@@ -88,8 +88,8 @@ def score_ensemble(
             energy: float = calc_energy(indexed_assignments, indexed_points)
 
             record: OrderedDict[str, Any] = OrderedDict()
-            record["ndistricts"] = N
             record["map"] = plan_name
+            record["ndistricts"] = N
             record["energy"] = energy
 
             cut_pct, boundary_pct = cuts_and_boundaries(plan_dict, graph)
