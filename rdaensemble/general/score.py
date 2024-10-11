@@ -5,6 +5,7 @@ SCORE AN ENSEMBLE OF PLANS
 from typing import List, Dict, Set, NamedTuple, Any
 
 import sys
+from collections import defaultdict
 
 from rdabase import (
     mkPoints,
@@ -265,6 +266,49 @@ def load_EI_votes(votes_file: str) -> Dict[str, InferredVotes]:
         estimates_by_precinct[geoid] = estimated_votes
 
     return estimates_by_precinct
+
+
+def aggregate_votes_by_district(
+    assignments: List[Assignment],
+    votes: Dict[str, InferredVotes],
+    n_districts: int,
+) -> Dict[int | str, InferredVotes]:
+    """Aggregate EI-estimated votes by district."""
+
+    aggregate: List[Dict[int | str, int]] = [
+        defaultdict(int) for _ in range(n_districts + 1)
+    ]
+
+    for a in assignments:
+        # NOTE - Generalize this for str districts
+        aggregate[int(a.district)]["dem_votes"] += votes[a.geoid].dem_votes
+        aggregate[int(a.district)]["rep_votes"] += votes[a.geoid].rep_votes
+        aggregate[int(a.district)]["black_dem_votes"] += votes[a.geoid].black_dem_votes
+        aggregate[int(a.district)]["black_rep_votes"] += votes[a.geoid].black_rep_votes
+        aggregate[int(a.district)]["hispanic_dem_votes"] += votes[
+            a.geoid
+        ].hispanic_dem_votes
+        aggregate[int(a.district)]["hispanic_rep_votes"] += votes[
+            a.geoid
+        ].hispanic_rep_votes
+        aggregate[int(a.district)]["other_dem_votes"] += votes[a.geoid].other_dem_votes
+        aggregate[int(a.district)]["other_rep_votes"] += votes[a.geoid].other_rep_votes
+
+    by_district: Dict[int | str, InferredVotes] = {
+        i: InferredVotes(
+            dem_votes=d["dem_votes"],
+            rep_votes=d["rep_votes"],
+            black_dem_votes=d["black_dem_votes"],
+            black_rep_votes=d["black_rep_votes"],
+            hispanic_dem_votes=d["hispanic_dem_votes"],
+            hispanic_rep_votes=d["hispanic_rep_votes"],
+            other_dem_votes=d["other_dem_votes"],
+            other_rep_votes=d["other_rep_votes"],
+        )
+        for i, d in enumerate(aggregate)
+    }
+
+    return by_district
 
 
 ### END ###

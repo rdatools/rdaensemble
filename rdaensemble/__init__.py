@@ -29,6 +29,7 @@ from .general import (
     is_defined_opportunity_district,
     count_defined_opportunity_districts,
     load_EI_votes,
+    aggregate_votes_by_district,
     id_notable_maps,
     ratings_dimensions,
     ratings_indexes,

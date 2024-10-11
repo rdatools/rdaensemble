@@ -8,6 +8,7 @@ from .score import (
     is_defined_opportunity_district,
     count_defined_opportunity_districts,
     load_EI_votes,
+    aggregate_votes_by_district,
 )
 from .notable_maps import (
     id_notable_maps,
