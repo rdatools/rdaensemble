@@ -5,7 +5,8 @@ SCORE AN ENSEMBLE OF PLANS
 from typing import List, Dict, Set, NamedTuple, Any
 
 import sys
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
+
 
 from rdabase import (
     mkPoints,
@@ -86,7 +87,7 @@ def score_ensemble(
 
             energy: float = calc_energy(indexed_assignments, indexed_points)
 
-            record: Dict[str, Any] = dict()
+            record: OrderedDict[str, Any] = OrderedDict()
             record["ndistricts"] = N
             record["map"] = plan_name
             record["energy"] = energy
@@ -107,6 +108,10 @@ def score_ensemble(
             if alt_minority:
                 scorecard["minority"] = scorecard["minority_alt"]
                 scorecard.pop("minority_alt")
+                if "alt_opportunity_districts_pct" in scorecard:
+                    scorecard.pop("alt_opportunity_districts_pct")
+
+            record.update(scorecard)
 
             if est_votes:
                 aggregated_votes: Dict[int | str, InferredVotes] = (
@@ -118,9 +123,13 @@ def score_ensemble(
                 oppty_district_count: int = count_defined_opportunity_districts(
                     votes_by_district
                 )
-                scorecard["defined_opportunity_districts"] = oppty_district_count
+                record = insert_after(
+                    record,
+                    "alt_coalition_districts",
+                    "defined_opportunity_districts",
+                    oppty_district_count,
+                )
 
-            record.update(scorecard)
             scores.append(record)
             pass  # for break point
 
@@ -318,6 +327,17 @@ def aggregate_votes_by_district(
     }
 
     return by_district
+
+
+def insert_after(d, key, new_key, new_value):
+    if key not in d:
+        raise KeyError(f"Key '{key}' not found in the OrderedDict")
+
+    items = list(d.items())
+    insert_position = items.index((key, d[key])) + 1
+    items.insert(insert_position, (new_key, new_value))
+
+    return OrderedDict(items)
 
 
 ### END ###
