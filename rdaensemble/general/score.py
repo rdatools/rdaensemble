@@ -25,13 +25,28 @@ from .compactness import cuts_and_boundaries
 from .utils import make_plan
 
 
+class InferredVotes(NamedTuple):
+    """Votes inferred from the total votes and the votes of a group."""
+
+    dem_votes: int
+    rep_votes: int
+    black_dem_votes: int
+    black_rep_votes: int
+    hispanic_dem_votes: int
+    hispanic_rep_votes: int
+    other_dem_votes: int
+    other_rep_votes: int
+
+
 def score_ensemble(
     plans: List[Dict[str, str | float | Dict[str, int | str]]],
     data: Dict[str, Dict[str, int | str]],
     shapes: Dict[str, Any],
     graph: Dict[str, List[str]],
     metadata: Dict[str, Any],
+    *,
     alt_minority: bool = False,
+    est_votes: Dict[str, InferredVotes] = dict(),
     epsilon: float = 0.01,
 ) -> List[Dict]:
     """Score an ensemble of maps."""
@@ -93,7 +108,17 @@ def score_ensemble(
                 scorecard["minority"] = scorecard["minority_alt"]
                 scorecard.pop("minority_alt")
 
-            # TODO - Add # of defined minority opportunity districts
+            if est_votes:
+                aggregated_votes: Dict[int | str, InferredVotes] = (
+                    aggregate_votes_by_district(assignments, est_votes, N)
+                )
+                votes_by_district: List[InferredVotes] = list(
+                    aggregated_votes.values()
+                )[1:]
+                oppty_district_count: int = count_defined_opportunity_districts(
+                    votes_by_district
+                )
+                scorecard["defined_opportunity_districts"] = oppty_district_count
 
             record.update(scorecard)
             scores.append(record)
@@ -107,19 +132,6 @@ def score_ensemble(
 
 
 ### MINORITY OPPORTUNITY DISTRICTS (FORMALLY) ###
-
-
-class InferredVotes(NamedTuple):
-    """Votes inferred from the total votes and the votes of a group."""
-
-    dem_votes: int
-    rep_votes: int
-    black_dem_votes: int
-    black_rep_votes: int
-    hispanic_dem_votes: int
-    hispanic_rep_votes: int
-    other_dem_votes: int
-    other_rep_votes: int
 
 
 def is_same_candidate_preferred(
@@ -186,40 +198,37 @@ def count_defined_opportunity_districts(votes_by_district: List[InferredVotes]) 
 
     count: int = 0
     for votes in votes_by_district:
-        if (
-            is_defined_opportunity_district(
-                votes.dem_votes,
-                votes.rep_votes,
-                votes.black_dem_votes,
-                votes.black_rep_votes,
-                votes.other_dem_votes,
-                votes.other_rep_votes,
-            )
-            or is_defined_opportunity_district(
-                votes.dem_votes,
-                votes.rep_votes,
-                votes.hispanic_dem_votes,
-                votes.hispanic_rep_votes,
-                votes.other_dem_votes,
-                votes.other_rep_votes,
-            )
-            or (
-                is_same_candidate_preferred(
-                    votes.black_dem_votes,
-                    votes.black_rep_votes,
-                    votes.hispanic_dem_votes,
-                    votes.hispanic_rep_votes,
-                )
-                and is_defined_opportunity_district(
-                    votes.dem_votes,
-                    votes.rep_votes,
-                    votes.black_dem_votes + votes.hispanic_dem_votes,
-                    votes.black_rep_votes + votes.hispanic_rep_votes,
-                    votes.other_dem_votes,
-                    votes.other_rep_votes,
-                )
-            )
-        ):
+        scenario_1: bool = is_defined_opportunity_district(
+            votes.dem_votes,
+            votes.rep_votes,
+            votes.black_dem_votes,
+            votes.black_rep_votes,
+            votes.other_dem_votes,
+            votes.other_rep_votes,
+        )  # Black opportunity district
+        scenario_2: bool = is_defined_opportunity_district(
+            votes.dem_votes,
+            votes.rep_votes,
+            votes.hispanic_dem_votes,
+            votes.hispanic_rep_votes,
+            votes.other_dem_votes,
+            votes.other_rep_votes,
+        )  # Hispanic opportunity district
+        scenario_3: bool = is_same_candidate_preferred(
+            votes.black_dem_votes,
+            votes.black_rep_votes,
+            votes.hispanic_dem_votes,
+            votes.hispanic_rep_votes,
+        ) and is_defined_opportunity_district(
+            votes.dem_votes,
+            votes.rep_votes,
+            votes.black_dem_votes + votes.hispanic_dem_votes,
+            votes.black_rep_votes + votes.hispanic_rep_votes,
+            votes.other_dem_votes,
+            votes.other_rep_votes,
+        )  # Coalition opportunity district
+
+        if scenario_1 or scenario_2 or scenario_3:
             count += 1
 
     return count

@@ -38,7 +38,7 @@ from rdabase import (
     load_graph,
     load_metadata,
 )
-from rdaensemble import score_ensemble, scores_metadata
+from rdaensemble import score_ensemble, scores_metadata, InferredVotes, load_EI_votes
 
 
 def main() -> None:
@@ -49,6 +49,10 @@ def main() -> None:
     graph: Dict[str, List[str]] = load_graph(args.graph)
     metadata: Dict[str, Any] = load_metadata(args.state, args.data, args.plantype)
 
+    est_votes: Dict[str, InferredVotes] = dict()
+    if args.eivotes:
+        est_votes = load_EI_votes(args.eivotes)
+
     # TYPE HINT
     ensemble: Dict[str, Any] = read_json(args.plans)
     plans: List[Dict[str, str | float | Dict[str, int | str]]] = ensemble["plans"]
@@ -58,7 +62,13 @@ def main() -> None:
 
     alt_minority: bool = not args.no_alt_minority
     scores: List[Dict] = score_ensemble(
-        plans, data, shapes, graph, metadata, alt_minority=alt_minority
+        plans,
+        data,
+        shapes,
+        graph,
+        metadata,
+        alt_minority=alt_minority,
+        est_votes=est_votes,
     )
 
     metadata: Dict[str, Any] = scores_metadata(xx=args.state, plans=args.plans)
@@ -95,6 +105,11 @@ def parse_args():
         "--data",
         type=str,
         help="Data file",
+    )
+    parser.add_argument(
+        "--eivotes",
+        type=str,
+        help="EI-estimated votes file",
     )
     parser.add_argument(
         "--shapes",
@@ -134,15 +149,13 @@ def parse_args():
     # Default values for args in debug mode
     debug_defaults: Dict[str, Any] = {
         "state": "NC",
-        # "plantype": "congress",
-        "plantype": "upper",
-        # "plans": "../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_plans.json",
-        "plans": "../../iCloud/fileout/tradeoffs/NC/ensembles-upper/NC20U_plans.json",
+        "plantype": "congress",
+        "plans": "../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_plans.json",
         "data": "../rdabase/data/NC/NC_2020_data.csv",
+        "eivotes": "../tradeoffs/EI_estimates/NC_2020_est_votes.csv",
         "shapes": "../rdabase/data/NC/NC_2020_shapes_simplified.json",
         "graph": "../rdabase/data/NC/NC_2020_graph.json",
-        # "scores": "temp/NC20C_scores.csv",
-        "scores": "temp/NC20U_plans.json",
+        "scores": "temp/NC20C_scores.csv",
         "verbose": True,
     }
     args = require_args(args, args.debug, debug_defaults)
