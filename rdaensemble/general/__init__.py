@@ -7,6 +7,7 @@ from .score import (
     is_same_candidate_preferred,
     is_defined_opportunity_district,
     count_defined_opportunity_districts,
+    load_EI_votes,
 )
 from .notable_maps import (
     id_notable_maps,

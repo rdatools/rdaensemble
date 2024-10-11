@@ -28,6 +28,7 @@ from .general import (
     is_same_candidate_preferred,
     is_defined_opportunity_district,
     count_defined_opportunity_districts,
+    load_EI_votes,
     id_notable_maps,
     ratings_dimensions,
     ratings_indexes,

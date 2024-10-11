@@ -17,6 +17,7 @@ from rdabase import (
     Assignment,
     IndexedWeightedAssignment,
     calc_energy,
+    read_csv,
 )
 from rdascore import analyze_plan
 from .compactness import cuts_and_boundaries
@@ -221,6 +222,49 @@ def count_defined_opportunity_districts(votes_by_district: List[InferredVotes]) 
             count += 1
 
     return count
+
+
+def load_EI_votes(votes_file: str) -> Dict[str, InferredVotes]:
+    """Read an EI estimated votes file."""
+
+    fields: List[str] = [
+        "pre_20_rep_white",
+        "pre_20_rep_black",
+        "pre_20_rep_hisp",
+        "pre_20_rep_oth",
+        "pre_20_dem_white",
+        "pre_20_dem_black",
+        "pre_20_dem_hisp",
+        "pre_20_dem_oth",
+    ]
+    field_types = [str] + [int] * len(fields)
+
+    raw_by_precinct: List[Dict[str, int | str]] = read_csv(votes_file, field_types)
+
+    estimates_by_precinct: Dict[str, InferredVotes] = dict()
+    for row in raw_by_precinct:
+        geoid: str = str(row["GEOID"])
+        rep_white: int = int(row["pre_20_rep_white"])
+        rep_black: int = int(row["pre_20_rep_black"])
+        rep_hisp: int = int(row["pre_20_rep_hisp"])
+        rep_oth: int = int(row["pre_20_rep_oth"])
+        dem_white: int = int(row["pre_20_dem_white"])
+        dem_black: int = int(row["pre_20_dem_black"])
+        dem_hisp: int = int(row["pre_20_dem_hisp"])
+        dem_oth: int = int(row["pre_20_dem_oth"])
+        estimated_votes: InferredVotes = InferredVotes(
+            dem_votes=dem_white + dem_black + dem_hisp + dem_oth,
+            rep_votes=rep_white + rep_black + rep_hisp + rep_oth,
+            black_dem_votes=dem_black,
+            black_rep_votes=rep_black,
+            hispanic_dem_votes=dem_hisp,
+            hispanic_rep_votes=rep_hisp,
+            other_dem_votes=dem_white + dem_oth,
+            other_rep_votes=rep_white + rep_oth,
+        )
+        estimates_by_precinct[geoid] = estimated_votes
+
+    return estimates_by_precinct
 
 
 ### END ###
