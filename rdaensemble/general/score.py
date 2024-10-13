@@ -89,7 +89,6 @@ def score_ensemble(
 
             record: OrderedDict[str, Any] = OrderedDict()
             record["map"] = plan_name
-            record["ndistricts"] = N
             record["energy"] = energy
 
             cut_pct, boundary_pct = cuts_and_boundaries(plan_dict, graph)
