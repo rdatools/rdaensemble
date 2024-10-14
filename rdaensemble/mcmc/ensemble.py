@@ -149,15 +149,15 @@ def run_unbiased_chain(
 
         # This plan is unique.
 
-        for district_hash in district_hashes:
-            districts_seen.add(district_hash)
-
+        plans_kept += 1
         plan_name: str = f"{plans_kept - 1:04d}"
         plans.append({"name": plan_name, "plan": plan})  # No weights.
-        plans_kept += 1
 
         print(f"Keeping {plan_name} ({step:06d}) ...")
         print(f"Keeping {plan_name} ({step:06d}) ...", file=logfile)
+
+        for district_hash in district_hashes:
+            districts_seen.add(district_hash)
 
         if plans_kept >= keep_total:
             break
