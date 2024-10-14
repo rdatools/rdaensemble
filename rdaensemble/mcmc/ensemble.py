@@ -5,6 +5,7 @@ GENERATE AN ENSEMBLE OF MAPS using RECOM
 from typing import Any, List, Dict, Set, Callable
 
 from functools import partial
+from collections import defaultdict
 
 from gerrychain import (
     GeographicPartition,
@@ -113,7 +114,7 @@ def run_unbiased_chain(
     plans: List[Dict[str, str | float | Dict[str, int | str]]] = list()
     district_offset: int = 1 if random_start else 0
 
-    plans_seen: Set = set()
+    districts_seen: Set = set()
     plans_kept: int = 0
 
     for step, partition in enumerate(chain):
@@ -130,11 +131,19 @@ def run_unbiased_chain(
             back_map[node]: part + district_offset for node, part in assignments.items()
         }
 
-        plan_hash: int = hash_plan(plan)
-        if plan_hash in plans_seen:
-            continue
+        geoids_by_district: List[Set[str]] = group_keys_by_value(plan)
+        district_hashes: List[int] = list()
+        for combo in geoids_by_district:
+            district_hash: int = hash_set(combo)
+            district_hashes.append(district_hash)
+            if district_hash in districts_seen:
+                continue  # Skip plans that have districts that have already been seen.
 
-        plans_seen.add(plan_hash)
+        # This plan is unique.
+
+        for district_hash in district_hashes:
+            districts_seen.add(district_hash)
+
         plan_name: str = f"{plans_kept - 1:04d}"
         plans.append({"name": plan_name, "plan": plan})  # No weights.
         plans_kept += 1
@@ -148,10 +157,15 @@ def run_unbiased_chain(
     return plans
 
 
-def hash_plan(d):
-    """Hash the dictionary of geoid:district assignments for a plan."""
+def hash_set(s):
+    return hash(frozenset(s))
 
-    return hash(frozenset(d.items()))
+
+def group_keys_by_value(dictionary):
+    value_to_keys = defaultdict(set)
+    for key, value in dictionary.items():
+        value_to_keys[value].add(key)
+    return list(value_to_keys.values())
 
 
 ### END ###
