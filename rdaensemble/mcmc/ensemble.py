@@ -133,11 +133,16 @@ def run_unbiased_chain(
 
         geoids_by_district: List[Set[str]] = group_keys_by_value(plan)
         district_hashes: List[int] = list()
+        all_districts_new: bool = True
+
         for combo in geoids_by_district:
             district_hash: int = hash_set(combo)
             district_hashes.append(district_hash)
             if district_hash in districts_seen:
-                continue  # Skip plans that have districts that have already been seen.
+                all_districts_new = False
+                break
+        if not all_districts_new:
+            continue  # Skip plans that have any districts that have already been seen.
 
         # This plan is unique.
 

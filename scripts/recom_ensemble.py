@@ -112,6 +112,7 @@ def main() -> None:
             f,
             random_start=args.random_start,
             burn_in=args.burnin,
+            keep_total=args.size,
         )
 
     ensemble["plans"] = plans
@@ -135,7 +136,9 @@ def parse_args():
         default="congress",
         help="The type of districts (congress, upper, lower)",
     )
-    parser.add_argument("--size", type=int, default=10, help="Number of maps to keep")
+    parser.add_argument(
+        "--size", type=int, default=10000, help="Number of maps to keep"
+    )
     parser.add_argument(
         "--urnsize", type=int, default=1000000, help="The length of the chain"
     )
