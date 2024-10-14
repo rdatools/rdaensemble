@@ -95,7 +95,7 @@ def main() -> None:
 
         chain = setup_unbiased_markov_chain(
             recom,
-            args.size,
+            args.size + args.burnin,
             recom_graph,
             elections,
             roughly_equal=args.roughlyequal,
@@ -111,6 +111,7 @@ def main() -> None:
             back_map,
             f,
             random_start=args.random_start,
+            burn_in=args.burnin,
         )
 
     ensemble["plans"] = plans
@@ -136,6 +137,12 @@ def parse_args():
     )
     parser.add_argument(
         "--size", type=int, default=10, help="Number of maps to generate"
+    )
+    parser.add_argument(
+        "--burnin",
+        type=int,
+        default=1000,
+        help="Number of maps to skip before starting to collect them",
     )
     parser.add_argument(
         "--data",
@@ -211,11 +218,12 @@ def parse_args():
         "plantype": "congress",
         "data": "../rdabase/data/NC/NC_2020_data.csv",
         "graph": "../rdabase/data/NC/NC_2020_graph.json",
-        # "root": "../tradeoffs/root_maps/NC20C_root_map.csv",
+        "root": "random_maps/NC20C_random_plan.csv",
         "plans": "temp/NC20C_plans.json",
         "log": "temp/NC20C_log.txt",
-        "random_start": True,
+        # "random_start": True,
         "size": 10,
+        "burnin": 10,
     }
     args = require_args(args, args.debug, debug_defaults)
 

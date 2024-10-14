@@ -4,3 +4,4 @@ rdabase
 rdadccvt
 rdascore
 setuptools
+cython

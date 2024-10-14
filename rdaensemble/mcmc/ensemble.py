@@ -105,6 +105,7 @@ def run_unbiased_chain(
     logfile,
     *,
     random_start: bool = False,
+    burn_in: int = 0,
 ) -> List[Dict[str, str | float | Dict[str, int | str]]]:
     """Run a Markov chain."""
 
@@ -112,8 +113,14 @@ def run_unbiased_chain(
     district_offset: int = 1 if random_start else 0
 
     for step, partition in enumerate(chain):
-        print(f"Recombining {step:04d} ...")
-        print(f"Recombining {step:04d} ...", file=logfile)
+        if step < burn_in:
+            print(f"Burning in {step:04d} ...")
+            continue
+
+        plan_name: str = f"{step-burn_in:04d}"
+        print(f"Recombining {plan_name} ...")
+        print(f"Recombining {plan_name} ...", file=logfile)
+
         assert partition is not None
         assignments: Assignment = partition.assignment
 
@@ -121,7 +128,7 @@ def run_unbiased_chain(
         plan: Dict[str, int | str] = {
             back_map[node]: part + district_offset for node, part in assignments.items()
         }
-        plan_name: str = f"{step:04d}"
+
         plans.append({"name": plan_name, "plan": plan})  # No weights.
 
     return plans
