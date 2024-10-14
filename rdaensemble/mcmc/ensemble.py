@@ -109,8 +109,9 @@ def run_unbiased_chain(
     logfile,
     *,
     random_start: bool = False,
-    burn_in: int = 1000,
+    burn_in: int = 0,
     keep_total: int = 10000,
+    unique: bool = False,
 ) -> List[Dict[str, str | float | Dict[str, int | str]]]:
     """Run a Markov chain."""
 
@@ -121,10 +122,13 @@ def run_unbiased_chain(
     plans_kept: int = 0
 
     for step, partition in enumerate(chain):
-        if step < burn_in:
-            print(f"Burning in {step:06d} ...")
-            continue
+        # When burning in, skip the first burn_in steps.
+        if burn_in > 0:
+            if step < burn_in:
+                print(f"Burning in {step:06d} ...")
+                continue
 
+        # Get the plan from the chain.
         print(f"Considering {step:06d} ...")
 
         assert partition is not None
@@ -134,22 +138,22 @@ def run_unbiased_chain(
             back_map[node]: part + district_offset for node, part in assignments.items()
         }
 
-        # Skip plans that have any districts that have already been seen.
+        # In unique mode, skip plans that have any districts that have already been seen.
+        if unique:
+            geoids_by_district: List[Set[str]] = group_keys_by_value(plan)
+            district_hashes: List[int] = list()
+            all_districts_new: bool = True
 
-        geoids_by_district: List[Set[str]] = group_keys_by_value(plan)
-        district_hashes: List[int] = list()
-        all_districts_new: bool = True
+            for combo in geoids_by_district:
+                district_hash: int = hash_set(combo)
+                district_hashes.append(district_hash)
+                if district_hash in districts_seen:
+                    all_districts_new = False
+                    break
+            if not all_districts_new:
+                continue
 
-        for combo in geoids_by_district:
-            district_hash: int = hash_set(combo)
-            district_hashes.append(district_hash)
-            if district_hash in districts_seen:
-                all_districts_new = False
-                break
-        if not all_districts_new:
-            continue
-
-        # This plan is unique.
+            # This plan is unique.
 
         plans_kept += 1
         plan_name: str = f"{plans_kept - 1:04d}"
@@ -158,9 +162,11 @@ def run_unbiased_chain(
         print(f"Keeping {plan_name} ({step:06d}) ...")
         print(f"Keeping {plan_name} ({step:06d}) ...", file=logfile)
 
-        for district_hash in district_hashes:
-            districts_seen.add(district_hash)
+        if unique:
+            for district_hash in district_hashes:
+                districts_seen.add(district_hash)
 
+        # When you have enough plans, stop.
         if plans_kept >= keep_total:
             break
 

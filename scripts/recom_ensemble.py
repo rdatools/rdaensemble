@@ -112,6 +112,7 @@ def main() -> None:
             random_start=args.random_start,
             burn_in=args.burnin,
             keep_total=args.size,
+            unique=args.unique,
         )
 
     ensemble["plans"] = plans
@@ -144,7 +145,7 @@ def parse_args():
     parser.add_argument(
         "--burnin",
         type=int,
-        default=1000,
+        default=0,
         help="Number of maps to skip before starting to collect them",
     )
     parser.add_argument(
@@ -202,6 +203,9 @@ def parse_args():
         action="store_true",
         help="Start with random assignments",
     )
+    parser.add_argument(
+        "--unique", dest="unique", action="store_true", help="Unique districts mode"
+    )
 
     parser.add_argument(
         "-v", "--verbose", dest="verbose", action="store_true", help="Verbose mode"
@@ -228,6 +232,7 @@ def parse_args():
         "size": 10,
         "urnsize": 1000,
         "burnin": 10,
+        "unique": True,
     }
     args = require_args(args, args.debug, debug_defaults)
 
