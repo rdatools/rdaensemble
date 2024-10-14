@@ -2,7 +2,7 @@
 GENERATE AN ENSEMBLE OF MAPS using RECOM
 """
 
-from typing import Any, List, Dict, Callable
+from typing import Any, List, Dict, Set, Callable
 
 from functools import partial
 
@@ -105,33 +105,53 @@ def run_unbiased_chain(
     logfile,
     *,
     random_start: bool = False,
-    burn_in: int = 0,
+    burn_in: int = 1000,
+    keep_total: int = 10000,
 ) -> List[Dict[str, str | float | Dict[str, int | str]]]:
     """Run a Markov chain."""
 
     plans: List[Dict[str, str | float | Dict[str, int | str]]] = list()
     district_offset: int = 1 if random_start else 0
 
+    plans_seen: Set = set()
+    plans_kept: int = 0
+
     for step, partition in enumerate(chain):
         if step < burn_in:
-            print(f"Burning in {step:04d} ...")
+            print(f"Burning in {step:06d} ...")
             continue
 
-        plan_name: str = f"{step-burn_in:04d}"
-        print(f"Recombining {plan_name} ...")
-        print(f"Recombining {plan_name} ...", file=logfile)
+        print(f"Considering {step:06d} ...")
 
         assert partition is not None
         assignments: Assignment = partition.assignment
 
-        # Convert the ReCom partition to a plan.
         plan: Dict[str, int | str] = {
             back_map[node]: part + district_offset for node, part in assignments.items()
         }
 
+        plan_hash: int = hash_plan(plan)
+        if plan_hash in plans_seen:
+            continue
+
+        plans_seen.add(plan_hash)
+        plan_name: str = f"{plans_kept - 1:04d}"
         plans.append({"name": plan_name, "plan": plan})  # No weights.
+        plans_kept += 1
+
+        print(f"Keeping {plan_name} ({step:06d}) ...")
+        print(f"Keeping {plan_name} ({step:06d}) ...", file=logfile)
+
+        if plans_kept >= keep_total:
+            break
 
     return plans
+
+
+def hash_plan(d):
+    """Hash the dictionary of geoid:district assignments for a plan."""
+
+    return hash(frozenset(d.items()))
 
 
 ### END ###

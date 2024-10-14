@@ -95,7 +95,7 @@ def main() -> None:
 
         chain = setup_unbiased_markov_chain(
             recom,
-            args.size + args.burnin,
+            args.urnsize,  # was args.size + args.burnin,
             recom_graph,
             elections,
             roughly_equal=args.roughlyequal,
@@ -135,8 +135,9 @@ def parse_args():
         default="congress",
         help="The type of districts (congress, upper, lower)",
     )
+    parser.add_argument("--size", type=int, default=10, help="Number of maps to keep")
     parser.add_argument(
-        "--size", type=int, default=10, help="Number of maps to generate"
+        "--urnsize", type=int, default=1000000, help="The length of the chain"
     )
     parser.add_argument(
         "--burnin",
@@ -223,6 +224,7 @@ def parse_args():
         "log": "temp/NC20C_log.txt",
         # "random_start": True,
         "size": 10,
+        "urnsize": 1000,
         "burnin": 10,
     }
     args = require_args(args, args.debug, debug_defaults)
