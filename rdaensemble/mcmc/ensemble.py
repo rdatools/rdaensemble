@@ -134,6 +134,8 @@ def run_unbiased_chain(
             back_map[node]: part + district_offset for node, part in assignments.items()
         }
 
+        # Skip plans that have any districts that have already been seen.
+
         geoids_by_district: List[Set[str]] = group_keys_by_value(plan)
         district_hashes: List[int] = list()
         all_districts_new: bool = True
@@ -145,7 +147,7 @@ def run_unbiased_chain(
                 all_districts_new = False
                 break
         if not all_districts_new:
-            continue  # Skip plans that have any districts that have already been seen.
+            continue
 
         # This plan is unique.
 
