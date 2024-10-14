@@ -38,7 +38,6 @@ from gerrychain.proposals import recom
 from rdabase import (
     require_args,
     starting_seed,
-    DISTRICTS_BY_STATE,
     read_csv,
     write_json,
     load_data,

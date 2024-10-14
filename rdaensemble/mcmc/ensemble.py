@@ -21,6 +21,8 @@ from gerrychain.constraints import contiguous
 
 from gerrychain.partition.assignment import Assignment
 
+from rdabase import time_function
+
 
 def setup_unbiased_markov_chain(
     proposal: Callable,
@@ -100,6 +102,7 @@ def setup_unbiased_markov_chain(
     return chain
 
 
+@time_function
 def run_unbiased_chain(
     chain,
     back_map: Dict[int, str],

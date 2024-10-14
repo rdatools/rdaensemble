@@ -20,6 +20,7 @@ from rdabase import (
     IndexedWeightedAssignment,
     calc_energy,
     read_csv,
+    time_function,
 )
 from rdascore import analyze_plan
 from .compactness import cuts_and_boundaries
@@ -39,6 +40,7 @@ class InferredVotes(NamedTuple):
     other_rep_votes: int
 
 
+@time_function
 def score_ensemble(
     plans: List[Dict[str, str | float | Dict[str, int | str]]],
     data: Dict[str, Dict[str, int | str]],
