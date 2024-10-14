@@ -4,6 +4,7 @@ GENERATE AN ENSEMBLE OF MAPS using RECOM
 
 from typing import Any, List, Dict, Set, Callable
 
+import sys
 from functools import partial
 from collections import defaultdict
 
@@ -110,7 +111,7 @@ def run_unbiased_chain(
     *,
     random_start: bool = False,
     burn_in: int = 0,
-    keep_total: int = 10000,
+    keep_total: int = sys.maxsize,  # i.e., keep all plans
     unique: bool = False,
 ) -> List[Dict[str, str | float | Dict[str, int | str]]]:
     """Run a Markov chain."""
