@@ -12,11 +12,16 @@ $ scripts/recom_ensemble_KxM.py \
 --root ../tradeoffs/official_maps/NC_2022_Congress_Official_Proxy.csv \
 --K 100 \
 --M 100 \
---burnin 1000 \
+--burnin 0 \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
 --plans ~/Downloads/NC20C_0100_0100_from_official.json \
 --log ~/Downloads/NC20C_0100_0100_from_official_log.txt \
+--no-debug
+
+$ scripts/add_plan_to_ensemble.py \
+--plan ../tradeoffs/official_maps/NC_2022_Congress_Official_Proxy.csv \
+--plans ~/Downloads/NC20C_0100_0100_from_official.json \
 --no-debug
 
 $ scripts/score_ensemble.py \
