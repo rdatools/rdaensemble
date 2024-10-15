@@ -51,6 +51,7 @@ echo "Generating an unbiased ensemble ..."
 scripts/recom_ensemble.py \
 --state $STATE \
 --plantype $PLAN_TYPE \
+--burnin 1000 \
 --size 10000 \
 --roughlyequal $ROUGHLY_EQUAL \
 --root random_maps/${PREFIX}_random_plan.csv \
@@ -72,6 +73,7 @@ scripts/score_ensemble.py \
 --plantype $PLAN_TYPE \
 --plans ../../iCloud/fileout/tradeoffs/$STATE/$ENSEMBLES_DIR/${PREFIX}_plans.json \
 --data ../rdabase/data/$STATE/${STATE}_2020_data.csv \
+--eivotes ../tradeoffs/EI_estimates/${STATE}_2020_est_votes.csv \
 --shapes ../rdabase/data/$STATE/${STATE}_2020_shapes_simplified.json \
 --graph ../rdabase/data/$STATE/${STATE}_2020_graph.json \
 --scores ../../iCloud/fileout/tradeoffs/$STATE/$ENSEMBLES_DIR/${PREFIX}_scores.csv \
