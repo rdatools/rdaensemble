@@ -15,8 +15,18 @@ $ scripts/recom_ensemble_KxM.py \
 --burnin 1000 \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
---plans ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_0100_0100_from_official.json \
---log ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_0100_0100_from_official_log.txt \
+--plans ~/Downloads/NC20C_0100_0100_from_official.json \
+--log ~/Downloads/NC20C_0100_0100_from_official_log.txt \
+--no-debug
+
+$ scripts/score_ensemble.py \
+--state NC \
+--plans ~/Downloads/NC20C_0100_0100_from_official.json \
+--data ../rdabase/data/NC/NC_2020_data.csv \
+--eivotes ../tradeoffs/EI_estimates/NC_2020_est_votes.csv \
+--shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
+--graph ../rdabase/data/NC/NC_2020_graph.json \
+--scores ~/Downloads/NC20C_0100_0100_from_official.csv \
 --no-debug
 
 $ scripts/recom_ensemble_KxM.py
