@@ -12,6 +12,7 @@ $ scripts/recom_ensemble_KxM.py \
 --root ../tradeoffs/official_maps/NC_2022_Congress_Official_Proxy.csv \
 --K 100 \
 --M 100 \
+--burnin 1000 \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
 --plans ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_0100_0100_from_official.json \
@@ -97,7 +98,7 @@ def main() -> None:
 
             chain = setup_unbiased_markov_chain(
                 recom,
-                M,
+                args.burnin + M,
                 recom_graph,
                 elections,
                 roughly_equal=args.roughlyequal,
@@ -112,6 +113,8 @@ def main() -> None:
                     chain,
                     back_map,
                     f,
+                    burn_in=args.burnin,
+                    keep_total=M,
                 )
             )
 
@@ -152,6 +155,13 @@ def parse_args():
     parser.add_argument(
         "--M", type=int, default=100, help="Number of steps (mutations) per chain"
     )
+    parser.add_argument(
+        "--burnin",
+        type=int,
+        default=0,
+        help="Number of maps to skip before starting to collect them",
+    )
+
     parser.add_argument(
         "--data",
         type=str,
@@ -216,6 +226,7 @@ def parse_args():
         "root": "../tradeoffs/official_maps/NC_2022_Congress_Official_Proxy.csv",
         "K": 10,
         "M": 10,
+        "burnin": 10,
         "data": "../rdabase/data/NC/NC_2020_data.csv",
         "graph": "../rdabase/data/NC/NC_2020_graph.json",
         "plans": "temp/NC20C_0010_0010_from_official.json",
