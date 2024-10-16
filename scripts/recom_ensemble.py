@@ -67,6 +67,10 @@ def main() -> None:
         args.random_start and args.start
     ), "Cannot specify both --randomstart and --root"
 
+    assert (
+        args.sample == 0 or not args.unique
+    ), "Cannot use --sample and --unique modes at the same time"
+
     max_chain_length: int = 10 ^ 6
     chain_length: int = (
         max_chain_length

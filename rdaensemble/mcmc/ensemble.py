@@ -152,11 +152,10 @@ def run_unbiased_chain(
         # TODO - Count the # of reincarnations by district.
 
         if reincarnatations:
-            # report: str = ", ".join(str(num) for num in reincarnatations)
             for num in reincarnatations:
                 reincarnateds[num] += 1
-            print(f"{step:06d}: Reincarnated districts! {reincarnateds}")
-            print(f"{step:06d}: Reincarnated districts! {reincarnateds}", file=logfile)
+            print(f"Reincarnated {step:06d}        {reincarnateds}")
+            print(f"Reincarnated {step:06d}        {reincarnateds}", file=logfile)
 
         past_districts.update(prev_districts)
         prev_districts = curr_districts
