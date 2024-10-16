@@ -131,6 +131,10 @@ def main() -> None:
             unique=args.unique,
         )
 
+    description: str = (
+        f"Burn-in: {args.burnin}, Keep: {args.keep}, Sample: {args.sample}, Unique: {args.unique}"
+    )
+    ensemble["description"] = description
     ensemble["plans"] = plans
     if not args.debug:
         write_json(args.plans, ensemble)
