@@ -129,7 +129,7 @@ def main() -> None:
                     back_map,
                     f,
                     burn_in=args.burnin,
-                    keep_total=M,
+                    keep=M,
                 )
             )
 

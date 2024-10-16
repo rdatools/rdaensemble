@@ -111,64 +111,48 @@ def run_unbiased_chain(
     *,
     random_start: bool = False,
     burn_in: int = 0,
-    keep_total: int = sys.maxsize,  # i.e., keep all plans
+    keep: int = sys.maxsize,  # i.e., keep all plans, by default
+    sample: int = 0,
     unique: bool = False,
 ) -> List[Dict[str, str | float | Dict[str, int | str]]]:
     """Run a Markov chain."""
 
     plans: List[Dict[str, str | float | Dict[str, int | str]]] = list()
     district_offset: int = 1 if random_start else 0
-
-    districts_seen: Set = set()
     plans_kept: int = 0
 
     for step, partition in enumerate(chain):
-        # When burning in, skip the first burn_in steps.
         if burn_in > 0:
             if step < burn_in:
-                print(f"Burning in {step:06d} ...")
+                print(f"Burning in   {step:06d}        ...")
                 continue
+            elif step == burn_in:
+                print(f"Burn-in done {step-1:06d}        ...", file=logfile)
 
-        # Get the plan from the chain.
-        print(f"Considering {step:06d} ...")
+        print(f"Recombining  {step:06d}        ...")
 
         assert partition is not None
         assignments: Assignment = partition.assignment
-
         plan: Dict[str, int | str] = {
             back_map[node]: part + district_offset for node, part in assignments.items()
         }
 
-        # In unique mode, skip plans that have any districts that have already been seen.
+        # TODO - Check districts for duplicates.
+
+        if sample > 0:
+            raise NotImplementedError("TODO: Sample mode not yet implemented.")
+
         if unique:
-            geoids_by_district: List[Set[str]] = group_keys_by_value(plan)
-            district_hashes: List[int] = list()
-            all_districts_new: bool = True
+            raise NotImplementedError("TODO: Unique mode not yet implemented.")
 
-            for combo in geoids_by_district:
-                district_hash: int = hash_set(combo)
-                district_hashes.append(district_hash)
-                if district_hash in districts_seen:
-                    all_districts_new = False
-                    break
-            if not all_districts_new:
-                continue
-
-            # This plan is unique.
-
+        plan_name: str = f"{plans_kept:04d}"
         plans_kept += 1
-        plan_name: str = f"{plans_kept - 1:04d}"
         plans.append({"name": plan_name, "plan": plan})  # No weights.
 
-        print(f"Keeping {plan_name} ({step:06d}) ...")
-        print(f"Keeping {plan_name} ({step:06d}) ...", file=logfile)
+        print(f"Keeping plan {step:06d} ({plan_name}) ...")
+        print(f"Keeping plan {step:06d} ({plan_name}) ...", file=logfile)
 
-        if unique:
-            for district_hash in district_hashes:
-                districts_seen.add(district_hash)
-
-        # When you have enough plans, stop.
-        if plans_kept >= keep_total:
+        if plans_kept >= keep:
             break
 
     return plans

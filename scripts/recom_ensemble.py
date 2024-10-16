@@ -7,12 +7,15 @@ For example:
 
 $ scripts/recom_ensemble.py \
 --state NC \
---size 1000 \
+--plantype congress \
+--burnin 1000 \
+--keep 10000 \
+--start random_maps/NC20C_random_plan.csv \
+--roughlyequal 0.01 \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
 --plans ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_plans.json \
 --log ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_log.txt \
---randomstart \
 --no-debug
 
 $ scripts/recom_ensemble.py
@@ -56,14 +59,26 @@ def main() -> None:
     """Generate an ensemble of maps using MCMC/ReCom."""
 
     args: argparse.Namespace = parse_args()
-    assert args.random_start or args.root, "Must specify either --randomstart or --root"
+
+    assert (
+        args.random_start or args.start
+    ), "Must specify either --randomstart or --root"
     assert not (
-        args.random_start and args.root
+        args.random_start and args.start
     ), "Cannot specify both --randomstart and --root"
 
-    root_plan: List[Dict[str, str | int]] = []
-    if args.root:
-        root_plan = read_csv(args.root, [str, int])
+    max_chain_length: int = 10 ^ 6
+    chain_length: int = (
+        max_chain_length
+        if args.unique
+        else args.burnin + (args.keep * max(1, args.sample))
+    )
+
+    #
+
+    starting_plan: List[Dict[str, str | int]] = []
+    if args.start:
+        starting_plan = read_csv(args.start, [str, int])
 
     data: Dict[str, Dict[str, int | str]] = load_data(args.data)
     graph: Dict[str, List[str]] = load_graph(args.graph)
@@ -76,7 +91,7 @@ def main() -> None:
     ensemble: Dict[str, Any] = ensemble_metadata(
         xx=args.state,
         ndistricts=N,
-        size=args.size,
+        size=args.keep,
         method="ReCom",
     )
     # Update the type of plan (e.g., "congress", "upper", "lower"), based on the plantype arg
@@ -89,12 +104,12 @@ def main() -> None:
             recom_graph, elections, back_map = prep_data(data, graph)
         else:
             recom_graph, elections, back_map = prep_data(
-                data, graph, initial_plan=root_plan
+                data, graph, initial_plan=starting_plan
             )
 
         chain = setup_unbiased_markov_chain(
             recom,
-            args.urnsize,  # was args.size + args.burnin,
+            chain_length,
             recom_graph,
             elections,
             roughly_equal=args.roughlyequal,
@@ -111,7 +126,8 @@ def main() -> None:
             f,
             random_start=args.random_start,
             burn_in=args.burnin,
-            keep_total=args.size,
+            keep=args.keep,
+            sample=args.sample,
             unique=args.unique,
         )
 
@@ -137,17 +153,36 @@ def parse_args():
         help="The type of districts (congress, upper, lower)",
     )
     parser.add_argument(
-        "--size", type=int, default=10000, help="Number of maps to keep"
-    )
-    parser.add_argument(
-        "--urnsize", type=int, default=1000000, help="The length of the chain"
-    )
-    parser.add_argument(
         "--burnin",
         type=int,
         default=0,
-        help="Number of maps to skip before starting to collect them",
+        help="The number of plans to skip before starting to collect them",
     )
+    parser.add_argument(
+        "--keep", type=int, default=10000, help="The number of plans to keep"
+    )
+    parser.add_argument(
+        "--sample",
+        type=int,
+        default=0,
+        help="How frequently to sample plans",
+    )
+    parser.add_argument(
+        "--unique", dest="unique", action="store_true", help="Unique districts mode"
+    )
+
+    parser.add_argument(
+        "--start",
+        type=str,
+        help="The starting plan",
+    )
+    parser.add_argument(
+        "--randomstart",
+        dest="random_start",
+        action="store_true",
+        help="Start with random assignments",
+    )
+
     parser.add_argument(
         "--data",
         type=str,
@@ -157,11 +192,6 @@ def parse_args():
         "--graph",
         type=str,
         help="Graph file",
-    )
-    parser.add_argument(
-        "--root",
-        type=str,
-        help="Root plan",
     )
     parser.add_argument(
         "--plans",
@@ -197,15 +227,6 @@ def parse_args():
         default=1,
         help="How many different choices of root to use before drawing a new spanning tree.",
     )
-    parser.add_argument(
-        "--randomstart",
-        dest="random_start",
-        action="store_true",
-        help="Start with random assignments",
-    )
-    parser.add_argument(
-        "--unique", dest="unique", action="store_true", help="Unique districts mode"
-    )
 
     parser.add_argument(
         "-v", "--verbose", dest="verbose", action="store_true", help="Verbose mode"
@@ -223,16 +244,16 @@ def parse_args():
     debug_defaults: Dict[str, Any] = {
         "state": "NC",
         "plantype": "congress",
+        "burnin": 10,
+        "keep": 10,
+        "sample": 0,
+        "unique": False,
+        "start": "random_maps/NC20C_random_plan.csv",
+        # "random_start": True,
         "data": "../rdabase/data/NC/NC_2020_data.csv",
         "graph": "../rdabase/data/NC/NC_2020_graph.json",
-        "root": "random_maps/NC20C_random_plan.csv",
-        "plans": "temp/NC20C_plans_test.json",
-        "log": "temp/NC20C_log_test.txt",
-        # "random_start": True,
-        "size": 10,
-        "urnsize": 1000,
-        "burnin": 10,
-        "unique": True,
+        "plans": "temp/NC20C_plans_TEST.json",
+        "log": "temp/NC20C_log_TEST.txt",
     }
     args = require_args(args, args.debug, debug_defaults)
 
