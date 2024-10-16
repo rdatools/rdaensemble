@@ -6,7 +6,7 @@ from typing import Any, List, Dict, Set, Callable
 
 import sys
 from functools import partial
-from collections import defaultdict
+from collections import defaultdict, Counter
 
 from gerrychain import (
     GeographicPartition,
@@ -119,7 +119,11 @@ def run_unbiased_chain(
 
     plans: List[Dict[str, str | float | Dict[str, int | str]]] = list()
     district_offset: int = 1 if random_start else 0
+
     plans_kept: int = 0
+    past_districts: Set = set()
+    prev_districts: Set = set()
+    reincarnateds = Counter()
 
     for step, partition in enumerate(chain):
         if burn_in > 0:
@@ -137,6 +141,28 @@ def run_unbiased_chain(
             back_map[node]: part + district_offset for node, part in assignments.items()
         }
 
+        #######################################################################
+
+        geoids_by_district: List[Set[str]] = group_keys_by_value(plan)
+        curr_districts: Set[int] = {hash_set(d) for d in geoids_by_district}
+
+        not_in_prev: Set[int] = curr_districts - prev_districts
+        reincarnatations: Set[int] = not_in_prev & past_districts
+
+        # TODO - Count the # of reincarnations by district.
+
+        if reincarnatations:
+            # report: str = ", ".join(str(num) for num in reincarnatations)
+            for num in reincarnatations:
+                reincarnateds[num] += 1
+            print(f"{step:06d}: Reincarnated districts! {reincarnateds}")
+            print(f"{step:06d}: Reincarnated districts! {reincarnateds}", file=logfile)
+
+        past_districts.update(prev_districts)
+        prev_districts = curr_districts
+
+        #######################################################################
+
         # TODO - Check districts for duplicates.
 
         if sample > 0:
@@ -144,6 +170,8 @@ def run_unbiased_chain(
 
         if unique:
             raise NotImplementedError("TODO: Unique mode not yet implemented.")
+
+        #######################################################################
 
         plan_name: str = f"{plans_kept:04d}"
         plans_kept += 1
@@ -154,6 +182,9 @@ def run_unbiased_chain(
 
         if plans_kept >= keep:
             break
+
+    print(f"Final reincarnated districts: {reincarnateds}")
+    print(f"Final reincarnated districts: {reincarnateds}", file=logfile)
 
     return plans
 
