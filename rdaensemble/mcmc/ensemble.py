@@ -149,8 +149,6 @@ def run_unbiased_chain(
         not_in_prev: Set[int] = curr_districts - prev_districts
         reincarnatations: Set[int] = not_in_prev & past_districts
 
-        # TODO - Count the # of reincarnations by district.
-
         if reincarnatations:
             for num in reincarnatations:
                 reincarnateds[num] += 1

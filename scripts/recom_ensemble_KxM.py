@@ -46,7 +46,7 @@ import argparse
 from argparse import ArgumentParser, Namespace
 from typing import Any, List, Dict
 
-import random
+import random, os
 
 import warnings
 
@@ -57,7 +57,6 @@ from gerrychain.proposals import recom
 from rdabase import (
     require_args,
     starting_seed,
-    DISTRICTS_BY_STATE,
     read_csv,
     write_json,
     load_data,
@@ -77,8 +76,7 @@ def main() -> None:
 
     args: argparse.Namespace = parse_args()
 
-    root_plan: List[Dict[str, str | int]] = []
-    root_plan = read_csv(args.root, [str, int])
+    starting_plan: List[Dict[str, str | int]] = read_csv(args.start, [str, int])
 
     data: Dict[str, Dict[str, int | str]] = load_data(args.data)
     graph: Dict[str, List[str]] = load_graph(args.graph)
@@ -108,12 +106,12 @@ def main() -> None:
             print(f"Starting Re-Com {start:04d} ...", file=f)
 
             recom_graph, elections, back_map = prep_data(
-                data, graph, initial_plan=root_plan
+                data, graph, initial_plan=starting_plan
             )
 
             chain = setup_unbiased_markov_chain(
                 recom,
-                args.burnin + M,
+                M,
                 recom_graph,
                 elections,
                 roughly_equal=args.roughlyequal,
@@ -128,7 +126,6 @@ def main() -> None:
                     chain,
                     back_map,
                     f,
-                    burn_in=args.burnin,
                     keep=M,
                 )
             )
@@ -138,6 +135,9 @@ def main() -> None:
 
             plans.extend(more_plans)
 
+    file_name = os.path.basename(args.start)
+    description: str = f"From: {file_name}, {K} starts each with {M} steps."
+    ensemble["description"] = description
     ensemble["plans"] = plans
     if not args.debug:
         write_json(args.plans, ensemble)
@@ -162,19 +162,13 @@ def parse_args():
         help="The type of districts (congress, upper, lower)",
     )
     parser.add_argument(
-        "--root",
+        "--start",
         type=str,
-        help="Root plan",
+        help="The starting plan",
     )
     parser.add_argument("--K", type=int, default=100, help="Number of chains (starts)")
     parser.add_argument(
         "--M", type=int, default=100, help="Number of steps (mutations) per chain"
-    )
-    parser.add_argument(
-        "--burnin",
-        type=int,
-        default=0,
-        help="Number of maps to skip before starting to collect them",
     )
 
     parser.add_argument(
@@ -238,10 +232,9 @@ def parse_args():
     debug_defaults: Dict[str, Any] = {
         "state": "NC",
         "plantype": "congress",
-        "root": "../tradeoffs/official_maps/NC_2022_Congress_Official_Proxy.csv",
+        "start": "../tradeoffs/official_maps/NC_2022_Congress_Official_Proxy.csv",
         "K": 10,
         "M": 10,
-        "burnin": 10,
         "data": "../rdabase/data/NC/NC_2020_data.csv",
         "graph": "../rdabase/data/NC/NC_2020_graph.json",
         "plans": "temp/NC20C_0010_0010_from_official.json",
