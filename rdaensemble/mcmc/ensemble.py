@@ -160,8 +160,6 @@ def run_unbiased_chain(
 
         #######################################################################
 
-        # TODO - Check districts for duplicates.
-
         if sample > 0:
             raise NotImplementedError("TODO: Sample mode not yet implemented.")
 
