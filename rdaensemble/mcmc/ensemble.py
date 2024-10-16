@@ -91,6 +91,7 @@ def setup_unbiased_markov_chain(
         initial_partition, roughly_equal
     )
     my_constraints: List = [contiguous, compactness_bound, pop_constraint]
+    # my_constraints: List = [contiguous]
 
     chain: Any = MarkovChain(
         proposal=my_proposal,
@@ -141,13 +142,25 @@ def run_unbiased_chain(
             back_map[node]: part + district_offset for node, part in assignments.items()
         }
 
-        #######################################################################
+        ############################ DEBUG ####################################
 
         geoids_by_district: List[Set[str]] = group_keys_by_value(plan)
         curr_districts: Set[int] = {hash_set(d) for d in geoids_by_district}
 
         not_in_prev: Set[int] = curr_districts - prev_districts
         reincarnatations: Set[int] = not_in_prev & past_districts
+
+        if len(prev_districts - curr_districts) == 0 and prev_districts:
+            print(f"Same plan 2x {step:06d}        <<<")
+            print(f"Same plan 2x {step:06d}        <<<", file=logfile)
+        elif len(prev_districts - curr_districts) != 2 and prev_districts:
+            print(
+                f"prev_districts: {prev_districts}, curr_districts: {curr_districts}, length: {len(prev_districts - curr_districts)}"
+            )
+        elif len(curr_districts - prev_districts) != 2 and prev_districts:
+            print(
+                f"prev_districts: {prev_districts}, curr_districts: {curr_districts}, length: {len(curr_districts - prev_districts)}"
+            )
 
         if reincarnatations:
             for num in reincarnatations:
