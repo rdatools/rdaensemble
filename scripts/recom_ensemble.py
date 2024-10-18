@@ -8,7 +8,7 @@ For example:
 $ scripts/recom_ensemble.py \
 --state NC \
 --plantype congress \
---burnin 1000 \
+--burnin 0 \
 --keep 10000 \
 --start random_maps/NC20C_random_plan.csv \
 --roughlyequal 0.01 \
@@ -16,6 +16,20 @@ $ scripts/recom_ensemble.py \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
 --plans ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_plans.json \
 --log ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_log.txt \
+--no-debug
+
+scripts/recom_ensemble.py \
+--state NC \
+--plantype congress \
+--burnin 0 \
+--keep 10000 \
+--start random_maps/NC20C_random_plan.csv \
+--nocompactnesslimit \
+--roughlyequal 0.01 \
+--data ../rdabase/data/NC/NC_2020_data.csv \
+--graph ../rdabase/data/NC/NC_2020_graph.json \
+--plans ../../iCloud/fileout/tradeoffs/NC/ensembles/minimal-constraints/NC20C_plans_MINIMALLY_CONSTRAINED.json \
+--log ../../iCloud/fileout/tradeoffs/NC/ensembles/minimal-constraints/NC20C_log_MINIMALLY_CONSTRAINED.txt \
 --no-debug
 
 $ scripts/recom_ensemble.py
@@ -78,6 +92,8 @@ def main() -> None:
         else args.burnin + (args.keep * max(1, args.sample))
     )
 
+    bound_compactness: bool = not args.no_compactness_limit
+
     #
 
     starting_plan: List[Dict[str, str | int]] = []
@@ -122,6 +138,7 @@ def main() -> None:
             node_repeats=1,
             n_districts=N,
             random_start=args.random_start,
+            bound_compactness=bound_compactness,
         )
 
         plans: List[Dict[str, str | float | Dict[str, int | str]]] = run_unbiased_chain(
@@ -178,7 +195,6 @@ def parse_args():
     parser.add_argument(
         "--unique", dest="unique", action="store_true", help="Unique districts mode"
     )
-
     parser.add_argument(
         "--start",
         type=str,
@@ -189,6 +205,12 @@ def parse_args():
         dest="random_start",
         action="store_true",
         help="Start with random assignments",
+    )
+    parser.add_argument(
+        "--nocompactnesslimit",
+        dest="no_compactness_limit",
+        action="store_true",
+        help="Don't bound compactness",
     )
 
     parser.add_argument(

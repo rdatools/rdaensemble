@@ -37,6 +37,7 @@ def setup_unbiased_markov_chain(
     *,
     n_districts: int,
     random_start: bool = False,
+    bound_compactness: bool = True,
 ) -> Any:
     """Set up an unbiased (not optimized) Markov chain."""
 
@@ -90,8 +91,12 @@ def setup_unbiased_markov_chain(
     pop_constraint = constraints.within_percent_of_ideal_population(
         initial_partition, roughly_equal
     )
-    my_constraints: List = [contiguous, compactness_bound, pop_constraint]
-    # my_constraints: List = [contiguous]
+    my_constraints: List = [
+        contiguous,
+        pop_constraint,
+    ]  # was [contiguous, compactness_bound, pop_constraint]
+    if bound_compactness:
+        my_constraints.append(compactness_bound)
 
     chain: Any = MarkovChain(
         proposal=my_proposal,

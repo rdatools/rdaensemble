@@ -47,6 +47,10 @@ fi
 # From 'rdaensemble'
 # Make and score an unbiased ensemble.
 
+# TODO - Update this for the latest arg settings!
+echo "TODO: Update the args before running this again!" >&2
+exit 1
+
 echo "Generating an unbiased ensemble ..."
 scripts/recom_ensemble.py \
 --state $STATE \
