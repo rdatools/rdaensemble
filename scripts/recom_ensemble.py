@@ -18,7 +18,7 @@ $ scripts/recom_ensemble.py \
 --log ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_log.txt \
 --no-debug
 
-scripts/recom_ensemble.py \
+$ scripts/recom_ensemble.py \
 --state NC \
 --plantype congress \
 --burnin 0 \
