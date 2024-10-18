@@ -11,6 +11,11 @@ $ scripts/add_plan_to_ensemble.py \
 --name official-proxy \
 --no-debug
 
+$ scripts/add_plan_to_ensemble.py \
+--plan ../tradeoffs/official_maps/NC_2022_Congress_Official_Proxy.csv \
+--plans ../../iCloud/fileout/tradeoffs/NC/ensembles/minimal-constraints/NC20C_plans_MINIMALLY_CONSTRAINED.json \
+--no-debug
+
 For documentation, type:
 
 $ scripts/pull_plan_from_ensemble.py -h

@@ -24,6 +24,16 @@ $ scripts/score_ensemble.py \
 --scores ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_scores.csv \
 --no-debug
 
+$ scripts/score_ensemble.py \
+--state NC \
+--plans ../../iCloud/fileout/tradeoffs/NC/ensembles/minimal-constraints/NC20C_plans_MINIMALLY_CONSTRAINED.json \
+--data ../rdabase/data/NC/NC_2020_data.csv \
+--eivotes ../tradeoffs/EI_estimates/NC_2020_est_votes.csv \
+--shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
+--graph ../rdabase/data/NC/NC_2020_graph.json \
+--scores ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_scores_MINIMALLY_CONSTRAINED.csv \
+--no-debug
+
 For documentation, type:
 
 $ scripts/score_ensemble.py -h
