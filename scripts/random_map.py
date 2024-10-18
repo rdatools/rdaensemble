@@ -54,7 +54,7 @@ def main() -> None:
 
     N: int = DISTRICTS_BY_STATE[args.state][args.plantype]
     # N: int = int(metadata["D"]) <= Generalized for state houses
-    seed: int = starting_seed(args.state, N)
+    seed: int = starting_seed(args.state, N) + args.offset
 
     with open(args.log, "w") as f:
         plans: List[Dict[str, str | float | Dict[str, int | str]]] = (
@@ -95,6 +95,7 @@ def parse_args():
         default="congress",
         help="The type of districts (congress, upper, lower)",
     )
+    parser.add_argument("--offset", type=int, default=0, help="An offset for the seed")
     parser.add_argument(
         "--data",
         type=str,
