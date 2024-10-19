@@ -17,9 +17,9 @@ from gerrychain import (
     accept,
     Election,
 )
-from gerrychain.tree import bipartition_tree
+from gerrychain.tree import bipartition_tree, recursive_tree_part, uniform_spanning_tree
 from gerrychain.constraints import contiguous
-
+from gerrychain.proposals import recom
 from gerrychain.partition.assignment import Assignment
 
 from rdabase import time_function
@@ -38,6 +38,7 @@ def setup_unbiased_markov_chain(
     n_districts: int,
     random_start: bool = False,
     bound_compactness: bool = True,
+    wilson_sampling: bool = False,
 ) -> Any:
     """Set up an unbiased (not optimized) Markov chain."""
 
@@ -70,6 +71,9 @@ def setup_unbiased_markov_chain(
 
     my_proposal: Callable
     my_weights = {"COUNTY": countyweight}
+
+    # How do I modify the code below to use Wilson sampling, the uniform_spanning_tree() function, I think,
+    # instead of the default spanning tree method, keying off the wilson_sampling flag above?
 
     method = partial(bipartition_tree, max_attempts=100, allow_pair_reselection=True)
 

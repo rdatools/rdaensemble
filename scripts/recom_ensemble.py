@@ -8,7 +8,6 @@ For example:
 $ scripts/recom_ensemble.py \
 --state NC \
 --plantype congress \
---burnin 0 \
 --keep 10000 \
 --start random_maps/NC20C_random_plan.csv \
 --roughlyequal 0.01 \
@@ -21,7 +20,6 @@ $ scripts/recom_ensemble.py \
 $ scripts/recom_ensemble.py \
 --state NC \
 --plantype congress \
---burnin 0 \
 --keep 10000 \
 --start random_maps/NC20C_random_plan.csv \
 --nocompactnesslimit \
@@ -30,6 +28,19 @@ $ scripts/recom_ensemble.py \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
 --plans ../../iCloud/fileout/tradeoffs/NC/ensembles/minimal-constraints/NC20C_plans_MINIMALLY_CONSTRAINED.json \
 --log ../../iCloud/fileout/tradeoffs/NC/ensembles/minimal-constraints/NC20C_log_MINIMALLY_CONSTRAINED.txt \
+--no-debug
+
+$ scripts/recom_ensemble.py \
+--state NC \
+--plantype congress \
+--keep 10000 \
+--start random_maps/NC20C_random_plan.csv \
+--wilson \
+--roughlyequal 0.01 \
+--data ../rdabase/data/NC/NC_2020_data.csv \
+--graph ../rdabase/data/NC/NC_2020_graph.json \
+--plans ../../iCloud/fileout/tradeoffs/NC/ensembles/spanning-tree/NC20C_plans_WILSON.json \
+--log ../../iCloud/fileout/tradeoffs/NC/ensembles/spanning-tree/NC20C_log_WILSON.txt \
 --no-debug
 
 $ scripts/recom_ensemble.py
@@ -139,6 +150,7 @@ def main() -> None:
             n_districts=N,
             random_start=args.random_start,
             bound_compactness=bound_compactness,
+            wilson_sampling=args.wilson_sampling,
         )
 
         plans: List[Dict[str, str | float | Dict[str, int | str]]] = run_unbiased_chain(
@@ -153,7 +165,7 @@ def main() -> None:
         )
 
     description: str = (
-        f"Burn-in: {args.burnin}, Keep: {args.keep}, Sample: {args.sample}, Unique: {args.unique}"
+        f"Burn-in: {args.burnin}, Keep: {args.keep}, Sample: {args.sample}, Unique: {args.unique}, Wilson: {args.wilson_sampling}"
     )
     ensemble["description"] = description
     ensemble["plans"] = plans
@@ -206,6 +218,13 @@ def parse_args():
         action="store_true",
         help="Start with random assignments",
     )
+    parser.add_argument(
+        "--wilson",
+        dest="wilson_sampling",
+        action="store_true",
+        help="Wilson sampling mode",
+    )
+
     parser.add_argument(
         "--nocompactnesslimit",
         dest="no_compactness_limit",
@@ -274,11 +293,9 @@ def parse_args():
     debug_defaults: Dict[str, Any] = {
         "state": "NC",
         "plantype": "congress",
-        "burnin": 10,
         "keep": 10,
-        "sample": 0,
-        "unique": False,
         "start": "random_maps/NC20C_random_plan.csv",
+        "wilson_sampling": False,
         # "random_start": True,
         "data": "../rdabase/data/NC/NC_2020_data.csv",
         "graph": "../rdabase/data/NC/NC_2020_graph.json",
