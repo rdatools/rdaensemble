@@ -10,7 +10,7 @@ $ scripts/make_ensemble_from_plans.py \
 --plantype congress \
 --csvdir ../../iCloud/fileout/tradeoffs/NC/ensembles/multiple-starts \
 --pattern r"NC20C_start_\d{2}\.csv" \
---plans ../../iCloud/fileout/tradeoffs/NC/ensembles/multiple-starts/NC20C_random_plans.json \
+--plans ../../iCloud/fileout/tradeoffs/NC/ensembles/multiple-starts/NC20C_plans_RANDOM.json \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --no-debug
 
