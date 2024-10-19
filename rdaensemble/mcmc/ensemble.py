@@ -72,6 +72,7 @@ def setup_unbiased_markov_chain(
     my_proposal: Callable
     my_weights = {"COUNTY": countyweight}
 
+    # Select the bipartition tree method
     bpt = bipartition_tree
     if wilson_sampling:
         bpt = partial(bipartition_tree, spanning_tree_fn=uniform_spanning_tree)
