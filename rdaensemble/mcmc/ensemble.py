@@ -72,10 +72,11 @@ def setup_unbiased_markov_chain(
     my_proposal: Callable
     my_weights = {"COUNTY": countyweight}
 
-    # How do I modify the code below to use Wilson sampling, the uniform_spanning_tree() function, I think,
-    # instead of the default spanning tree method, keying off the wilson_sampling flag above?
-
-    method = partial(bipartition_tree, max_attempts=100, allow_pair_reselection=True)
+    bpt = bipartition_tree
+    if wilson_sampling:
+        bpt = partial(bipartition_tree, spanning_tree_fn=uniform_spanning_tree)
+    method = partial(bpt, max_attempts=100, allow_pair_reselection=True)
+    # was: method = partial(bipartition_tree, max_attempts=100, allow_pair_reselection=True)
 
     my_proposal = partial(
         proposal,
@@ -152,6 +153,8 @@ def run_unbiased_chain(
         }
 
         ############################ DEBUG ####################################
+
+        # TODO - Maybe handle duplicate plan.
 
         geoids_by_district: List[Set[str]] = group_keys_by_value(plan)
         curr_districts: Set[int] = {hash_set(d) for d in geoids_by_district}

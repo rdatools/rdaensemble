@@ -105,6 +105,11 @@ def main() -> None:
 
     bound_compactness: bool = not args.no_compactness_limit
 
+    description: str = (
+        f"Burn-in: {args.burnin}, Keep: {args.keep}, Sample: {args.sample}, Unique: {args.unique}, Compactness bounded: {bound_compactness}, Wilson: {args.wilson_sampling}"
+    )
+    print(f"ReCom: {description}")
+
     #
 
     starting_plan: List[Dict[str, str | int]] = []
@@ -164,9 +169,6 @@ def main() -> None:
             unique=args.unique,
         )
 
-    description: str = (
-        f"Burn-in: {args.burnin}, Keep: {args.keep}, Sample: {args.sample}, Unique: {args.unique}, Wilson: {args.wilson_sampling}"
-    )
     ensemble["description"] = description
     ensemble["plans"] = plans
     if not args.debug:
@@ -295,7 +297,7 @@ def parse_args():
         "plantype": "congress",
         "keep": 10,
         "start": "random_maps/NC20C_random_plan.csv",
-        "wilson_sampling": False,
+        "wilson_sampling": True,
         # "random_start": True,
         "data": "../rdabase/data/NC/NC_2020_data.csv",
         "graph": "../rdabase/data/NC/NC_2020_graph.json",
