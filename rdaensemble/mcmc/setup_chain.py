@@ -18,7 +18,6 @@ from gerrychain import (
 from gerrychain.tree import bipartition_tree, uniform_spanning_tree
 from gerrychain.constraints import contiguous
 from gerrychain.proposals import recom
-from gerrychain.partition.assignment import Assignment  # TODO
 
 
 class ReComConfig(NamedTuple):
@@ -33,9 +32,11 @@ class ReComConfig(NamedTuple):
     allow_pair_reselection: bool
     default_sampling: bool
 
+    def __repr__(self):
+        return f"({', '.join(f'{field}={repr(getattr(self, field))}' for field in self._fields)})"
+
 
 def setup_unbiased_markov_chain_REVISED(
-    # proposal: Callable,
     plan_type: str,
     n_districts: int,
     size: int,
@@ -43,9 +44,10 @@ def setup_unbiased_markov_chain_REVISED(
     elections: List[Election],
     *,
     random_start: bool = False,
-) -> Tuple[Any, Dict[str, Any]]:
+) -> Tuple[Any, ReComConfig]:
     """Set up an unbiased Markov chain."""
 
+    # Parameters
     config: ReComConfig = ReComConfig(
         roughly_equal=0.01 if plan_type == "congress" else 0.10,
         elasticity=2.0,
@@ -56,10 +58,8 @@ def setup_unbiased_markov_chain_REVISED(
         allow_pair_reselection=True,
         default_sampling=True,
     )
-    settings: Dict[str, Any] = config._asdict()
 
-    foo: Tuple[Callable[..., bool]] = (accept.always_accept,)
-
+    # Updaters
     my_updaters: dict[str, Any] = {
         "cut_edges": updaters.cut_edges,
         "population": updaters.Tally("TOTAL_POP", alias="population"),
@@ -69,7 +69,7 @@ def setup_unbiased_markov_chain_REVISED(
     }
     my_updaters.update(election_updaters)  # type: ignore
 
-    # TODO - Can we get rid of the random_start option?
+    # Initial partition
     initial_partition = (
         GeographicPartition.from_random_assignment(
             graph=recom_graph,
@@ -84,12 +84,15 @@ def setup_unbiased_markov_chain_REVISED(
         )
     )
 
+    # Ideal population
     ideal_population = sum(initial_partition["population"].values()) / len(
         initial_partition
     )
 
+    # Weights
     my_weights = {"COUNTY": config.countyweight}
 
+    # Bipartition tree method
     bpt = bipartition_tree
     if not config.default_sampling:
         bpt = partial(bipartition_tree, spanning_tree_fn=uniform_spanning_tree)
@@ -99,6 +102,7 @@ def setup_unbiased_markov_chain_REVISED(
         allow_pair_reselection=config.allow_pair_reselection,
     )
 
+    # Proposal
     my_proposal: Callable = partial(
         recom,
         pop_col="TOTAL_POP",
@@ -109,22 +113,23 @@ def setup_unbiased_markov_chain_REVISED(
         method=method,
     )
 
+    # Constraints
+    pop_constraint = constraints.within_percent_of_ideal_population(
+        initial_partition, config.roughly_equal
+    )
     # Per Moon Duchin, not strictly necessary.
     # compactness_bound = constraints.UpperBound(
     #     lambda p: len(p["cut_edges"]),
     #     config.elasticity * len(initial_partition["cut_edges"]),
     # )
-
-    pop_constraint = constraints.within_percent_of_ideal_population(
-        initial_partition, config.roughly_equal
-    )
     my_constraints: List = [
         contiguous,
         pop_constraint,
-    ]  # was [contiguous, compactness_bound, pop_constraint]
+    ]
     # if bound_compactness:
     #     my_constraints.append(compactness_bound)
 
+    # Chain
     chain: Any = MarkovChain(
         proposal=my_proposal,
         constraints=my_constraints,
@@ -133,7 +138,7 @@ def setup_unbiased_markov_chain_REVISED(
         total_steps=size,
     )
 
-    return chain, settings
+    return chain, config
 
 
 def setup_unbiased_markov_chain(
