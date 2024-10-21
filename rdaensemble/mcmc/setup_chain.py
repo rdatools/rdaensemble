@@ -67,7 +67,6 @@ def setup_unbiased_markov_chain(
         allow_pair_reselection=True,
         default_sampling=True,
     )
-    print(f"config: {config}")
 
     # Updaters
     my_updaters: dict[str, Any] = {

@@ -8,8 +8,19 @@ For example:
 $ scripts/recom_ensemble.py \
 --state NC \
 --plantype congress \
---keep 100 \
 --start random_maps/NC20C_random_plan.csv \
+--keep 100 \
+--data ../rdabase/data/NC/NC_2020_data.csv \
+--graph ../rdabase/data/NC/NC_2020_graph.json \
+--plans temp/NC20C_plans_DEBUG.json \
+--log temp/NC20C_log_DEBUG.txt \
+--no-debug
+
+$ scripts/recom_ensemble.py \
+--state NC \
+--plantype congress \
+--randomstart \
+--keep 100 \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
 --plans temp/NC20C_plans_DEBUG.json \
@@ -19,8 +30,8 @@ $ scripts/recom_ensemble.py \
 $ scripts/recom_ensemble.py \
 --state NC \
 --plantype upper \
+--randomstart \
 --keep 100 \
---random_start \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
 --plans temp/NC20U_plans_DEBUG.json \
@@ -30,8 +41,8 @@ $ scripts/recom_ensemble.py \
 scripts/recom_ensemble.py \
 --state NC \
 --plantype lower \
+--randomstart \
 --keep 100 \
---random_start \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
 --plans temp/NC20L_plans_DEBUG.json \
