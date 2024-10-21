@@ -137,7 +137,7 @@ def main() -> None:
 
     file_name = os.path.basename(args.start)
 
-    ensemble["parameters"] = settings
+    ensemble["parameters"] = repr(settings)
     ensemble["plans"] = plans
     if not args.debug:
         write_json(args.plans, ensemble)

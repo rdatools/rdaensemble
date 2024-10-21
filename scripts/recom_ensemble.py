@@ -8,13 +8,34 @@ For example:
 $ scripts/recom_ensemble.py \
 --state NC \
 --plantype congress \
---keep 10000 \
+--keep 100 \
 --start random_maps/NC20C_random_plan.csv \
---roughlyequal 0.01 \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
---plans ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_plans.json \
---log ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_log.txt \
+--plans temp/NC20C_plans_DEBUG.json \
+--log temp/NC20C_log_DEBUG.txt \
+--no-debug
+
+$ scripts/recom_ensemble.py \
+--state NC \
+--plantype upper \
+--keep 100 \
+--random_start \
+--data ../rdabase/data/NC/NC_2020_data.csv \
+--graph ../rdabase/data/NC/NC_2020_graph.json \
+--plans temp/NC20U_plans_DEBUG.json \
+--log temp/NC20U_log_DEBUG.txt \
+--no-debug
+
+scripts/recom_ensemble.py \
+--state NC \
+--plantype lower \
+--keep 100 \
+--random_start \
+--data ../rdabase/data/NC/NC_2020_data.csv \
+--graph ../rdabase/data/NC/NC_2020_graph.json \
+--plans temp/NC20L_plans_DEBUG.json \
+--log temp/NC20L_log_DEBUG.txt \
 --no-debug
 
 $ scripts/recom_ensemble.py
@@ -109,6 +130,7 @@ def main() -> None:
             chain_length,
             recom_graph,
             elections,
+            random_start=args.random_start,
         )
 
         # Run the chain
@@ -120,7 +142,7 @@ def main() -> None:
             random_start=args.random_start,  # So district offsets can be adjusted, when random_start
         )
 
-    ensemble["parameters"] = settings
+    ensemble["parameters"] = repr(settings)
     ensemble["plans"] = plans
     if not args.debug:
         write_json(args.plans, ensemble)
@@ -208,14 +230,15 @@ def parse_args():
     # Default values for args in debug mode
     debug_defaults: Dict[str, Any] = {
         "state": "NC",
-        "plantype": "congress",
+        # "plantype": "congress",
+        "plantype": "upper",
         "keep": 10,
-        "start": "random_maps/NC20C_random_plan.csv",
-        # "random_start": True,
+        # "start": "random_maps/NC20C_random_plan.csv",
+        "random_start": True,
         "data": "../rdabase/data/NC/NC_2020_data.csv",
         "graph": "../rdabase/data/NC/NC_2020_graph.json",
-        "plans": "temp/NC20C_plans_DEBUG.json",
-        "log": "temp/NC20C_log_DEBUG.txt",
+        "plans": "temp/DEBUG_plans.json",
+        "log": "temp/DEBUG_log.txt",
     }
     args = require_args(args, args.debug, debug_defaults)
 

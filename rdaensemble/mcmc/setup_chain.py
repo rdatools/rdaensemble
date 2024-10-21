@@ -33,7 +33,12 @@ class ReComConfig(NamedTuple):
     default_sampling: bool
 
     def __repr__(self):
-        return f"({', '.join(f'{field}={repr(getattr(self, field))}' for field in self._fields)})"
+        def represent_value(field, value):
+            if field == "accept":
+                return f"<function {value.__name__} at {hex(id(value))}>"
+            return repr(value)
+
+        return f"{', '.join(f'{field}={represent_value(field, getattr(self, field))}' for field in self._fields)}"
 
 
 def setup_unbiased_markov_chain(
@@ -47,9 +52,13 @@ def setup_unbiased_markov_chain(
 ) -> Tuple[Any, ReComConfig]:
     """Set up an unbiased Markov chain."""
 
-    # Parameters
+    """
+    Parameters - TODO
+    - How should roughly_equal values relate to the *resulting* population deviations that we want?
+    - Should countyweight weight change, based on the type of plan? the number of districts?
+    """
     config: ReComConfig = ReComConfig(
-        roughly_equal=0.01 if plan_type == "congress" else 0.10,
+        roughly_equal=(0.01 if plan_type == "congress" else 0.10),
         elasticity=2.0,
         countyweight=0.75,
         accept=accept.always_accept,
@@ -58,6 +67,7 @@ def setup_unbiased_markov_chain(
         allow_pair_reselection=True,
         default_sampling=True,
     )
+    print(f"config: {config}")
 
     # Updaters
     my_updaters: dict[str, Any] = {
@@ -74,7 +84,7 @@ def setup_unbiased_markov_chain(
         GeographicPartition.from_random_assignment(
             graph=recom_graph,
             n_parts=n_districts,
-            epsilon=0.01,  # TODO - Should this depend on plan_type a la 'roughly_equal?!?
+            epsilon=config.roughly_equal / 2,  # 1/2 of what you want to end up with
             pop_col="TOTAL_POP",
             updaters=my_updaters,
         )
