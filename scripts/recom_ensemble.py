@@ -38,7 +38,7 @@ $ scripts/recom_ensemble.py \
 --log temp/NC20U_log_DEBUG.txt \
 --no-debug
 
-scripts/recom_ensemble.py \
+$ scripts/recom_ensemble.py \
 --state NC \
 --plantype lower \
 --randomstart \
