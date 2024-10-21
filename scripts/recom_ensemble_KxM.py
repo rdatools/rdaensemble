@@ -64,7 +64,7 @@ from rdabase import (
 from rdaensemble import (
     ensemble_metadata,
     prep_data,
-    setup_unbiased_markov_chain_REVISED,
+    setup_unbiased_markov_chain,
     run_unbiased_chain,
 )
 
@@ -112,7 +112,7 @@ def main() -> None:
             )
 
             # Configure the chain
-            chain, settings = setup_unbiased_markov_chain_REVISED(
+            chain, settings = setup_unbiased_markov_chain(
                 args.plantype,
                 N,
                 M,

@@ -36,7 +36,7 @@ class ReComConfig(NamedTuple):
         return f"({', '.join(f'{field}={repr(getattr(self, field))}' for field in self._fields)})"
 
 
-def setup_unbiased_markov_chain_REVISED(
+def setup_unbiased_markov_chain(
     plan_type: str,
     n_districts: int,
     size: int,
@@ -139,96 +139,6 @@ def setup_unbiased_markov_chain_REVISED(
     )
 
     return chain, config
-
-
-# def setup_unbiased_markov_chain(
-#     proposal: Callable,
-#     size: int,
-#     recom_graph: Graph,
-#     elections: List[Election],
-#     roughly_equal: float,
-#     elasticity: float,
-#     countyweight: float,
-#     node_repeats: int,
-#     *,
-#     n_districts: int,
-#     random_start: bool = False,
-#     bound_compactness: bool = True,
-#     wilson_sampling: bool = False,
-# ) -> Any:
-#     """Set up an unbiased (not optimized) Markov chain."""
-
-#     my_updaters: dict[str, Any] = {
-#         "cut_edges": updaters.cut_edges,
-#         "population": updaters.Tally("TOTAL_POP", alias="population"),
-#     }
-#     election_updaters: dict[str, Election] = {
-#         election.name: election for election in elections
-#     }
-#     my_updaters.update(election_updaters)  # type: ignore
-
-#     initial_partition = (
-#         GeographicPartition.from_random_assignment(
-#             graph=recom_graph,
-#             n_parts=n_districts,
-#             epsilon=0.01,
-#             pop_col="TOTAL_POP",
-#             updaters=my_updaters,
-#         )
-#         if random_start
-#         else GeographicPartition(
-#             recom_graph, assignment="INITIAL", updaters=my_updaters
-#         )
-#     )
-
-#     ideal_population = sum(initial_partition["population"].values()) / len(
-#         initial_partition
-#     )
-
-#     my_proposal: Callable
-#     my_weights = {"COUNTY": countyweight}
-
-#     # Select the bipartition tree method
-#     bpt = bipartition_tree
-#     if wilson_sampling:
-#         bpt = partial(bipartition_tree, spanning_tree_fn=uniform_spanning_tree)
-#     method = partial(bpt, max_attempts=100, allow_pair_reselection=True)
-#     # was: method = partial(bipartition_tree, max_attempts=100, allow_pair_reselection=True)
-
-#     my_proposal = partial(
-#         proposal,
-#         pop_col="TOTAL_POP",
-#         pop_target=ideal_population,
-#         epsilon=roughly_equal / 2,  # 1/2 of what you want to end up with
-#         region_surcharge=my_weights,  # was: weight_dict=my_weights in 0.3.0
-#         node_repeats=node_repeats,
-#         method=method,
-#     )
-
-#     compactness_bound = constraints.UpperBound(
-#         lambda p: len(p["cut_edges"]),
-#         elasticity * len(initial_partition["cut_edges"]),
-#     )  # Per Moon Duchin, not strictly necessary.
-
-#     pop_constraint = constraints.within_percent_of_ideal_population(
-#         initial_partition, roughly_equal
-#     )
-#     my_constraints: List = [
-#         contiguous,
-#         pop_constraint,
-#     ]  # was [contiguous, compactness_bound, pop_constraint]
-#     if bound_compactness:
-#         my_constraints.append(compactness_bound)
-
-#     chain: Any = MarkovChain(
-#         proposal=my_proposal,
-#         constraints=my_constraints,
-#         accept=accept.always_accept,
-#         initial_state=initial_partition,
-#         total_steps=size,
-#     )
-
-#     return chain
 
 
 ### END ###
