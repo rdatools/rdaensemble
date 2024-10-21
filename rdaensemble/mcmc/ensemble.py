@@ -121,13 +121,15 @@ def run_unbiased_chain(
     back_map: Dict[int, str],
     logfile,
     *,
-    random_start: bool = False,
+    keep: int = sys.maxsize,  # Keep all plans, by default
+    random_start: bool = False,  # So district offsets can be adjusted
     burn_in: int = 0,
-    keep: int = sys.maxsize,  # i.e., keep all plans, by default
     sample: int = 0,
-    unique: bool = False,
 ) -> List[Dict[str, str | float | Dict[str, int | str]]]:
     """Run a Markov chain."""
+
+    assert burn_in == 0, "Don't burn-in."
+    assert sample == 0, "Don't sample."
 
     plans: List[Dict[str, str | float | Dict[str, int | str]]] = list()
     district_offset: int = 1 if random_start else 0
@@ -183,14 +185,6 @@ def run_unbiased_chain(
 
         past_districts.update(prev_districts)
         prev_districts = curr_districts
-
-        #######################################################################
-
-        if sample > 0:
-            raise NotImplementedError("TODO: Sample mode not yet implemented.")
-
-        if unique:
-            raise NotImplementedError("TODO: Unique mode not yet implemented.")
 
         #######################################################################
 

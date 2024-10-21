@@ -17,32 +17,6 @@ $ scripts/recom_ensemble.py \
 --log ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_log.txt \
 --no-debug
 
-$ scripts/recom_ensemble.py \
---state NC \
---plantype congress \
---keep 10000 \
---start random_maps/NC20C_random_plan.csv \
---nocompactnesslimit \
---roughlyequal 0.01 \
---data ../rdabase/data/NC/NC_2020_data.csv \
---graph ../rdabase/data/NC/NC_2020_graph.json \
---plans ../../iCloud/fileout/tradeoffs/NC/ensembles/minimal-constraints/NC20C_plans_MINIMALLY_CONSTRAINED.json \
---log ../../iCloud/fileout/tradeoffs/NC/ensembles/minimal-constraints/NC20C_log_MINIMALLY_CONSTRAINED.txt \
---no-debug
-
-$ scripts/recom_ensemble.py \
---state NC \
---plantype congress \
---keep 10000 \
---start random_maps/NC20C_random_plan.csv \
---wilson \
---roughlyequal 0.01 \
---data ../rdabase/data/NC/NC_2020_data.csv \
---graph ../rdabase/data/NC/NC_2020_graph.json \
---plans ../../iCloud/fileout/tradeoffs/NC/ensembles/spanning-tree/NC20C_plans_WILSON.json \
---log ../../iCloud/fileout/tradeoffs/NC/ensembles/spanning-tree/NC20C_log_WILSON.txt \
---no-debug
-
 $ scripts/recom_ensemble.py
 
 For documentation, type:
@@ -162,11 +136,8 @@ def main() -> None:
             chain,
             back_map,
             f,
-            random_start=args.random_start,
-            burn_in=args.burnin,
             keep=args.keep,
-            sample=args.sample,
-            unique=args.unique,
+            random_start=args.random_start,
         )
 
     ensemble["description"] = description
@@ -297,12 +268,11 @@ def parse_args():
         "plantype": "congress",
         "keep": 10,
         "start": "random_maps/NC20C_random_plan.csv",
-        "wilson_sampling": True,
         # "random_start": True,
         "data": "../rdabase/data/NC/NC_2020_data.csv",
         "graph": "../rdabase/data/NC/NC_2020_graph.json",
-        "plans": "temp/NC20C_plans_TEST.json",
-        "log": "temp/NC20C_log_TEST.txt",
+        "plans": "temp/NC20C_plans_DEBUG.json",
+        "log": "temp/NC20C_log_DEBUG.txt",
     }
     args = require_args(args, args.debug, debug_defaults)
 
