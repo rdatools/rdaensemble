@@ -8,39 +8,45 @@ For example:
 $ scripts/recom_ensemble.py \
 --state NC \
 --plantype congress \
---keep 10000 \
 --start random_maps/NC20C_random_plan.csv \
---roughlyequal 0.01 \
+--keep 100 \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
---plans ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_plans.json \
---log ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_log.txt \
+--plans temp/NC20C_plans_DEBUG.json \
+--log temp/NC20C_log_DEBUG.txt \
 --no-debug
 
 $ scripts/recom_ensemble.py \
 --state NC \
 --plantype congress \
---keep 10000 \
---start random_maps/NC20C_random_plan.csv \
---nocompactnesslimit \
---roughlyequal 0.01 \
+--randomstart \
+--keep 100 \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
---plans ../../iCloud/fileout/tradeoffs/NC/ensembles/minimal-constraints/NC20C_plans_MINIMALLY_CONSTRAINED.json \
---log ../../iCloud/fileout/tradeoffs/NC/ensembles/minimal-constraints/NC20C_log_MINIMALLY_CONSTRAINED.txt \
+--plans temp/NC20C_plans_DEBUG.json \
+--log temp/NC20C_log_DEBUG.txt \
 --no-debug
 
 $ scripts/recom_ensemble.py \
 --state NC \
---plantype congress \
---keep 10000 \
---start random_maps/NC20C_random_plan.csv \
---wilson \
---roughlyequal 0.01 \
+--plantype upper \
+--randomstart \
+--keep 100 \
 --data ../rdabase/data/NC/NC_2020_data.csv \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
---plans ../../iCloud/fileout/tradeoffs/NC/ensembles/spanning-tree/NC20C_plans_WILSON.json \
---log ../../iCloud/fileout/tradeoffs/NC/ensembles/spanning-tree/NC20C_log_WILSON.txt \
+--plans temp/NC20U_plans_DEBUG.json \
+--log temp/NC20U_log_DEBUG.txt \
+--no-debug
+
+$ scripts/recom_ensemble.py \
+--state NC \
+--plantype lower \
+--randomstart \
+--keep 100 \
+--data ../rdabase/data/NC/NC_2020_data.csv \
+--graph ../rdabase/data/NC/NC_2020_graph.json \
+--plans temp/NC20L_plans_DEBUG.json \
+--log temp/NC20L_log_DEBUG.txt \
 --no-debug
 
 $ scripts/recom_ensemble.py
@@ -60,8 +66,6 @@ import random
 import warnings
 
 warnings.warn = lambda *args, **kwargs: None
-
-from gerrychain.proposals import recom
 
 from rdabase import (
     require_args,
@@ -92,23 +96,7 @@ def main() -> None:
         args.random_start and args.start
     ), "Cannot specify both --randomstart and --root"
 
-    assert (
-        args.sample == 0 or not args.unique
-    ), "Cannot use --sample and --unique modes at the same time"
-
-    max_chain_length: int = 10 ^ 6
-    chain_length: int = (
-        max_chain_length
-        if args.unique
-        else args.burnin + (args.keep * max(1, args.sample))
-    )
-
-    bound_compactness: bool = not args.no_compactness_limit
-
-    description: str = (
-        f"Burn-in: {args.burnin}, Keep: {args.keep}, Sample: {args.sample}, Unique: {args.unique}, Compactness bounded: {bound_compactness}, Wilson: {args.wilson_sampling}"
-    )
-    print(f"ReCom: {description}")
+    chain_length: int = args.burnin + (args.keep * max(1, args.sample))
 
     #
 
@@ -132,9 +120,12 @@ def main() -> None:
     )
     # Update the type of plan (e.g., "congress", "upper", "lower"), based on the plantype arg
     ensemble["plan_type"] = args.plantype.title()
+    ensemble["burn_in"] = args.burnin
+    ensemble["sample"] = args.sample
     ensemble["packed"] = False
 
     with open(args.log, "w") as f:
+        # Prepare the data
         recom_graph, elections, back_map = None, None, None
         if args.random_start:
             recom_graph, elections, back_map = prep_data(data, graph)
@@ -143,33 +134,26 @@ def main() -> None:
                 data, graph, initial_plan=starting_plan
             )
 
-        chain = setup_unbiased_markov_chain(
-            recom,
+        # Configure the chain
+        chain, settings = setup_unbiased_markov_chain(
+            args.plantype,
+            N,
             chain_length,
             recom_graph,
             elections,
-            roughly_equal=args.roughlyequal,
-            elasticity=args.elasticity,
-            countyweight=args.countyweight,
-            node_repeats=1,
-            n_districts=N,
             random_start=args.random_start,
-            bound_compactness=bound_compactness,
-            wilson_sampling=args.wilson_sampling,
         )
 
+        # Run the chain
         plans: List[Dict[str, str | float | Dict[str, int | str]]] = run_unbiased_chain(
             chain,
             back_map,
             f,
-            random_start=args.random_start,
-            burn_in=args.burnin,
             keep=args.keep,
-            sample=args.sample,
-            unique=args.unique,
+            random_start=args.random_start,  # So district offsets can be adjusted, when random_start
         )
 
-    ensemble["description"] = description
+    ensemble["parameters"] = repr(settings)
     ensemble["plans"] = plans
     if not args.debug:
         write_json(args.plans, ensemble)
@@ -177,7 +161,7 @@ def main() -> None:
 
 def parse_args():
     parser: ArgumentParser = argparse.ArgumentParser(
-        description="Generate an ensemble of maps using MCMC/ReCom."
+        description="Generate an ensemble of plans using MCMC/ReCom."
     )
 
     parser.add_argument(
@@ -192,22 +176,7 @@ def parse_args():
         help="The type of districts (congress, upper, lower)",
     )
     parser.add_argument(
-        "--burnin",
-        type=int,
-        default=0,
-        help="The number of plans to skip before starting to collect them",
-    )
-    parser.add_argument(
         "--keep", type=int, default=10000, help="The number of plans to keep"
-    )
-    parser.add_argument(
-        "--sample",
-        type=int,
-        default=0,
-        help="How frequently to sample plans",
-    )
-    parser.add_argument(
-        "--unique", dest="unique", action="store_true", help="Unique districts mode"
     )
     parser.add_argument(
         "--start",
@@ -219,19 +188,6 @@ def parse_args():
         dest="random_start",
         action="store_true",
         help="Start with random assignments",
-    )
-    parser.add_argument(
-        "--wilson",
-        dest="wilson_sampling",
-        action="store_true",
-        help="Wilson sampling mode",
-    )
-
-    parser.add_argument(
-        "--nocompactnesslimit",
-        dest="no_compactness_limit",
-        action="store_true",
-        help="Don't bound compactness",
     )
 
     parser.add_argument(
@@ -254,34 +210,25 @@ def parse_args():
         type=str,
         help="Log TXT file",
     )
-    parser.add_argument(
-        "--roughlyequal",
-        type=float,
-        default=0.01,
-        help="'Roughly equal' population threshold",
-    )
-    parser.add_argument(
-        "--elasticity",
-        type=float,
-        default=2.0,
-        help="Allowable district boundary stretch factor",
-    )
-    parser.add_argument(
-        "--countyweight",
-        type=float,
-        default=0.75,
-        help="County weights",
-    )
-    parser.add_argument(
-        "--noderepeats",
-        type=int,
-        default=1,
-        help="How many different choices of root to use before drawing a new spanning tree.",
-    )
 
     parser.add_argument(
         "-v", "--verbose", dest="verbose", action="store_true", help="Verbose mode"
     )
+
+    ### DON'T USE THESE ARGUMENTS ###
+    parser.add_argument(
+        "--burnin",
+        type=int,
+        default=0,
+        help="The number of plans to skip before starting to collect them",
+    )
+    parser.add_argument(
+        "--sample",
+        type=int,
+        default=0,
+        help="How frequently to sample plans",
+    )
+    #################################
 
     # Enable debug/explicit mode
     parser.add_argument("--debug", default=True, action="store_true", help="Debug mode")
@@ -294,15 +241,15 @@ def parse_args():
     # Default values for args in debug mode
     debug_defaults: Dict[str, Any] = {
         "state": "NC",
-        "plantype": "congress",
+        # "plantype": "congress",
+        "plantype": "upper",
         "keep": 10,
-        "start": "random_maps/NC20C_random_plan.csv",
-        "wilson_sampling": True,
-        # "random_start": True,
+        # "start": "random_maps/NC20C_random_plan.csv",
+        "random_start": True,
         "data": "../rdabase/data/NC/NC_2020_data.csv",
         "graph": "../rdabase/data/NC/NC_2020_graph.json",
-        "plans": "temp/NC20C_plans_TEST.json",
-        "log": "temp/NC20C_log_TEST.txt",
+        "plans": "temp/DEBUG_plans.json",
+        "log": "temp/DEBUG_log.txt",
     }
     args = require_args(args, args.debug, debug_defaults)
 
