@@ -52,8 +52,6 @@ import warnings
 
 warnings.warn = lambda *args, **kwargs: None
 
-from gerrychain.proposals import recom
-
 from rdabase import (
     require_args,
     starting_seed,
@@ -66,7 +64,7 @@ from rdabase import (
 from rdaensemble import (
     ensemble_metadata,
     prep_data,
-    setup_unbiased_markov_chain,
+    setup_unbiased_markov_chain_REVISED,
     run_unbiased_chain,
 )
 
@@ -97,7 +95,10 @@ def main() -> None:
     )
     # Update the type of plan (e.g., "congress", "upper", "lower"), based on the plantype arg
     ensemble["plan_type"] = args.plantype.title()
+    ensemble["burn_in"] = args.burnin
+    ensemble["sample"] = args.sample
     ensemble["packed"] = False
+
     plans: List[Dict[str, str | float | Dict[str, int | str]]] = []
 
     with open(args.log, "w") as f:
@@ -105,22 +106,21 @@ def main() -> None:
             print(f"Starting Re-Com {start:04d} ...")
             print(f"Starting Re-Com {start:04d} ...", file=f)
 
+            # Prepare the data
             recom_graph, elections, back_map = prep_data(
                 data, graph, initial_plan=starting_plan
             )
 
-            chain = setup_unbiased_markov_chain(
-                recom,
+            # Configure the chain
+            chain, settings = setup_unbiased_markov_chain_REVISED(
+                args.plantype,
+                N,
                 M,
                 recom_graph,
                 elections,
-                roughly_equal=args.roughlyequal,
-                elasticity=args.elasticity,
-                countyweight=args.countyweight,
-                node_repeats=1,
-                n_districts=N,
             )
 
+            # Run the chain
             more_plans: List[Dict[str, str | float | Dict[str, int | str]]] = (
                 run_unbiased_chain(
                     chain,
@@ -136,8 +136,8 @@ def main() -> None:
             plans.extend(more_plans)
 
     file_name = os.path.basename(args.start)
-    description: str = f"From: {file_name}, {K} starts each with {M} steps."
-    ensemble["description"] = description
+
+    ensemble["parameters"] = settings
     ensemble["plans"] = plans
     if not args.debug:
         write_json(args.plans, ensemble)
@@ -190,30 +190,6 @@ def parse_args():
         "--log",
         type=str,
         help="Log TXT file",
-    )
-    parser.add_argument(
-        "--roughlyequal",
-        type=float,
-        default=0.01,
-        help="'Roughly equal' population threshold",
-    )
-    parser.add_argument(
-        "--elasticity",
-        type=float,
-        default=2.0,
-        help="Allowable district boundary stretch factor",
-    )
-    parser.add_argument(
-        "--countyweight",
-        type=float,
-        default=0.75,
-        help="County weights",
-    )
-    parser.add_argument(
-        "--noderepeats",
-        type=int,
-        default=1,
-        help="How many different choices of root to use before drawing a new spanning tree.",
     )
 
     parser.add_argument(

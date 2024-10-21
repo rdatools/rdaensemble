@@ -35,8 +35,6 @@ import warnings
 
 warnings.warn = lambda *args, **kwargs: None
 
-from gerrychain.proposals import recom
-
 from rdabase import (
     require_args,
     starting_seed,
@@ -49,8 +47,7 @@ from rdabase import (
 from rdaensemble import (
     ensemble_metadata,
     prep_data,
-    setup_unbiased_markov_chain,
-    setup_unbiased_markov_chain_REVISED,  # TODO
+    setup_unbiased_markov_chain_REVISED,
     run_unbiased_chain,
 )
 
