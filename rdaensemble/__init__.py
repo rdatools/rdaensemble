@@ -6,6 +6,7 @@ from .mcmc import (
     prep_data,
     setup_optimized_markov_chain,
     setup_unbiased_markov_chain,
+    setup_unbiased_markov_chain_REVISED,  # TODO
     run_unbiased_chain,
     run_optimized_chain,
     optimize_methods,

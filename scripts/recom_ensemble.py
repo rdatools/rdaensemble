@@ -50,6 +50,7 @@ from rdaensemble import (
     ensemble_metadata,
     prep_data,
     setup_unbiased_markov_chain,
+    setup_unbiased_markov_chain_REVISED,  # TODO
     run_unbiased_chain,
 )
 
@@ -79,11 +80,6 @@ def main() -> None:
 
     bound_compactness: bool = not args.no_compactness_limit
 
-    description: str = (
-        f"Burn-in: {args.burnin}, Keep: {args.keep}, Sample: {args.sample}, Unique: {args.unique}, Compactness bounded: {bound_compactness}, Wilson: {args.wilson_sampling}"
-    )
-    print(f"ReCom: {description}")
-
     #
 
     starting_plan: List[Dict[str, str | int]] = []
@@ -106,6 +102,8 @@ def main() -> None:
     )
     # Update the type of plan (e.g., "congress", "upper", "lower"), based on the plantype arg
     ensemble["plan_type"] = args.plantype.title()
+    ensemble["burnin"] = args.burnin
+    ensemble["sample"] = args.sample
     ensemble["packed"] = False
 
     with open(args.log, "w") as f:
@@ -117,7 +115,8 @@ def main() -> None:
                 data, graph, initial_plan=starting_plan
             )
 
-        chain = setup_unbiased_markov_chain(
+        # chain = setup_unbiased_markov_chain(
+        chain, settings = setup_unbiased_markov_chain_REVISED(
             recom,
             chain_length,
             recom_graph,
@@ -137,10 +136,10 @@ def main() -> None:
             back_map,
             f,
             keep=args.keep,
-            random_start=args.random_start,
+            random_start=args.random_start,  # So district offsets can be adjusted
         )
 
-    ensemble["description"] = description
+    ensemble["parameters"] = settings
     ensemble["plans"] = plans
     if not args.debug:
         write_json(args.plans, ensemble)
@@ -163,13 +162,13 @@ def parse_args():
         help="The type of districts (congress, upper, lower)",
     )
     parser.add_argument(
+        "--keep", type=int, default=10000, help="The number of plans to keep"
+    )
+    parser.add_argument(
         "--burnin",
         type=int,
         default=0,
         help="The number of plans to skip before starting to collect them",
-    )
-    parser.add_argument(
-        "--keep", type=int, default=10000, help="The number of plans to keep"
     )
     parser.add_argument(
         "--sample",
@@ -177,9 +176,10 @@ def parse_args():
         default=0,
         help="How frequently to sample plans",
     )
-    parser.add_argument(
-        "--unique", dest="unique", action="store_true", help="Unique districts mode"
-    )
+    # TODO
+    # parser.add_argument(
+    #     "--unique", dest="unique", action="store_true", help="Unique districts mode"
+    # )
     parser.add_argument(
         "--start",
         type=str,
@@ -191,19 +191,20 @@ def parse_args():
         action="store_true",
         help="Start with random assignments",
     )
-    parser.add_argument(
-        "--wilson",
-        dest="wilson_sampling",
-        action="store_true",
-        help="Wilson sampling mode",
-    )
+    # TODO
+    # parser.add_argument(
+    #     "--wilson",
+    #     dest="wilson_sampling",
+    #     action="store_true",
+    #     help="Wilson sampling mode",
+    # )
 
-    parser.add_argument(
-        "--nocompactnesslimit",
-        dest="no_compactness_limit",
-        action="store_true",
-        help="Don't bound compactness",
-    )
+    # parser.add_argument(
+    #     "--nocompactnesslimit",
+    #     dest="no_compactness_limit",
+    #     action="store_true",
+    #     help="Don't bound compactness",
+    # )
 
     parser.add_argument(
         "--data",
@@ -225,30 +226,31 @@ def parse_args():
         type=str,
         help="Log TXT file",
     )
-    parser.add_argument(
-        "--roughlyequal",
-        type=float,
-        default=0.01,
-        help="'Roughly equal' population threshold",
-    )
-    parser.add_argument(
-        "--elasticity",
-        type=float,
-        default=2.0,
-        help="Allowable district boundary stretch factor",
-    )
-    parser.add_argument(
-        "--countyweight",
-        type=float,
-        default=0.75,
-        help="County weights",
-    )
-    parser.add_argument(
-        "--noderepeats",
-        type=int,
-        default=1,
-        help="How many different choices of root to use before drawing a new spanning tree.",
-    )
+    # TODO
+    # parser.add_argument(
+    #     "--roughlyequal",
+    #     type=float,
+    #     default=0.01,
+    #     help="'Roughly equal' population threshold",
+    # )
+    # parser.add_argument(
+    #     "--elasticity",
+    #     type=float,
+    #     default=2.0,
+    #     help="Allowable district boundary stretch factor",
+    # )
+    # parser.add_argument(
+    #     "--countyweight",
+    #     type=float,
+    #     default=0.75,
+    #     help="County weights",
+    # )
+    # parser.add_argument(
+    #     "--noderepeats",
+    #     type=int,
+    #     default=1,
+    #     help="How many different choices of root to use before drawing a new spanning tree.",
+    # )
 
     parser.add_argument(
         "-v", "--verbose", dest="verbose", action="store_true", help="Verbose mode"

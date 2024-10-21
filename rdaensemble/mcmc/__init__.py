@@ -1,7 +1,11 @@
 # rdaensemble/mcmc/__init__.py
 
 from .prep_data import prep_data
-from .ensemble import setup_unbiased_markov_chain, run_unbiased_chain
+from .setup_chain import (
+    setup_unbiased_markov_chain,
+    setup_unbiased_markov_chain_REVISED,  # TODO - Remove this line
+)
+from .run_chain import run_unbiased_chain
 from .optimized import (
     setup_optimized_markov_chain,
     run_optimized_chain,
