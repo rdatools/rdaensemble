@@ -7,6 +7,7 @@ from typing import Any, List, Dict, Tuple, Callable, NamedTuple
 from functools import partial
 
 from gerrychain import (
+    Partition,
     GeographicPartition,
     Graph,
     MarkovChain,
@@ -15,7 +16,7 @@ from gerrychain import (
     accept,
     Election,
 )
-from gerrychain.tree import bipartition_tree, uniform_spanning_tree
+from gerrychain.tree import bipartition_tree, uniform_spanning_tree, recursive_tree_part
 from gerrychain.constraints import contiguous
 from gerrychain.proposals import recom
 
@@ -79,19 +80,28 @@ def setup_unbiased_markov_chain(
     my_updaters.update(election_updaters)  # type: ignore
 
     # Initial partition
-    initial_partition = (
-        GeographicPartition.from_random_assignment(
+    initial_partition: Partition | GeographicPartition
+    if random_start:
+        assert (
+            plan_type == "congress"
+        ), "Random start not implemented for state legislative plans."
+        bpt = partial(bipartition_tree, max_attempts=99999)
+        # bpt = partial(
+        #     bipartition_tree, spanning_tree_fn=uniform_spanning_tree, max_attempts=99999
+        # )
+        rtp = partial(recursive_tree_part, method=bpt)
+        initial_partition = GeographicPartition.from_random_assignment(
             graph=recom_graph,
             n_parts=n_districts,
-            epsilon=config.roughly_equal / 2,  # 1/2 of what you want to end up with
+            epsilon=config.roughly_equal,  # / 2,  # 1/2 of what you want to end up with
             pop_col="TOTAL_POP",
             updaters=my_updaters,
+            method=rtp,
         )
-        if random_start
-        else GeographicPartition(
+    else:
+        initial_partition = GeographicPartition(
             recom_graph, assignment="INITIAL", updaters=my_updaters
         )
-    )
 
     # Ideal population
     ideal_population = sum(initial_partition["population"].values()) / len(

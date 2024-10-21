@@ -242,7 +242,8 @@ def parse_args():
     debug_defaults: Dict[str, Any] = {
         "state": "NC",
         # "plantype": "congress",
-        "plantype": "upper",
+        # "plantype": "upper",
+        "plantype": "lower",
         "keep": 10,
         # "start": "random_maps/NC20C_random_plan.csv",
         "random_start": True,
