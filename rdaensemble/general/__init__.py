@@ -1,6 +1,5 @@
 # rdaensemble/general/__init__.py
 
-from .compactness import cuts_and_boundaries
 from .score import (
     score_ensemble,
     InferredVotes,

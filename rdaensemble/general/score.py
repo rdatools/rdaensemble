@@ -23,7 +23,6 @@ from rdabase import (
     time_function,
 )
 from rdascore import analyze_plan
-from .compactness import cuts_and_boundaries
 from .utils import make_plan
 
 
@@ -91,11 +90,6 @@ def score_ensemble(
 
             record: OrderedDict[str, Any] = OrderedDict()
             record["map"] = plan_name
-            record["energy"] = energy
-
-            cut_pct, boundary_pct = cuts_and_boundaries(plan_dict, graph)
-            record["cut_edges"] = cut_pct
-            record["boundary_nodes"] = boundary_pct
 
             scorecard: Dict[str, Any] = analyze_plan(
                 assignments,
@@ -112,7 +106,22 @@ def score_ensemble(
                 if "alt_opportunity_districts_pct" in scorecard:
                     scorecard.pop("alt_opportunity_districts_pct")
 
+            # Remove by-district compactness & splitting scores
+            # Compute average compactness & splitting scores for MODs
+            compactness_by_district: List[Dict[str, float]] = scorecard.pop(
+                "compactness_by_district"
+            )
+            splitting_by_district: List[float] = scorecard.pop("splitting_by_district")
+            # TODO - Compute average compactness & splitting scores for MODs
+
             record.update(scorecard)
+            record = insert_after(
+                record,
+                "polsby_popper",
+                "population_compactness",
+                energy,
+            )
+            # TODO - Insert cut_score & spanning tree score
 
             if est_votes:
                 aggregated_votes: Dict[int | str, InferredVotes] = (
@@ -130,6 +139,7 @@ def score_ensemble(
                     "defined_opportunity_districts",
                     oppty_district_count,
                 )
+                # TODO - Insert average compactness & splitting scores for MODs
 
             scores.append(record)
             pass  # for break point
@@ -142,6 +152,7 @@ def score_ensemble(
 
 
 ### MINORITY OPPORTUNITY DISTRICTS (FORMALLY) ###
+# TODO - Move this to a separate module
 
 
 def is_same_candidate_preferred(

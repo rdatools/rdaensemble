@@ -22,7 +22,6 @@ from .mcmc import (
     make_combined_metric,
 )
 from .general import (
-    cuts_and_boundaries,
     score_ensemble,
     InferredVotes,
     is_same_candidate_preferred,
