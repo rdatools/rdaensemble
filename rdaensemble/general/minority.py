@@ -212,15 +212,4 @@ def aggregate_votes_by_district(
     return by_district
 
 
-def insert_after(d, key, new_key, new_value):
-    if key not in d:
-        raise KeyError(f"Key '{key}' not found in the OrderedDict")
-
-    items = list(d.items())
-    insert_position = items.index((key, d[key])) + 1
-    items.insert(insert_position, (new_key, new_value))
-
-    return OrderedDict(items)
-
-
 ### END ###
