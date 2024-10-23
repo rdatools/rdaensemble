@@ -24,6 +24,16 @@ $ scripts/score_ensemble.py \
 --scores ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_scores.csv \
 --no-debug
 
+$ scripts/score_ensemble.py \
+--state NC \
+--plans testdata/NC20C_plans_DEBUG_10.json \
+--data ../rdabase/data/NC/NC_2020_data.csv \
+--eivotes ../tradeoffs/EI_estimates/NC_2020_est_votes.csv \
+--shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
+--graph ../rdabase/data/NC/NC_2020_graph.json \
+--scores temp/NC20C_scores_DEBUG_10.csv \
+--no-debug
+
 For documentation, type:
 
 $ scripts/score_ensemble.py -h
@@ -163,12 +173,12 @@ def parse_args():
     debug_defaults: Dict[str, Any] = {
         "state": "NC",
         "plantype": "congress",
-        "plans": "testdata/NC20C_plans_100.json",
+        "plans": "testdata/NC20C_plans_DEBUG_10.json",
         "data": "../rdabase/data/NC/NC_2020_data.csv",
         "eivotes": "../tradeoffs/EI_estimates/NC_2020_est_votes.csv",
         "shapes": "../rdabase/data/NC/NC_2020_shapes_simplified.json",
         "graph": "../rdabase/data/NC/NC_2020_graph.json",
-        "scores": "temp/NC20C_scores_TEST.csv",
+        "scores": "temp/NC20C_scores_DEBUG_10.csv",
         "verbose": True,
     }
     args = require_args(args, args.debug, debug_defaults)
