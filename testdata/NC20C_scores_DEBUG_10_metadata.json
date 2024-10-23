@@ -1,0 +1,12 @@
+{
+    "username": "alecramsay",
+    "date_created": "10/23/24",
+    "time_created": "13:57:02",
+    "repository": "rdatools/rdaensemble",
+    "state": "NC",
+    "cycle": "2020",
+    "plan_type": "Congress",
+    "units": "VTD",
+    "plans": "NC20C_plans_DEBUG_10.json",
+    "rdascore": "3.0.1"
+}
