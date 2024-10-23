@@ -2,6 +2,8 @@
 
 from .score import (
     score_ensemble,
+)
+from .minority import (
     InferredVotes,
     is_same_candidate_preferred,
     is_defined_opportunity_district,
