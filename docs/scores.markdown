@@ -1,28 +1,21 @@
 # Scores (Metrics)
 
-TODO - Update this.
-
-These are the metrics ("scores") used in this analysis, in the order that they appear in the scores CSV.
-
-The measures of partisan bias and responsiveness are described in some detail in
-[Advanced Measures of Bias &amp; Responsiveness](https://medium.com/dra-2020/advanced-measures-of-bias-responsiveness-c1bf182d29a9).
-Many use [fractional seat probabilities](https://lipid.phys.cmu.edu/nagle/Technical/FractionalSeats2.pdf).
-
-The county and district splitting measures are described in
-[Measuring County &amp; District Splitting](https://medium.com/dra-2020/measuring-county-district-splitting-48a075bcce39).
+These are the metrics ("scores") calculated for the plans in an ensemble, when you run the score_ensemble.py script. 
+They are grouped below in the order that they appear in the scores CSV.
 
 ## General
 
 *   **map** &ndash; The plan (map) name.
-*   **energy** &ndash; The energy of the map. Lower is more *population* compact.
-*   **cut_edges** &ndash; The percentage of edges between precincts that cross district boundaries.
-
 *   **D** &ndash; The number of districts.
 *   **C** &ndash; The number of counties.
 *   **population_deviation** &ndash; The population deviation of the plan.
 *   **estimated_vote_pct** &ndash; The Democratic two-party vote share.
 
 ## Partisan Bias
+
+The measures of partisan bias (in this section) and responsiveness (in the next section) are described in some detail in
+[Advanced Measures of Bias &amp; Responsiveness](https://medium.com/dra-2020/advanced-measures-of-bias-responsiveness-c1bf182d29a9).
+Many use [fractional seat probabilities](https://lipid.phys.cmu.edu/nagle/Technical/FractionalSeats2.pdf).
 
 *   **pr_deviation** &ndash; The deviation from pr_seats. Smaller is better, and zero is perfect.
 *   **pr_seats** &ndash; The integral number of seats closest to proportional representation.
@@ -45,9 +38,9 @@ The county and district splitting measures are described in
 
 ## Competitiveness & Responsiveness
 
-*   **competitive_districts** &ndash; The estimated number of competitive districts, using fractional seat probabilities.
-*   **competitive_district_pct** &ndash; TODO.
-*   **average_margin** &ndash; The average margin of victory.
+*   **competitive_districts** &ndash; The estimated number of competitive districts, using fractional seat probabilities. Bigger is better.
+*   **competitive_district_pct** &ndash; competitive_districts as a percentage of the number of districts (D).
+*   **average_margin** &ndash; The average margin of victory. Smaller is better.
 *   **responsiveness** (ρ) &ndash; The slope of the seats-votes curve at the statewide Democratic vote share.
 *   **responsive_districts** &ndash; The likely number of responsive districts, using fractional seat probabilities.
 *   **responsive_district_pct** &ndash; responsive_districts as a percentage of the number of districts (D).
@@ -57,30 +50,41 @@ The county and district splitting measures are described in
 
 ## Opportunity for Minority Representation
 
-*   **opportunity_districts** &ndash; The estimated number of single race or ethnicity minority opportunity districts, using fractional seat probabilities.
+*   **opportunity_districts** &ndash; The estimated number of single race or ethnicity minority opportunity districts, using fractional seat probabilities (and DRA's method).
 *   **proportional_opportunities** &ndash; The proportional number of single race or ethnicity minority opportunity districts, based on statewide VAP.
-*   **coalition_districts** &ndash; The estimated number of all-minorities-together coalition districts, using fractional seat probabilities.
+*   **coalition_districts** &ndash; The estimated number of all-minorities-together coalition districts, using fractional seat probabilities (and DRA's method).
 *   **proportional_coalitions** &ndash; The proportional number of all-minorities-together coalition districts, based on statewide VAP.
-*   **alt_opportunity_districts** &ndash; The estimated number of single race or ethnicity minority opportunity districts, using fractional seat probabilities. Unlike opportunity_districts, this "alt" metric means does not clip below the 37% threshold.
-*   **alt_coalition_districts** &ndash; The estimated number of all-minorities-together coalition districts, using fractional seat probabilities. Unlike coalition_districts, this "alt" metric does not clip below the 37% threshold.
-*   **defined_opportunity_districts** &ndash; The sum of minority opportunity districts for Blacks alone, Hispanics alone, and Blacks & Hispanics together, where a district is defined as a minority opportunity when the minority preferred candidate wins the district and there are more minority votes for the winner than white votes for the winner.
+*   **alt_opportunity_districts** &ndash; The estimated number of single race or ethnicity minority opportunity districts, using fractional seat probabilities. Unlike opportunity_districts, this "alt" metric means does not clip below the 37% threshold (like DRA does). The results are more continuous.
+*   **alt_coalition_districts** &ndash; The estimated number of all-minorities-together coalition districts, using fractional seat probabilities. Unlike coalition_districts, this "alt" metric does not clip below the 37% threshold (like DRA does). The results are more continuous.
+*   **mod_districts** &ndash; The sum of minority opportunity districts (MOD) for Blacks alone, Hispanics alone, and Blacks & Hispanics together, where a district is defined as a minority opportunity when the minority preferred candidate wins the district and there are more minority votes for the winner than white votes for the winner.
+*   **mod_reock** &ndash; The average `reock` for MOD districts.
+*   **mod_polsby_popper** &ndash; The average `polsby_popper` for MOD districts.
+*   **mod_spanning_tree_score** &ndash; The average `spanning_tree_score` for MOD districts.
+*   **mod_district_splitting** &ndash; The average `district_splitting` for MOD districts.
 
-## Compactness -- TODO
+## Compactness
 
-*   **reock** &ndash; The average Reock measure of compactnes for the district shapes.
-*   **polsby_popper** &ndash; The average Polsby-Popper measure of compactness for the district shapes.
+*   **reock** &ndash; The average Reock measure of compactnes for the districts. Bigger is better.
+*   **polsby_popper** &ndash; The average Polsby-Popper measure of compactness for the districts. Bigger is better.
+*   **cut_score** &ndash; The number of edges between nodes (precincts) in the contiguity graph that are cut (cross district boundaries). A measure of compactness using discrete geometry. Smaller is better.
+*   **spanning_tree_score** &ndash; The spanning tree scrore. Another measure of compactness using discrete geometry. Bigger is better.
+*   **population_compactness** &ndash; The population compactness of the map. Lower is more *energy* compact. Smaller is better.
 
 ## County-District Splitting
 
+The county and district splitting measures are described in
+[Measuring County &amp; District Splitting](https://medium.com/dra-2020/measuring-county-district-splitting-48a075bcce39).
+
 *   **county_splitting** &ndash; A measure of the degree of county splitting. Smaller is better, and 1.0 (no splitting) is the best.
 *   **district_splitting** &ndash; A measure of the degree of district splitting. Smaller is better, and 1.0 (no splitting) is the best.
-*   **counties_split** &ndash; The number of counties split across districts.
-*   **county_splits** &ndash; The number of *times* counties are split, e.g, a county may be split into three or more pieces.
-*   **proportionality** &ndash; DRA's propoprtionality rating. Integers [0-100], where bigger is better.
+*   **counties_split** &ndash; The number of counties split across districts. Smaller is better.
+*   **county_splits** &ndash; The number of *times* counties are split, e.g, a county may be split more than once. Smaller is better.
 
 ## Dave's Redistricting Ratings
 
+*   **proportionality** &ndash; DRA's propoprtionality rating. Integers [0-100], where bigger is better.
 *   **competitiveness** &ndash; DRA's competitiveness rating. Integers [0-100], where bigger is better.
 *   **minority** &ndash; DRA's minority opportunity rating. Integers [0-100], where bigger is better.
 *   **compactness** &ndash; DRA's compactness rating. Integers [0-100], where bigger is better.
 *   **splitting** &ndash; DRA's county-district splitting rating. Integers [0-100], where bigger is better.
+*   **minority_alt** &ndash; A modified version of DRA's minority opportunity rating that uses `alt_opportunity_districts` and `alt_coalition_districts` (i.e., does not clip below the 37% threshold) making the results more continuous.
