@@ -1,5 +1,6 @@
 from setuptools import setup, find_packages
-from Cython.Build import cythonize
+
+# from Cython.Build import cythonize
 
 # python setup.py build_ext --inplace
 
@@ -25,7 +26,7 @@ setup(
         "rdaensemble.smc",
         "rdaensemble.ust",
     ],
-    ext_modules=cythonize(cython_files, compiler_directives={"language_level": "3"}),
+    # ext_modules=cythonize(cython_files, compiler_directives={"language_level": "3"}),
     install_requires=["rdabase", "rdascore", "rdadccvt", "gerrychain", "cython"],
     zip_safe=False,
 )
