@@ -106,7 +106,7 @@ def score_ensemble(
             record.update(scorecard)
 
             # Add 'energy' as 'population_compactness' as the last compactness score
-            record = insert_after(
+            record = insert_pair_after(
                 record,
                 "spanning_tree_score",
                 "population_compactness",
@@ -121,18 +121,36 @@ def score_ensemble(
                 votes_by_district: List[InferredVotes] = list(
                     aggregated_votes.values()
                 )[1:]
+
                 oppty_district_count: int
                 mods: List[int | str]
                 oppty_district_count, mods = count_defined_opportunity_districts(
                     votes_by_district
                 )
-                record = insert_after(
+
+                mod_scores: Dict[str, float] = defaultdict(float)
+                mod_scores["defined_opportunity_districts"] = oppty_district_count
+                for d in mods:
+                    i: int = int(d) - 1
+                    mod_scores["reock"] += by_district[i]["reock"]
+                    mod_scores["polsby"] += by_district[i]["polsby"]
+                    mod_scores["spanning_tree_score"] += by_district[i][
+                        "spanning_tree_score"
+                    ]
+                    mod_scores["district_splitting"] += by_district[i][
+                        "district_splitting"
+                    ]
+                mod_scores = {
+                    k: v / oppty_district_count for k, v in mod_scores.items()
+                }
+
+                record = insert_dict_after(
                     record,
                     "alt_coalition_districts",
-                    "defined_opportunity_districts",
-                    oppty_district_count,
+                    mod_scores,
                 )
-                # TODO - Insert average compactness & splitting scores for MODs
+                # TODO - The order is not right.
+                # TODO - Some metrics are missing.
                 pass
 
             scores.append(record)
@@ -145,7 +163,7 @@ def score_ensemble(
     return scores
 
 
-def insert_after(d, key, new_key, new_value):
+def insert_pair_after(d, key, new_key, new_value):
     if key not in d:
         raise KeyError(f"Key '{key}' not found in the OrderedDict")
 
@@ -154,6 +172,29 @@ def insert_after(d, key, new_key, new_value):
     items.insert(insert_position, (new_key, new_value))
 
     return OrderedDict(items)
+
+
+def insert_dict_after(original_dict: OrderedDict, key, new_dict):
+    return OrderedDict(
+        k_v
+        for k_v in (
+            (k, v)
+            for items in (
+                list(original_dict.items())[
+                    : list(original_dict.keys()).index(key) + 1
+                ],
+                list(
+                    new_dict.items()
+                    if isinstance(new_dict, OrderedDict)
+                    else OrderedDict(new_dict).items()
+                ),
+                list(original_dict.items())[
+                    list(original_dict.keys()).index(key) + 1 :
+                ],
+            )
+            for k, v in items
+        )
+    )
 
 
 ### END ###
