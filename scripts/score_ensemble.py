@@ -18,7 +18,7 @@ $ scripts/score_ensemble.py \
 --state NC \
 --plans ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_plans.json \
 --data ../rdabase/data/NC/NC_2020_data.csv \
---moredata ../tradeoffs/EI_estimates/NC_2020_est_votes.csv \
+--moredata ../rdaei/data/NC_2020_est_votes.csv \
 --shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
 --scores ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_scores.csv \
@@ -28,10 +28,10 @@ $ scripts/score_ensemble.py \
 --state NC \
 --plans testdata/NC20C_plans_SAMPLE.json \
 --data ../rdabase/data/NC/NC_2020_data.csv \
---moredata ../tradeoffs/EI_estimates/NC_2020_est_votes.csv \
+--moredata ../rdaei/data/NC_2020_est_votes.csv \
 --shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
---scores testdata/NC20C_scores_SAMPLE.csv \
+--scores temp/NC20C_scores_SAMPLE.csv \
 --no-debug
 
 For documentation, type:
@@ -58,11 +58,17 @@ from rdabase import (
     load_graph,
     load_metadata,
 )
-from rdaei import load_EI_votes, InferredVotes, add_scores
 from rdaensemble import (
     score_ensemble,
     scores_metadata,
 )
+
+################################################################################
+# To add custom scores, import the required functions & types
+
+from rdaei import load_EI_votes, add_scores
+
+################################################################################
 
 
 def main() -> None:
@@ -76,13 +82,15 @@ def main() -> None:
     more_data: Dict[str, Any] = {}
     more_scores_fn: Callable[..., Dict[str, float | int]] = lambda *args, **kwargs: {}
 
-    ### Add custom scores here ###
+    ###########################################################################
+    # To add custom scores, identify the scoring function & optionally a data file
+
+    more_scores_fn: Callable[..., Dict[str, float | int]] = add_scores
     if args.moredata:
         more_data = load_EI_votes(args.moredata)
-        more_scores_fn: Callable[..., Dict[str, float | int]] = add_scores
-    ###
 
-    # TYPE HINT
+    ###########################################################################
+
     ensemble: Dict[str, Any] = read_json(args.plans)
     plans: List[Dict[str, str | float | Dict[str, int | str]]] = ensemble["plans"]
 
@@ -176,7 +184,7 @@ def parse_args():
         "plantype": "congress",
         "plans": "testdata/NC20C_plans_DEBUG_10.json",
         "data": "../rdabase/data/NC/NC_2020_data.csv",
-        "moredata": "../tradeoffs/EI_estimates/NC_2020_est_votes.csv",
+        "moredata": "../rdaei/data/NC_2020_est_votes.csv",
         "shapes": "../rdabase/data/NC/NC_2020_shapes_simplified.json",
         "graph": "../rdabase/data/NC/NC_2020_graph.json",
         "scores": "temp/NC20C_scores_DEBUG_10.csv",

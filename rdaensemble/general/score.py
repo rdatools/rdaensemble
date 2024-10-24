@@ -23,11 +23,6 @@ from rdabase import (
     time_function,
 )
 from rdascore import analyze_plan
-from .minority import (
-    InferredVotes,
-    aggregate_votes_by_district,
-    count_defined_opportunity_districts,
-)
 from .utils import make_plan
 
 
@@ -105,9 +100,8 @@ def score_ensemble(
                 energy,
             )
 
-            ###################################################################
+            ### Optionally, compute additional scores #########################
 
-            # Compute additional scores
             if more_data and more_scores_fn:
                 more_scores: Dict[str, float | int] = more_scores_fn(
                     record,
@@ -121,47 +115,6 @@ def score_ensemble(
                 )
             record.update(more_scores)
 
-            # Count defined minority opportunity districts (MOD)
-            # if est_votes:
-            #     aggregated_votes: Dict[int | str, InferredVotes] = (
-            #         aggregate_votes_by_district(assignments, est_votes, N)
-            #     )
-            #     votes_by_district: List[InferredVotes] = list(
-            #         aggregated_votes.values()
-            #     )[1:]
-
-            #     oppty_district_count: int
-            #     mods: List[int | str]
-            #     oppty_district_count, mods = count_defined_opportunity_districts(
-            #         votes_by_district
-            #     )
-
-            #     mod_scores: Dict[str, float | int] = defaultdict(float)
-            #     mod_scores["mod_districts"] = int(
-            #         oppty_district_count
-            #     )  # TODO - Type is wrong
-            #     for d in mods:
-            #         i: int = int(d) - 1
-            #         mod_scores["mod_reock"] += by_district[i]["reock"]
-            #         mod_scores["mod_polsby_popper"] += by_district[i]["polsby"]
-            #         mod_scores["mod_spanning_tree_score"] += by_district[i][
-            #             "spanning_tree_score"
-            #         ]
-            #         mod_scores["mod_district_splitting"] += by_district[i][
-            #             "district_splitting"
-            #         ]
-            #     mod_scores = {
-            #         k: v / oppty_district_count
-            #         for k, v in mod_scores.items()
-            #         if k != "defined_opportunity_districts"
-            #     }
-
-            #     record = insert_dict_after(
-            #         record,
-            #         "alt_coalition_districts",
-            #         mod_scores,
-            #     )
-            #     pass
             ###################################################################
 
             scores.append(record)
