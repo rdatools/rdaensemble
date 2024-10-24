@@ -2,7 +2,7 @@
 SCORE AN ENSEMBLE OF PLANS
 """
 
-from typing import List, Dict, Set, NamedTuple, Any
+from typing import List, Dict, Set, Any, Callable
 
 import sys
 from collections import defaultdict, OrderedDict
@@ -39,8 +39,8 @@ def score_ensemble(
     graph: Dict[str, List[str]],
     metadata: Dict[str, Any],
     *,
-    est_votes: Dict[str, InferredVotes] = dict(),
-    epsilon: float = 0.01,  # Minimum population per precinct
+    more_data: Dict[str, Any] = {},
+    more_scores_fn: Callable[..., Dict[str, float | int]],
 ) -> List[Dict]:
     """Score an ensemble of maps."""
 
@@ -50,6 +50,7 @@ def score_ensemble(
     indexed_points: List[IndexedPoint] = index_points(points)
 
     ipop_by_geoid: Dict[str, int] = populations(data)
+    epsilon: float = 0.01  # Minimum population per precinct
     fpop_by_geoid: Dict[str, float] = {
         k: float(max(epsilon, v)) for k, v in ipop_by_geoid.items()
     }
@@ -105,68 +106,62 @@ def score_ensemble(
             )
 
             ###################################################################
-            """
 
-            """
-
-            def calc_fn(
-                plans: List[Dict[str, str | float | Dict[str, int | str]]],
-                data: Dict[str, Dict[str, int | str]],
-                shapes: Dict[str, Any],
-                graph: Dict[str, List[str]],
-                metadata: Dict[str, Any],
-                *,
-                more_data: Dict[str, Any] = dict(),
-            ) -> Dict[str, float | int]:
-                """Compute additional metrics (scores) for a plan."""
-
-                custom_scores: Dict[str, Any] = dict()
-
-                # TODO - Add custom scores here
-
-                return custom_scores
+            # Compute additional scores
+            if more_data and more_scores_fn:
+                more_scores: Dict[str, float | int] = more_scores_fn(
+                    record,
+                    by_district,
+                    assignments,
+                    data,
+                    shapes,
+                    graph,
+                    metadata,
+                    more_data,
+                )
+            record.update(more_scores)
 
             # Count defined minority opportunity districts (MOD)
-            if est_votes:
-                aggregated_votes: Dict[int | str, InferredVotes] = (
-                    aggregate_votes_by_district(assignments, est_votes, N)
-                )
-                votes_by_district: List[InferredVotes] = list(
-                    aggregated_votes.values()
-                )[1:]
+            # if est_votes:
+            #     aggregated_votes: Dict[int | str, InferredVotes] = (
+            #         aggregate_votes_by_district(assignments, est_votes, N)
+            #     )
+            #     votes_by_district: List[InferredVotes] = list(
+            #         aggregated_votes.values()
+            #     )[1:]
 
-                oppty_district_count: int
-                mods: List[int | str]
-                oppty_district_count, mods = count_defined_opportunity_districts(
-                    votes_by_district
-                )
+            #     oppty_district_count: int
+            #     mods: List[int | str]
+            #     oppty_district_count, mods = count_defined_opportunity_districts(
+            #         votes_by_district
+            #     )
 
-                mod_scores: Dict[str, float | int] = defaultdict(float)
-                mod_scores["mod_districts"] = int(
-                    oppty_district_count
-                )  # TODO - Type is wrong
-                for d in mods:
-                    i: int = int(d) - 1
-                    mod_scores["mod_reock"] += by_district[i]["reock"]
-                    mod_scores["mod_polsby_popper"] += by_district[i]["polsby"]
-                    mod_scores["mod_spanning_tree_score"] += by_district[i][
-                        "spanning_tree_score"
-                    ]
-                    mod_scores["mod_district_splitting"] += by_district[i][
-                        "district_splitting"
-                    ]
-                mod_scores = {
-                    k: v / oppty_district_count
-                    for k, v in mod_scores.items()
-                    if k != "defined_opportunity_districts"
-                }
+            #     mod_scores: Dict[str, float | int] = defaultdict(float)
+            #     mod_scores["mod_districts"] = int(
+            #         oppty_district_count
+            #     )  # TODO - Type is wrong
+            #     for d in mods:
+            #         i: int = int(d) - 1
+            #         mod_scores["mod_reock"] += by_district[i]["reock"]
+            #         mod_scores["mod_polsby_popper"] += by_district[i]["polsby"]
+            #         mod_scores["mod_spanning_tree_score"] += by_district[i][
+            #             "spanning_tree_score"
+            #         ]
+            #         mod_scores["mod_district_splitting"] += by_district[i][
+            #             "district_splitting"
+            #         ]
+            #     mod_scores = {
+            #         k: v / oppty_district_count
+            #         for k, v in mod_scores.items()
+            #         if k != "defined_opportunity_districts"
+            #     }
 
-                record = insert_dict_after(
-                    record,
-                    "alt_coalition_districts",
-                    mod_scores,
-                )
-                pass
+            #     record = insert_dict_after(
+            #         record,
+            #         "alt_coalition_districts",
+            #         mod_scores,
+            #     )
+            #     pass
             ###################################################################
 
             scores.append(record)

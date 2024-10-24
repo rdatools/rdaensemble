@@ -18,7 +18,7 @@ $ scripts/score_ensemble.py \
 --state NC \
 --plans ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_plans.json \
 --data ../rdabase/data/NC/NC_2020_data.csv \
---eivotes ../tradeoffs/EI_estimates/NC_2020_est_votes.csv \
+--moredata ../tradeoffs/EI_estimates/NC_2020_est_votes.csv \
 --shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
 --scores ../../iCloud/fileout/tradeoffs/NC/ensembles/NC20C_scores.csv \
@@ -28,7 +28,7 @@ $ scripts/score_ensemble.py \
 --state NC \
 --plans testdata/NC20C_plans_SAMPLE.json \
 --data ../rdabase/data/NC/NC_2020_data.csv \
---eivotes ../tradeoffs/EI_estimates/NC_2020_est_votes.csv \
+--moredata ../tradeoffs/EI_estimates/NC_2020_est_votes.csv \
 --shapes ../rdabase/data/NC/NC_2020_shapes_simplified.json \
 --graph ../rdabase/data/NC/NC_2020_graph.json \
 --scores testdata/NC20C_scores_SAMPLE.csv \
@@ -42,7 +42,7 @@ $ scripts/score_ensemble.py -h
 
 import argparse
 from argparse import ArgumentParser, Namespace
-from typing import Any, List, Dict
+from typing import Any, List, Dict, Callable
 
 import warnings
 
@@ -58,7 +58,11 @@ from rdabase import (
     load_graph,
     load_metadata,
 )
-from rdaensemble import score_ensemble, scores_metadata, InferredVotes, load_EI_votes
+from rdaei import load_EI_votes, InferredVotes, add_scores
+from rdaensemble import (
+    score_ensemble,
+    scores_metadata,
+)  # TODO - DELETE , InferredVotes, load_EI_votes
 
 
 def main() -> None:
@@ -69,9 +73,14 @@ def main() -> None:
     graph: Dict[str, List[str]] = load_graph(args.graph)
     metadata: Dict[str, Any] = load_metadata(args.state, args.data, args.plantype)
 
-    est_votes: Dict[str, InferredVotes] = dict()
-    if args.eivotes:
-        est_votes = load_EI_votes(args.eivotes)
+    more_data: Dict[str, Any] = {}
+    more_scores_fn: Callable[..., Dict[str, float | int]] = lambda *args, **kwargs: {}
+
+    ### Add custom scores here ###
+    if args.moredata:
+        more_data = load_EI_votes(args.moredata)
+        more_scores_fn: Callable[..., Dict[str, float | int]] = add_scores
+    ###
 
     # TYPE HINT
     ensemble: Dict[str, Any] = read_json(args.plans)
@@ -86,7 +95,8 @@ def main() -> None:
         shapes,
         graph,
         metadata,
-        est_votes=est_votes,
+        more_data=more_data,
+        more_scores_fn=more_scores_fn,
     )
 
     metadata: Dict[str, Any] = scores_metadata(xx=args.state, plans=args.plans)
@@ -128,9 +138,9 @@ def parse_args():
         help="Data file",
     )
     parser.add_argument(
-        "--eivotes",
+        "--moredata",
         type=str,
-        help="EI-estimated votes file",
+        help="Path to file with more data for more scores",
     )
     parser.add_argument(
         "--shapes",
@@ -166,7 +176,7 @@ def parse_args():
         "plantype": "congress",
         "plans": "testdata/NC20C_plans_DEBUG_10.json",
         "data": "../rdabase/data/NC/NC_2020_data.csv",
-        "eivotes": "../tradeoffs/EI_estimates/NC_2020_est_votes.csv",
+        "moredata": "../tradeoffs/EI_estimates/NC_2020_est_votes.csv",
         "shapes": "../rdabase/data/NC/NC_2020_shapes_simplified.json",
         "graph": "../rdabase/data/NC/NC_2020_graph.json",
         "scores": "temp/NC20C_scores_DEBUG_10.csv",
