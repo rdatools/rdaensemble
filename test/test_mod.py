@@ -172,9 +172,10 @@ class TestMinorityOpportunity:
                 other_rep_votes=40,
             ),  # Not a Coalition opportunity district
         ]
-        actual: int = count_defined_opportunity_districts(districts_EI)
+        count, mods = count_defined_opportunity_districts(districts_EI)
         expected: int = 3
-        assert actual == expected
+        assert count == expected
+        assert mods == [1, 2, 5]
 
         assert True
 

@@ -99,11 +99,8 @@ def score_ensemble(
                 if "alt_opportunity_districts_pct" in scorecard:
                     scorecard.pop("alt_opportunity_districts_pct")
 
-            # Remove by-district compactness & splitting from the scores
-            compactness_by_district: List[Dict[str, float]] = scorecard.pop(
-                "compactness_by_district"
-            )
-            splitting_by_district: List[float] = scorecard.pop("splitting_by_district")
+            # Remove by-district compactness & splitting from from the scores
+            by_district: List[Dict[str, float]] = scorecard.pop("by_district")
 
             # Add the (flat) scores
             record.update(scorecard)
@@ -124,7 +121,9 @@ def score_ensemble(
                 votes_by_district: List[InferredVotes] = list(
                     aggregated_votes.values()
                 )[1:]
-                oppty_district_count: int = count_defined_opportunity_districts(
+                oppty_district_count: int
+                mods: List[int | str]
+                oppty_district_count, mods = count_defined_opportunity_districts(
                     votes_by_district
                 )
                 record = insert_after(
@@ -134,9 +133,10 @@ def score_ensemble(
                     oppty_district_count,
                 )
                 # TODO - Insert average compactness & splitting scores for MODs
+                pass
 
             scores.append(record)
-            pass  # for break point
+            pass
 
         except Exception as e:
             print(f"Failure: {e}")

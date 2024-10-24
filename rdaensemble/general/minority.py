@@ -2,7 +2,7 @@
 MINORITY OPPORTUNITY DISTRICTS (FORMALLY DEFINED)
 """
 
-from typing import List, Dict, NamedTuple
+from typing import List, Dict, Tuple, NamedTuple
 
 from collections import defaultdict, OrderedDict
 
@@ -85,11 +85,17 @@ def is_defined_opportunity_district(
     return minority_preferred_candidate_won and minority_votes_outnumber_other_votes
 
 
-def count_defined_opportunity_districts(votes_by_district: List[InferredVotes]) -> int:
+def count_defined_opportunity_districts(
+    votes_by_district: List[InferredVotes],
+) -> Tuple[int, List[int | str]]:
     """Count the number of defined Black & Hispanic opportunity districts in a set of districts."""
 
     count: int = 0
-    for votes in votes_by_district:
+    mods: List[int | str] = list()
+
+    for i, votes in enumerate(votes_by_district):
+        j: int = i + 1
+
         scenario_1: bool = is_defined_opportunity_district(
             votes.dem_votes,
             votes.rep_votes,
@@ -122,8 +128,9 @@ def count_defined_opportunity_districts(votes_by_district: List[InferredVotes]) 
 
         if scenario_1 or scenario_2 or scenario_3:
             count += 1
+            mods.append(j)
 
-    return count
+    return count, mods
 
 
 def load_EI_votes(votes_file: str) -> Dict[str, InferredVotes]:
