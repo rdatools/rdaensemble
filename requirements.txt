@@ -3,5 +3,6 @@ tqdm
 rdabase
 rdadccvt
 rdascore
+rdaei
 setuptools
 cython

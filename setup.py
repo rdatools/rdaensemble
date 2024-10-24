@@ -11,7 +11,7 @@ cython_files = [
 
 setup(
     name="rdaensemble",
-    version="2.0.0",
+    version="2.0.1",
     description="Redistricting ensembles",
     url="https://github.com/rdatools/rdaensemble",
     author="alecramsay",

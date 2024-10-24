@@ -56,11 +56,6 @@ Many use [fractional seat probabilities](https://lipid.phys.cmu.edu/nagle/Techni
 *   **proportional_coalitions** &ndash; The proportional number of all-minorities-together coalition districts, based on statewide VAP.
 *   **alt_opportunity_districts** &ndash; The estimated number of single race or ethnicity minority opportunity districts, using fractional seat probabilities. Unlike opportunity_districts, this "alt" metric means does not clip below the 37% threshold (like DRA does). The results are more continuous.
 *   **alt_coalition_districts** &ndash; The estimated number of all-minorities-together coalition districts, using fractional seat probabilities. Unlike coalition_districts, this "alt" metric does not clip below the 37% threshold (like DRA does). The results are more continuous.
-*   **mod_districts** &ndash; The sum of minority opportunity districts (MOD) for Blacks alone, Hispanics alone, and Blacks & Hispanics together, where a district is defined as a minority opportunity when the minority preferred candidate wins the district and there are more minority votes for the winner than white votes for the winner.
-*   **mod_reock** &ndash; The average `reock` for MOD districts.
-*   **mod_polsby_popper** &ndash; The average `polsby_popper` for MOD districts.
-*   **mod_spanning_tree_score** &ndash; The average `spanning_tree_score` for MOD districts.
-*   **mod_district_splitting** &ndash; The average `district_splitting` for MOD districts.
 
 ## Compactness
 
@@ -88,3 +83,11 @@ The county and district splitting measures are described in
 *   **compactness** &ndash; DRA's compactness rating. Integers [0-100], where bigger is better.
 *   **splitting** &ndash; DRA's county-district splitting rating. Integers [0-100], where bigger is better.
 *   **minority_alt** &ndash; A modified version of DRA's minority opportunity rating that uses `alt_opportunity_districts` and `alt_coalition_districts` (i.e., does not clip below the 37% threshold) making the results more continuous.
+
+## Additional Custom Metrics 
+
+*   **mod_districts** &ndash; The sum of minority opportunity districts (MOD) for Blacks alone, Hispanics alone, and Blacks & Hispanics together, where a district is defined as a minority opportunity when the minority preferred candidate wins the district and there are more minority votes for the winner than white votes for the winner.
+*   **mod_reock** &ndash; The average `reock` for MOD districts.
+*   **mod_polsby_popper** &ndash; The average `polsby_popper` for MOD districts.
+*   **mod_spanning_tree_score** &ndash; The average `spanning_tree_score` for MOD districts.
+*   **mod_district_splitting** &ndash; The average `district_splitting` for MOD districts.
