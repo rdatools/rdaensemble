@@ -80,14 +80,12 @@ def main() -> None:
     if "packed" in ensemble and ensemble["packed"] == True:
         raise Exception(f"Ensemble ({args.plans}) is packed. Unpack it first.")
 
-    alt_minority: bool = not args.no_alt_minority
     scores: List[Dict] = score_ensemble(
         plans,
         data,
         shapes,
         graph,
         metadata,
-        alt_minority=alt_minority,
         est_votes=est_votes,
     )
 
@@ -150,13 +148,6 @@ def parse_args():
         help="Ensemble of resulting scores to a CSV file",
     )
 
-    parser.add_argument(
-        "-m",
-        "--no-alt-minority",
-        dest="no_alt_minority",
-        action="store_true",
-        help="No alt minority mode, i.e., use the DRA minority rating",
-    )  # By default, use the alt minority rating
     parser.add_argument(
         "-v", "--verbose", dest="verbose", action="store_true", help="Verbose mode"
     )

@@ -39,7 +39,6 @@ def score_ensemble(
     graph: Dict[str, List[str]],
     metadata: Dict[str, Any],
     *,
-    alt_minority: bool = False,
     est_votes: Dict[str, InferredVotes] = dict(),
     epsilon: float = 0.01,
 ) -> List[Dict]:
@@ -89,15 +88,7 @@ def score_ensemble(
                 shapes,
                 graph,
                 metadata,
-                alt_minority=alt_minority,
             )
-
-            # Add alternative minority opportunity rating
-            if alt_minority:
-                scorecard["minority"] = scorecard["minority_alt"]
-                scorecard.pop("minority_alt")
-                if "alt_opportunity_districts_pct" in scorecard:
-                    scorecard.pop("alt_opportunity_districts_pct")
 
             # Remove by-district compactness & splitting from from the scores
             by_district: List[Dict[str, float]] = scorecard.pop("by_district")
