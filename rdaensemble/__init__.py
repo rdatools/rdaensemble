@@ -23,13 +23,6 @@ from .mcmc import (
 )
 from .general import (
     score_ensemble,
-    # TODO - DELETE
-    # InferredVotes,
-    # is_same_candidate_preferred,
-    # is_defined_opportunity_district,
-    # count_defined_opportunity_districts,
-    # load_EI_votes,
-    # aggregate_votes_by_district,
     id_notable_maps,
     ratings_dimensions,
     ratings_indexes,
