@@ -40,7 +40,7 @@ def score_ensemble(
     metadata: Dict[str, Any],
     *,
     est_votes: Dict[str, InferredVotes] = dict(),
-    epsilon: float = 0.01,
+    epsilon: float = 0.01,  # Minimum population per precinct
 ) -> List[Dict]:
     """Score an ensemble of maps."""
 
@@ -104,6 +104,28 @@ def score_ensemble(
                 energy,
             )
 
+            ###################################################################
+            """
+
+            """
+
+            def calc_fn(
+                plans: List[Dict[str, str | float | Dict[str, int | str]]],
+                data: Dict[str, Dict[str, int | str]],
+                shapes: Dict[str, Any],
+                graph: Dict[str, List[str]],
+                metadata: Dict[str, Any],
+                *,
+                more_data: Dict[str, Any] = dict(),
+            ) -> Dict[str, float | int]:
+                """Compute additional metrics (scores) for a plan."""
+
+                custom_scores: Dict[str, Any] = dict()
+
+                # TODO - Add custom scores here
+
+                return custom_scores
+
             # Count defined minority opportunity districts (MOD)
             if est_votes:
                 aggregated_votes: Dict[int | str, InferredVotes] = (
@@ -145,6 +167,7 @@ def score_ensemble(
                     mod_scores,
                 )
                 pass
+            ###################################################################
 
             scores.append(record)
             pass
